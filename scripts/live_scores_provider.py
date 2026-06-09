@@ -15,10 +15,12 @@ import os
 import time
 import requests
 from datetime import datetime, date
+from pathlib import Path
 from typing import List, Dict, Any, Optional
 
 THESPORTSDB_URL = "https://www.thesportsdb.com/api/v1/json/123/eventsday.php"
 FOOTBALL_DATA_URL = "https://api.football-data.org/v4/competitions/WC/matches"
+ROOT = Path(__file__).resolve().parents[1]
 
 HEADERS = {
     "User-Agent": "WorldCupPredictorBot/1.0 (Hermes AI Agent; educational project)"
@@ -123,7 +125,7 @@ def _fetch_thesportsdb(target_date: str) -> Optional[List[Dict[str, Any]]]:
 
 def _fetch_football_data(target_date: str) -> Optional[List[Dict[str, Any]]]:
     """备源: 需要 env FOOTBALL_DATA_KEY，未设置直接跳过"""
-    key = os.environ.get("FOOTBALL_DATA_KEY")
+    key = _football_data_key()
     if not key:
         return None
     try:
@@ -139,6 +141,24 @@ def _fetch_football_data(target_date: str) -> Optional[List[Dict[str, Any]]]:
     except Exception as e:
         print(f"⚠️ Football-Data.org 抓取失败: {e}")
         return None
+
+
+def _football_data_key(env_path: os.PathLike = ROOT / ".env") -> str:
+    key = os.environ.get("FOOTBALL_DATA_KEY")
+    if key:
+        return key
+    try:
+        with open(env_path, encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#") or "=" not in line:
+                    continue
+                k, v = line.split("=", 1)
+                if k.strip() == "FOOTBALL_DATA_KEY":
+                    return v.strip()
+    except FileNotFoundError:
+        pass
+    return ""
 
 
 class LiveScoresProvider:

@@ -1,6 +1,8 @@
 import unittest
+import tempfile
+from pathlib import Path
 
-from scripts.live_scores_provider import _normalize_football_data, _normalize_thesportsdb
+from scripts.live_scores_provider import _football_data_key, _normalize_football_data, _normalize_thesportsdb
 
 
 class LiveScoresProviderSchemaTest(unittest.TestCase):
@@ -24,6 +26,13 @@ class LiveScoresProviderSchemaTest(unittest.TestCase):
         self.assertEqual(row["referee"], "Test Referee")
         self.assertIsNone(row["xg_away"])
         self.assertIn("red_away", row)
+
+    def test_football_data_key_loads_from_env_file(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            env_path = Path(tmp) / ".env"
+            env_path.write_text("FOOTBALL_DATA_KEY=test-key\n", encoding="utf-8")
+
+            self.assertEqual(_football_data_key(env_path), "test-key")
 
 
 if __name__ == "__main__":
