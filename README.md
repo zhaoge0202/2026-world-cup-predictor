@@ -4,8 +4,6 @@
 
 > **中文：** 基于 Elo 差值的 Poisson xG 模型 + 玄学因子的世界杯对战预测系统
 
-> **Live:** [worldcup.imiaozhan.com](https://worldcup.imiaozhan.com)
-
 ---
 
 ## 🧩 核心功能
@@ -31,9 +29,9 @@
 
 ---
 
-## 📱 在线体验
+## 📱 移动端体验
 
-**移动端优先**：https://worldcup.imiaozhan.com
+本项目移动端优先，支持本地运行和自行部署。
 
 支持任意两队 H2H 对战预测，实时显示胜平负概率 + 比分分布
 
