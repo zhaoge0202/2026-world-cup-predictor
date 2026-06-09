@@ -2,6 +2,10 @@ __pycache__/
 *.py[cod]
 *.pyc
 .env
+.env.local
+.env.*.local
+config_local.py
+secrets.local.json
 venv/
 .venv/
 *.egg-info/

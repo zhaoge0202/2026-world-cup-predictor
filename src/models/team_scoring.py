@@ -429,11 +429,9 @@ def score_all_teams(teams: List[Squad],
         elo_std = max(elo_arr.std(), 1)
         strength = (elo_arr - elo_mean) / elo_std  # z-score
 
-        # 每场模拟的胜率用Bradley-Terry模型
-        # 10,000次 × N队两两比赛开销太大 → 用单淘汰路径采样
-        # 简化：直接用 strength 做加权随机采样
-        # 每届世界杯有 7 场淘汰赛（16→8→4→2→1）
-        # 每场胜率 = 1 / (1 + exp(-(s_a - s_b) * 1.5))
+        # 每场模拟走完整赛制路径（见 _simulate_tournament_path）：
+        # 12 组×4 队循环赛 → 前 2 名 + 8 最佳第三 = 32 强 → 5 轮单场淘汰赛
+        # 冠军 = 走完全程的队；10000 次累计夺冠次数 / 10000 = MC 概率
 
         # 随机种子只设一次，确保每次模拟走不同路径
         rng = np.random.RandomState(42)
@@ -524,48 +522,79 @@ def score_all_teams(teams: List[Squad],
     return results
 
 
+def _sim_group_match(ea: float, eb: float, rng: np.random.RandomState) -> Tuple[int, int]:
+    """模拟一场小组赛比分（Poisson xG，期望进球 λ 由 Elo 差驱动）"""
+    d = (ea - eb) / 400.0
+    la = max(0.15, 1.35 + d * 0.85)
+    lb = max(0.15, 1.35 - d * 0.85)
+    return int(rng.poisson(la)), int(rng.poisson(lb))
+
+
+def _ko_winner(a: int, b: int, elo_arr: np.ndarray, rng: np.random.RandomState) -> int:
+    """淘汰赛单场胜者（Bradley-Terry + 随机缩放，保留冷门空间）"""
+    scale = rng.uniform(0.7, 1.3)
+    prob_a = 1.0 / (1.0 + np.exp(-(elo_arr[a] - elo_arr[b]) / 80.0 * scale))
+    return a if rng.random() < prob_a else b
+
+
 def _simulate_tournament_path(team_list: list, elo_arr: np.ndarray, rng: np.random.RandomState) -> int:
     """
-    模拟一届世界杯的完整路径，返回冠军的 team_list 索引。
-    修复 v2：先打乱再分组，避免高Elo队被固定分到一起；改用12组×4队匹配2026实际赛制。
+    模拟一届 2026 世界杯完整路径，返回冠军的 team_list 索引。
+
+    2026 真实赛制：
+      12 组 × 4 队 → 每组单循环赛（6 场，胜3/平1/负0）
+      → 每组前 2 名出线（24 队）+ 12 个第三名里最好的 8 个（32 队）
+      → Round of 32 → 16 → 8 → 4 → 2 → 1（5 轮单场淘汰赛）
     """
     n_teams = len(team_list)
-
-    # 2026世界杯：8个小组，每组4队（48队），前2名出线=16强淘汰赛
     all_indices = list(range(n_teams))
-    rng.shuffle(all_indices)  # 关键修复：打乱后再分组，Elo不再按固定索引聚集
+    rng.shuffle(all_indices)  # 打乱后分组，Elo 不按固定索引聚集
 
-    n_groups = 8
-    teams_per_group = 6  # 48 / 8 = 6
-    n_active = n_groups * teams_per_group  # = 48
-    active_indices = all_indices[:n_active]
+    n_groups = 12
+    teams_per_group = 4
+    n_active = min(n_groups * teams_per_group, n_teams)  # = 48
+    active = all_indices[:n_active]
+    groups = [active[i * teams_per_group:(i + 1) * teams_per_group] for i in range(n_groups)]
 
-    groups = [active_indices[i*teams_per_group:(i+1)*teams_per_group] for i in range(n_groups)]
-
-    # 小组赛：每组Elo最高的2队出线
-    qualified = []
+    winners, seconds, thirds = [], [], []
     for g in groups:
-        g_elos = elo_arr[g]
-        order = np.argsort(-g_elos)
-        qualified.extend([g[order[0]], g[order[1]]])
+        if len(g) < 2:
+            continue
+        # 单循环赛：stats[idx] = [pts, gd, gf]
+        stats = {idx: [0, 0, 0] for idx in g}
+        for i in range(len(g)):
+            for j in range(i + 1, len(g)):
+                a, b = g[i], g[j]
+                ga, gb = _sim_group_match(elo_arr[a], elo_arr[b], rng)
+                sa, sb = stats[a], stats[b]
+                sa[2] += ga; sb[2] += gb
+                sa[1] += ga - gb; sb[1] += gb - ga
+                if ga > gb:
+                    sa[0] += 3
+                elif gb > ga:
+                    sb[0] += 3
+                else:
+                    sa[0] += 1; sb[0] += 1
+        # 排名：积分 → 净胜球 → 进球 → Elo（最后确定性 tiebreak）
+        ranked = sorted(g, key=lambda idx: (stats[idx][0], stats[idx][1], stats[idx][2], elo_arr[idx]), reverse=True)
+        winners.append(ranked[0])
+        seconds.append(ranked[1])
+        if len(ranked) >= 3:
+            thirds.append((ranked[2], stats[ranked[2]]))
 
-    # 淘汰赛：16→8→4→2→1
-    # 抽签决定对阵（用传入的 rng，避免重复 seed）
-    knockout = qualified[:]
+    # 12 个第三名取最好的 8 个
+    thirds_ranked = sorted(thirds, key=lambda t: (t[1][0], t[1][1], t[1][2], elo_arr[t[0]]), reverse=True)
+    best_thirds = [t[0] for t in thirds_ranked[:8]]
+
+    # 32 强淘汰赛
+    knockout = winners + seconds + best_thirds
+    rng.shuffle(knockout)
     while len(knockout) > 1:
-        # 洗牌
-        rng.shuffle(knockout)
         next_round = []
-        for i in range(0, len(knockout), 2):
-            a, b = knockout[i], knockout[i+1]
-            # Bradley-Terry 胜率
-            s_a = elo_arr[a]
-            s_b = elo_arr[b]
-            # 添加淘汰赛随机性（0.8-1.2 缩放）
-            scale = rng.uniform(0.7, 1.3)
-            prob_a = 1.0 / (1.0 + np.exp(-(s_a - s_b) / 80 * scale))
-            winner = a if rng.random() < prob_a else b
-            next_round.append(winner)
+        for i in range(0, len(knockout) - 1, 2):
+            next_round.append(_ko_winner(knockout[i], knockout[i + 1], elo_arr, rng))
+        if len(knockout) % 2 == 1:
+            next_round.append(knockout[-1])  # 落单轮空
         knockout = next_round
 
     return knockout[0]

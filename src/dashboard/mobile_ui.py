@@ -14,7 +14,9 @@ import socketserver
 import os
 import sys
 import json
+import time
 import random
+import threading
 from datetime import datetime
 
 # ── 项目路径 ───────────────────────────────────────────────────────────
@@ -30,6 +32,14 @@ from src.models.ucl_final_mentality import (
 )
 from scripts.elo_scraper import load_elo_cache
 from scripts.ingest_wikipedia_squads import normalize_position
+from scripts.fixtures_fetcher import load_fixtures, fetch_and_save, start_refresh_daemon
+from scripts.live_scores_provider import LiveScoresProvider
+try:
+    from scripts.realtime_predictor import adjust_champion_probs, predict_match, CACHE as REALTIME_CACHE
+    _RT_AVAILABLE = True
+except Exception as _e:
+    _RT_AVAILABLE = False
+    REALTIME_CACHE = os.path.join(ROOT, "data", "realtime_cache.json")
 
 RANDOM_SEED = 42
 random.seed(RANDOM_SEED)
@@ -37,6 +47,8 @@ random.seed(RANDOM_SEED)
 # ── 常量 ───────────────────────────────────────────────────────────────
 WIKI_DATA = os.path.join(ROOT, "data", "wc2026_players_processed.json")
 ELO_CACHE = os.path.join(ROOT, "data", "elo_cache_2026.json")
+FIXTURES_CACHE = os.path.join(ROOT, "data", "wc2026_fixtures.json")
+FINAL_PRED = os.path.join(ROOT, "data", "wc2026_prediction_final.json")
 
 QUALIFIED_TEAMS = [
     "Argentina", "Brazil", "Uruguay", "Colombia", "Ecuador", "Paraguay",
@@ -710,6 +722,62 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:"Inter",-
 .pm-sum-val{font-weight:700;font-size:12px;flex-shrink:0}
 .pm-sum-lbl{color:var(--tx2)}
 .pm-sum-empty{font-size:13px;color:var(--tx2);padding:4px 0}
+/* Fixtures */
+.fx-tabs{display:flex;gap:4px;margin-bottom:14px;background:var(--s2);padding:4px;border-radius:10px}
+.fx-tab{flex:1;text-align:center;padding:9px 0;font-size:12px;font-weight:700;color:var(--tx2);border-radius:8px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all 0.15s}
+.fx-tab.on{background:var(--bl);color:#fff}
+.fx-day-grp{margin-bottom:18px}
+.fx-day-hd{font-size:11px;font-weight:800;color:var(--gd);margin-bottom:8px;padding-bottom:4px;border-bottom:0.5px solid var(--bd);text-transform:uppercase;letter-spacing:0.8px}
+.fx-day-hd.today{color:var(--rd)}
+.fx-day-hd.group{color:var(--bl)}
+.fx-match{background:var(--s2);border-radius:12px;padding:11px 13px;margin-bottom:7px;border:0.5px solid var(--bd)}
+.fx-match.live{border-color:var(--rd);background:rgba(255,69,58,0.06)}
+.fx-meta{display:flex;justify-content:space-between;font-size:9px;color:var(--tx2);margin-bottom:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
+.fx-meta-grp{color:var(--bl)}
+.fx-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
+.fx-team{display:flex;align-items:center;gap:7px;min-width:0}
+.fx-team.away{justify-content:flex-end}
+.fx-team-fl{font-size:10px;font-weight:800;color:var(--tx2);background:var(--bd);padding:3px 6px;border-radius:5px;flex-shrink:0;letter-spacing:0.5px}
+.fx-team-nm{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.fx-score{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--tx);min-width:60px;text-align:center;padding:0 6px;line-height:1}
+.fx-score.ns{color:var(--tx3);font-size:13px;font-weight:600}
+.fx-score.live{color:var(--rd)}
+.fx-ft{display:flex;justify-content:space-between;font-size:10px;margin-top:7px;color:var(--tx2);font-weight:600}
+.fx-status.live{color:var(--rd);font-weight:800}
+.fx-status.live::before{content:"● ";animation:fxpulse 1.5s infinite}
+@keyframes fxpulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.fx-empty{text-align:center;padding:32px 16px;color:var(--tx2);font-size:13px;background:var(--s2);border-radius:12px;margin-bottom:12px;line-height:1.7}
+/* Standings */
+.st-grp{margin-bottom:16px}
+.st-hd{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:800;color:var(--bl);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.6px}
+.st-prog{font-size:9px;color:var(--tx2);font-weight:600}
+.st-tbl{background:var(--s2);border-radius:10px;overflow:hidden}
+.st-thr,.st-row{display:grid;grid-template-columns:16px 1fr 18px 16px 16px 16px 26px 26px;align-items:center;gap:2px;padding:7px 7px}
+.st-thr{font-size:8px;color:var(--tx2);font-weight:700;background:rgba(255,255,255,0.03)}
+.st-row{border-top:0.5px solid var(--bd);font-size:11px}
+.st-row.z1,.st-row.z2{background:rgba(48,209,88,0.08)}
+.st-row.z3{background:rgba(255,214,10,0.07)}
+.st-row.z4{background:rgba(255,69,58,0.05)}
+.st-pos{font-weight:800;color:var(--tx2);text-align:center}
+.st-tm{display:flex;align-items:center;gap:5px;min-width:0}
+.st-tm-fl{font-size:9px;font-weight:800;color:var(--tx2);background:var(--bd);padding:2px 4px;border-radius:4px;flex-shrink:0}
+.st-tm-nm{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st-q{font-size:9px;flex-shrink:0}
+.st-n{text-align:center;font-variant-numeric:tabular-nums;color:var(--tx2)}
+.st-pts{text-align:center;font-weight:800;color:var(--tx);font-variant-numeric:tabular-nums}
+.st-third-row{display:flex;align-items:center;gap:8px;padding:7px 9px;border-top:0.5px solid var(--bd);font-size:12px}
+.st-third-row.in{background:rgba(48,209,88,0.08)}
+.st-third-rk{width:20px;font-weight:800;color:var(--tx2);text-align:center;flex-shrink:0}
+.st-third-nm{flex:1;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st-third-st{font-size:11px;font-weight:700;flex-shrink:0}
+.st-legend{display:flex;flex-wrap:wrap;gap:10px;font-size:10px;color:var(--tx2);margin:4px 0 14px;padding:0 2px}
+.st-legend span{display:flex;align-items:center;gap:4px}
+.st-dot{width:9px;height:9px;border-radius:2px;flex-shrink:0}
+/* 实时冠军卡片 */
+.fin-row{display:flex;align-items:center;padding:11px 0;border-bottom:0.5px solid var(--bd);gap:10px;cursor:pointer}
+.fin-row:last-child{border-bottom:none}
+.fin-fact{display:none;font-size:11px;color:var(--gd);margin-top:7px;line-height:1.7;background:rgba(255,214,10,0.06);border-radius:8px;padding:8px 10px}
+.fin-fact.on{display:block}
 </style>
 </head>
 <body>
@@ -725,13 +793,19 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:"Inter",-
   <button class="tab" id="tb-h2h" onclick="showTab('h2h')"><span class="ico"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 11H10M10 11L7 8M10 11L7 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 11H12M12 11L15 8M12 11L15 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>对战</span></button>
   <button class="tab" id="tb-squad" onclick="showTab('squad')"><span class="ico"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="7" cy="5.5" r="2.5" stroke="currentColor" stroke-width="1.6"/><path d="M2 17.5C2 14.4624 4.23858 12 7 12H7C9.76142 12 12 14.4624 12 17.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="15" cy="5.5" r="2.5" stroke="currentColor" stroke-width="1.6"/><path d="M10 17.5C10 14.4624 12.2386 12 15 12H15C17.7614 12 20 14.4624 20 17.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><span>球队</span></button>
   <button class="tab" id="tb-poly" onclick="showTab('poly')"><span class="ico"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M3 17L8 10L13 14L19 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="19" cy="5" r="2" stroke="currentColor" stroke-width="1.6"/></svg></span><span>市场</span></button>
+  <button class="tab" id="tb-fixtures" onclick="showTab('fixtures')"><span class="ico"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="5" width="16" height="14" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M3 9H19" stroke="currentColor" stroke-width="1.6"/><path d="M7 3V7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M15 3V7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><span>赛程</span></button>
   <button class="tab" id="tb-info" onclick="showTab('info')"><span class="ico"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="8.5" stroke="currentColor" stroke-width="1.6"/><path d="M11 10V16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="11" cy="6.5" r="0.9" fill="currentColor"/></svg></span><span>说明</span></button>
 </div>
 
 <!-- TAB: Champion -->
 <div class="pg on" id="pg-home">
+  <div class="card" id="final-card" style="border-color:var(--gd)">
+    <div class="card-title" style="color:var(--gd)">🎯 最精准预测 / Market-Calibrated — 市场共识 + 数据模型融合</div>
+    <div class="lb" id="finlb"></div>
+    <div id="fin-note" style="font-size:10px;color:var(--tx2);margin-top:10px;line-height:1.6"></div>
+  </div>
   <div class="card">
-    <div class="card-title">冠军概率 / Champion Prob</div>
+    <div class="card-title">玄学引擎榜 / Mystic Engine</div>
     <div class="lb" id="lb"></div>
   </div>
 </div>
@@ -844,6 +918,21 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:"Inter",-
   </div>
 </div>
 
+<!-- TAB: Fixtures -->
+<div class="pg" id="pg-fixtures">
+  <div class="card">
+    <div class="card-title">赛程比分 / Fixtures &amp; Live Scores</div>
+    <div class="fx-tabs">
+      <div class="fx-tab on" data-fxv="today" onclick="switchFxView('today')">今日</div>
+      <div class="fx-tab" data-fxv="upcoming" onclick="switchFxView('upcoming')">未来 7 天</div>
+      <div class="fx-tab" data-fxv="standings" onclick="switchFxView('standings')">积分榜</div>
+      <div class="fx-tab" data-fxv="all" onclick="switchFxView('all')">全部</div>
+    </div>
+    <div id="fx-body"></div>
+    <div id="fx-upd" style="text-align:center;font-size:10px;color:var(--tx2);margin-top:14px"></div>
+  </div>
+</div>
+
 <!-- TAB: Info -->
 <div class="pg" id="pg-info">
   <div class="info-sec">
@@ -906,15 +995,48 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:"Inter",-
 <script>
 var D=__DATA__;
 var U=__UCL__;
+var F=__FIXTURES__;
+var FN=__FINAL__;
+var RT=__REALTIME__;
 var FL={"Argentina":"AR","Brazil":"BR","France":"FR","Germany":"DE","Spain":"ES","England":"EN","Portugal":"PT","Netherlands":"NL","Belgium":"BE","Croatia":"HR","Switzerland":"CH","Austria":"AT","Czech Republic":"CZ","Turkey":"TR","Sweden":"SE","Morocco":"MA","Senegal":"SN","Egypt":"EG","Algeria":"DZ","Ghana":"GH","Ivory Coast":"CI","Tunisia":"TN","DR Congo":"CD","Cape Verde":"CV","Japan":"JP","South Korea":"KR","Iran":"IR","Iraq":"IQ","Qatar":"QA","Saudi Arabia":"SA","Australia":"AU","Uzbekistan":"UZ","Jordan":"JO","USA":"US","Mexico":"MX","Canada":"CA","Panama":"PA","Curaçao":"CW","Haiti":"HT","New Zealand":"NZ","Ecuador":"EC","Paraguay":"PY","Colombia":"CO","Uruguay":"UY","Norway":"NO","South Africa":"ZA","Bosnia and Herzegovina":"BA","Scotland":"XS"};
 function fl(c){return FL[c]||"--";}
 function pc(p){return p>15?"var(--bl)":p>5?"var(--gr)":"var(--tx2)";}
 function st(s){return s>0?"+"+s.toFixed(2)+"%":s<0?s.toFixed(2)+"%":"--";}
 function sc(s){return s>0?"var(--gr)":s<0?"var(--rd)":"var(--tx2)";}
-function showTab(n){document.querySelectorAll(".pg").forEach(function(p){p.classList.remove("on");});document.querySelectorAll(".tab").forEach(function(t){t.classList.remove("on");});document.getElementById("pg-"+n).classList.add("on");document.getElementById("tb-"+n).classList.add("on");}
+function showTab(n){document.querySelectorAll(".pg").forEach(function(p){p.classList.remove("on");});document.querySelectorAll(".tab").forEach(function(t){t.classList.remove("on");});document.getElementById("pg-"+n).classList.add("on");document.getElementById("tb-"+n).classList.add("on");if(n==="fixtures")buildFixtures();}
 
 /* ── Leaderboard ── */
 function buildLB(){var s=D.slice().sort(function(a,b){return b.final_prob-a.final_prob;});var h="";for(var i=0;i<s.length;i++){var t=s[i],r=i+1,rc=r<=3?"t"+r:"";var pct=(t.final_prob*100).toFixed(2),pctCls=t.final_prob>0.15?" vh":"";var sh=t.shift||0;h+='<div class="lb-r"><div class="lb-rk '+rc+'">'+r+'</div><div class="lb-fl">'+fl(t.country)+'</div><div class="lb-inf"><div class="lb-nm">'+t.country+'</div><div class="lb-el">Elo '+(t.elo||0).toFixed(0)+'</div><div class="pb"><div class="pb-fi" style="width:'+pct+'%;background:'+pc(t.final_prob*100)+'"></div></div></div><div class="lb-pr"><div class="lb-pct'+pctCls+'">'+pct+'%</div><div class="lb-sh" style="color:'+sc(sh)+'">'+st(sh)+'</div></div></div>';}document.getElementById("lb").innerHTML=h;}
+
+/* ── 最精准预测（市场校准 + grok 实时动态）── */
+function buildFinal(){
+  var card=document.getElementById("final-card");
+  var rt=RT,teams,summary="",updated="",isRT=false;
+  if(rt&&rt.teams&&rt.teams.length){teams=rt.teams;summary=rt.summary||"";updated=rt.updated||"";isRT=true;}
+  else{var f=(FN&&FN.teams)||[];if(f.length===0){if(card)card.style.display="none";return;}
+    teams=f.map(function(t){return{country:t.country,champion:t.champion,base:(t.market!=null?t.market:t.model),delta:0,factors:[]};});}
+  var h="";
+  for(var i=0;i<Math.min(14,teams.length);i++){
+    var t=teams[i],r=i+1,rc=r<=3?"t"+r:"";
+    var pct=(t.champion*100).toFixed(1),dv=t.delta||0;
+    var dstr=Math.abs(dv)>=0.0005?((dv>0?"▲":"▼")+(Math.abs(dv)*100).toFixed(1)):"";
+    var dcol=dv>0?"var(--gr)":dv<0?"var(--rd)":"var(--tx2)";
+    var facts=(t.factors||[]);
+    var ff=facts.length?('<div class="fin-fact">'+facts.map(function(x){return "· "+x;}).join("<br>")+'</div>'):"";
+    h+='<div class="fin-row" onclick="var d=this.querySelector(\'.fin-fact\');if(d)d.classList.toggle(\'on\')">';
+    h+='<div class="lb-rk '+rc+'">'+r+'</div><div class="lb-fl">'+fl(t.country)+'</div>';
+    h+='<div class="lb-inf"><div class="lb-nm">'+t.country+(facts.length?' <span style="color:var(--tx3);font-size:10px">▾</span>':'')+'</div>';
+    h+='<div class="pb"><div class="pb-fi" style="width:'+Math.min(100,pct*4.5)+'%;background:var(--gd)"></div></div>'+ff+'</div>';
+    h+='<div class="lb-pr"><div class="lb-pct vh" style="color:var(--gd)">'+pct+'%</div><div class="lb-sh" style="color:'+dcol+'">'+dstr+'</div></div></div>';
+  }
+  document.getElementById("finlb").innerHTML=h;
+  var note=document.getElementById("fin-note");
+  if(note){
+    if(isRT)note.innerHTML='<b style="color:var(--gd)">🔴 实时研判</b>（grok 联网综合伤病/状态/赔率）: '+summary+'<br>更新 '+updated+' · 点击球队展开实时因子 · 数据模型+市场+grok实时 三层融合';
+    else note.innerHTML="市场共识 + 数据模型融合（实时层加载中，几分钟后自动刷新）。截至 "+((FN&&FN.as_of)||"2026-06-08");
+  }
+}
+function refreshRealtime(){fetch("/api/realtime",{cache:"no-store"}).then(function(r){return r.json();}).then(function(d){if(d&&d.teams&&d.teams.length){RT=d;buildFinal();}}).catch(function(){});}
 
 /* ── Factor Breakdown ── */
 function toggleFB(el){var d=el.querySelector(".fb-expanded");if(d)d.classList.toggle("on");}
@@ -1321,9 +1443,234 @@ function buildPoly(){
 
 var _pickerSide=null;function openPicker(side){_pickerSide=side;var t=side==="a"?"Team A / 球队A":"Team B / 球队B";document.getElementById("pick-title").textContent=t;document.getElementById("pick-search").value="";filterPickList();document.getElementById("pick-overlay").classList.add("on");document.body.style.overflow="hidden"}function closePicker(e){if(e&&e.target!==document.getElementById("pick-overlay"))return;document.getElementById("pick-overlay").classList.remove("on");document.body.style.overflow=""}function filterPickList(){var q=document.getElementById("pick-search").value.toLowerCase();var list=document.getElementById("pick-list");var curVal=_pickerSide==="a"?document.getElementById("h2h-a").value:document.getElementById("h2h-b").value;var html="";for(var i=0;i<D.length;i++){var t=D[i];if(t.country.toLowerCase().indexOf(q)===-1&&fl(t.country).toLowerCase().indexOf(q)===-1)continue;var isSel=t.country===curVal;html+="<div class=\"pick-item"+(isSel?" sel":"")+"\" onclick=\"selectPick(\'"+t.country+"\')\">";html+="<span class=\"pick-item-fl\">"+fl(t.country)+"</span>";html+="<span class=\"pick-item-info\"><span class=\"pick-item-nm\">"+t.country+"</span>";html+="<span class=\"pick-item-pr\">"+(t.final_prob*100).toFixed(2)+"%</span></span>";html+="<span class=\"pick-item-chk\">&#10003;</span></div>"}list.innerHTML=html||"<div style=\"padding:24px;text-align:center;color:var(--tx2);font-size:14px\">No result</div>"}function selectPick(country){if(_pickerSide==="a"){document.getElementById("h2h-a").value=country;updatePickCard("a",country)}else{document.getElementById("h2h-b").value=country;updatePickCard("b",country)}closePicker();h2hChange()}function updatePickCard(side,country){var t=D.find(function(x){return x.country===country;});if(!t)return;document.getElementById("h2h-pick-fl-"+side).textContent=fl(t.country);document.getElementById("h2h-pick-nm-"+side).textContent=t.country;document.getElementById("h2h-pick-pr-"+side).textContent=(t.final_prob*100).toFixed(2)+"%"}
 
+/* ── Fixtures ── */
+var FL_ALIAS={"Bosnia & Herzegovina":"Bosnia and Herzegovina","Korea Republic":"South Korea","IR Iran":"Iran","Côte d'Ivoire":"Ivory Coast","DR of the Congo":"DR Congo"};
+function flFx(c){if(!c)return"--";if(FL[c])return FL[c];var a=FL_ALIAS[c];if(a&&FL[a])return FL[a];return"--";}
+function _isPlaceholderTeam(n){return /^[WL]\d+$/.test(n||"");}
+function _normTeam(s){return (s||"").toLowerCase().replace(/&/g,"and").replace(/\s+/g," ").trim();}
+function _todayStr(){var d=new Date();var y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),da=String(d.getDate()).padStart(2,"0");return y+"-"+m+"-"+da;}
+function _addDays(s,n){var d=new Date(s+"T00:00:00");d.setDate(d.getDate()+n);var y=d.getFullYear(),mo=String(d.getMonth()+1).padStart(2,"0"),da=String(d.getDate()).padStart(2,"0");return y+"-"+mo+"-"+da;}
+function _isLive(st){if(!st)return false;var s=st.toUpperCase();return s.indexOf("LIVE")>=0||s==="1H"||s==="2H"||s==="HT"||s==="ET"||s==="P"||s==="IN_PLAY"||s==="PAUSED";}
+function _isFinished(st){if(!st)return false;var s=st.toUpperCase();return s.indexOf("FINISH")>=0||s==="FT"||s==="AET"||s==="PEN";}
+
+var _liveScores=[];
+var _fxView="today";
+
+function _matchScore(m){
+  if(!_liveScores||_liveScores.length===0)return null;
+  var t1=_normTeam(m.team1),t2=_normTeam(m.team2);
+  for(var i=0;i<_liveScores.length;i++){
+    var s=_liveScores[i];if(s.date!==m.date)continue;
+    var h=_normTeam(s.team_home),a=_normTeam(s.team_away);
+    if((h===t1&&a===t2)||(h===t2&&a===t1))return s;
+  }
+  return null;
+}
+
+function renderMatch(m){
+  var s=_matchScore(m);
+  var live=s&&_isLive(s.status);
+  var finished=s&&_isFinished(s.status);
+  var sh=s?s.score_home:null,sa=s?s.score_away:null;
+  var sc;
+  if(sh!=null&&sa!=null){sc='<div class="fx-score'+(live?" live":"")+'">'+sh+' – '+sa+'</div>';}
+  else{sc='<div class="fx-score ns">'+(m.time?m.time.substring(0,5):"-")+'</div>';}
+  var fl1=_isPlaceholderTeam(m.team1)?"?":flFx(m.team1);
+  var fl2=_isPlaceholderTeam(m.team2)?"?":flFx(m.team2);
+  var rightLbl;
+  if(live)rightLbl='<span class="fx-status live">'+(s.minute||s.status)+'</span>';
+  else if(finished)rightLbl='<span class="fx-status">FT</span>';
+  else rightLbl='<span>'+(m.time||"")+'</span>';
+  return '<div class="fx-match'+(live?" live":"")+'">'+
+    '<div class="fx-meta"><span class="fx-meta-grp">'+(m.group||m.round||"")+'</span><span>'+(m.ground||"")+'</span></div>'+
+    '<div class="fx-row">'+
+    '<div class="fx-team"><span class="fx-team-fl">'+fl1+'</span><span class="fx-team-nm">'+m.team1+'</span></div>'+
+    sc+
+    '<div class="fx-team away"><span class="fx-team-nm">'+m.team2+'</span><span class="fx-team-fl">'+fl2+'</span></div>'+
+    '</div>'+
+    '<div class="fx-ft">'+rightLbl+'<span>'+(m.round||"")+'</span></div>'+
+    '</div>';
+}
+
+function renderDayGroup(date,matches,cls){
+  if(!matches||matches.length===0)return"";
+  var lbl=date+(cls==="today"?" · 今日":"");
+  var h='<div class="fx-day-grp"><div class="fx-day-hd '+(cls||"")+'">'+lbl+'</div>';
+  matches.forEach(function(m){h+=renderMatch(m);});
+  return h+'</div>';
+}
+
+/* ── Standings (Plan B) ── */
+function _resolveResult(m){
+  // 返回 [g1,g2]（对齐 team1/team2 视角）或 null
+  if(m.score&&m.score.ft&&m.score.ft.length===2&&m.score.ft[0]!=null&&m.score.ft[1]!=null){
+    return [m.score.ft[0],m.score.ft[1]];
+  }
+  var s=_matchScore(m);
+  if(s&&_isFinished(s.status)&&s.score_home!=null&&s.score_away!=null){
+    var t1=_normTeam(m.team1),t2=_normTeam(m.team2);
+    var h=_normTeam(s.team_home),a=_normTeam(s.team_away);
+    if(h===t1&&a===t2)return [s.score_home,s.score_away];
+    if(h===t2&&a===t1)return [s.score_away,s.score_home];
+  }
+  return null;
+}
+function _cmpStanding(a,b){
+  if(b.Pts!==a.Pts)return b.Pts-a.Pts;
+  if(b.GD!==a.GD)return b.GD-a.GD;
+  if(b.GF!==a.GF)return b.GF-a.GF;
+  return a.team<b.team?-1:1;
+}
+function computeStandings(){
+  var matches=(F&&F.matches)||[];
+  var groups={},order=[];
+  matches.forEach(function(m){
+    if(!m.group)return; // 仅小组赛
+    var g=m.group;
+    if(!groups[g]){groups[g]={};order.push(g);}
+    [m.team1,m.team2].forEach(function(t){
+      if(_isPlaceholderTeam(t))return;
+      if(!groups[g][t])groups[g][t]={team:t,P:0,W:0,D:0,L:0,GF:0,GA:0,Pts:0};
+    });
+    var r=_resolveResult(m);
+    if(r==null)return;
+    var a=groups[g][m.team1],b=groups[g][m.team2];
+    if(!a||!b)return;
+    a.P++;b.P++;a.GF+=r[0];a.GA+=r[1];b.GF+=r[1];b.GA+=r[0];
+    if(r[0]>r[1]){a.W++;b.L++;a.Pts+=3;}
+    else if(r[0]<r[1]){b.W++;a.L++;b.Pts+=3;}
+    else{a.D++;b.D++;a.Pts++;b.Pts++;}
+  });
+  order.sort();
+  var out=[];
+  order.forEach(function(g){
+    var arr=Object.keys(groups[g]).map(function(k){var s=groups[g][k];s.GD=s.GF-s.GA;return s;});
+    arr.sort(_cmpStanding);
+    out.push({group:g,rows:arr});
+  });
+  return out;
+}
+function _bestThirds(standings){
+  var thirds=[];
+  standings.forEach(function(grp){if(grp.rows.length>=3)thirds.push({group:grp.group,s:grp.rows[2]});});
+  thirds.sort(function(x,y){return _cmpStanding(x.s,y.s);});
+  return thirds;
+}
+function renderStandings(){
+  var standings=computeStandings();
+  if(standings.length===0)return '<div class="fx-empty">暂无小组赛程数据</div>';
+  var totalPlayed=0;
+  standings.forEach(function(g){g.rows.forEach(function(r){totalPlayed+=r.P;});});
+  totalPlayed=Math.floor(totalPlayed/2);
+  var thirds=_bestThirds(standings);
+  var bestSet={};for(var i=0;i<Math.min(8,thirds.length);i++){bestSet[thirds[i].s.team]=true;}
+  var h="";
+  h+='<div class="st-legend"><span><span class="st-dot" style="background:rgba(48,209,88,.6)"></span>前2出线</span><span><span class="st-dot" style="background:rgba(255,214,10,.6)"></span>第3名待定</span><span><span class="st-dot" style="background:rgba(255,69,58,.5)"></span>第4淘汰</span></div>';
+  standings.forEach(function(grp){
+    var played=0;grp.rows.forEach(function(r){played+=r.P;});played=Math.floor(played/2);
+    h+='<div class="st-grp"><div class="st-hd"><span>'+grp.group+'</span><span class="st-prog">'+played+'/6 场</span></div>';
+    h+='<div class="st-tbl"><div class="st-thr"><span class="st-pos">#</span><span>队</span><span class="st-n">场</span><span class="st-n">胜</span><span class="st-n">平</span><span class="st-n">负</span><span class="st-n">净</span><span class="st-n">分</span></div>';
+    grp.rows.forEach(function(r,idx){
+      var pos=idx+1,zone="z"+Math.min(4,pos);
+      var q="";
+      if(pos<=2)q='<span class="st-q" style="color:var(--gr)">✓</span>';
+      else if(pos===3)q=bestSet[r.team]?'<span class="st-q" style="color:var(--gr)">✓③</span>':'<span class="st-q" style="color:var(--tx3)">③</span>';
+      var gd=(r.GD>0?"+":"")+r.GD;
+      h+='<div class="st-row '+zone+'"><span class="st-pos">'+pos+'</span><span class="st-tm"><span class="st-tm-fl">'+flFx(r.team)+'</span><span class="st-tm-nm">'+r.team+'</span>'+q+'</span><span class="st-n">'+r.P+'</span><span class="st-n">'+r.W+'</span><span class="st-n">'+r.D+'</span><span class="st-n">'+r.L+'</span><span class="st-n">'+gd+'</span><span class="st-pts">'+r.Pts+'</span></div>';
+    });
+    h+='</div></div>';
+  });
+  if(totalPlayed>0&&thirds.length>0){
+    h+='<div class="st-grp"><div class="st-hd"><span style="color:var(--gd)">最佳第三名 / Best 3rd</span><span class="st-prog">前 8 出线</span></div><div class="st-tbl">';
+    thirds.forEach(function(t,i){
+      var inq=i<8;
+      h+='<div class="st-third-row'+(inq?" in":"")+'"><span class="st-third-rk">'+(i+1)+'</span><span class="st-tm-fl">'+flFx(t.s.team)+'</span><span class="st-third-nm">'+t.s.team+' <span style="color:var(--tx2);font-size:10px">('+t.group+')</span></span><span class="st-third-st" style="color:'+(inq?"var(--gr)":"var(--tx3)")+'">'+(inq?"✓ 出线":"出局")+' · '+t.s.Pts+'分</span></div>';
+    });
+    h+='</div></div>';
+  }else{
+    h+='<div class="fx-empty" style="padding:18px">最佳第三名排名将在小组赛开始后显示</div>';
+  }
+  return h;
+}
+
+function buildFixtures(){
+  var body=document.getElementById("fx-body");
+  var updEl=document.getElementById("fx-upd");
+  if(updEl)updEl.textContent="数据: openfootball + TheSportsDB · 进行中比赛每 2s 刷新";
+  if(_fxView==="standings"){body.innerHTML=renderStandings();return;}
+  var matches=(F&&F.matches)||[];
+  var today=_todayStr();
+  var html="";
+  if(_fxView==="today"){
+    var todayM=matches.filter(function(m){return m.date===today;});
+    if(todayM.length>0){html=renderDayGroup(today,todayM,"today");}
+    else{
+      var future=matches.filter(function(m){return m.date>today;}).sort(function(a,b){return a.date<b.date?-1:1;});
+      var nextDate=future.length>0?future[0].date:null;
+      html='<div class="fx-empty">📅 今日无比赛'+(nextDate?'<br><br>下一比赛日<br><b style="color:var(--gd);font-size:15px">'+nextDate+'</b>':"")+'</div>';
+      if(nextDate){var nextM=matches.filter(function(m){return m.date===nextDate;});html+=renderDayGroup(nextDate,nextM);}
+    }
+  }else if(_fxView==="upcoming"){
+    var endDate=_addDays(today,7);
+    var upcoming=matches.filter(function(m){return m.date>=today&&m.date<=endDate;});
+    var byDate={};
+    upcoming.forEach(function(m){if(!byDate[m.date])byDate[m.date]=[];byDate[m.date].push(m);});
+    var dates=Object.keys(byDate).sort();
+    if(dates.length===0)html='<div class="fx-empty">未来 7 天无比赛</div>';
+    else dates.forEach(function(d){html+=renderDayGroup(d,byDate[d],d===today?"today":"");});
+  }else{
+    var byGroup={};var groupOrder=[];
+    matches.forEach(function(m){
+      var k=m.group||m.round||"Other";
+      if(!byGroup[k]){byGroup[k]=[];groupOrder.push(k);}
+      byGroup[k].push(m);
+    });
+    groupOrder.sort();
+    groupOrder.forEach(function(k){
+      byGroup[k].sort(function(a,b){return a.date<b.date?-1:1;});
+      html+='<div class="fx-day-grp"><div class="fx-day-hd group">'+k+'</div>';
+      byGroup[k].forEach(function(m){html+=renderMatch(m);});
+      html+='</div>';
+    });
+  }
+  body.innerHTML=html;
+}
+
+function switchFxView(v){_fxView=v;document.querySelectorAll(".fx-tab").forEach(function(t){t.classList.toggle("on",t.dataset.fxv===v);});buildFixtures();}
+
+function fetchLiveScores(){
+  return fetch("/api/live_scores",{cache:"no-store"}).then(function(r){return r.json();}).then(function(d){
+    _liveScores=(d&&d.scores)||[];
+    if(document.getElementById("pg-fixtures").classList.contains("on"))buildFixtures();
+  }).catch(function(e){console.warn("live scores fetch failed",e);});
+}
+
+function refreshFixtures(){
+  return fetch("/api/fixtures",{cache:"no-store"}).then(function(r){return r.json();}).then(function(d){
+    if(d&&d.matches){F=d;if(document.getElementById("pg-fixtures").classList.contains("on"))buildFixtures();}
+  }).catch(function(e){console.warn("fixtures refresh failed",e);});
+}
+
+/* 自适应轮询节奏：有 live 比赛 2s / 当日有未开赛 30s / 空闲 300s */
+var _pollTimer=null;
+function _nextPollDelay(){
+  for(var i=0;i<_liveScores.length;i++){if(_isLive(_liveScores[i].status))return 2000;}
+  var today=_todayStr();
+  var matches=(F&&F.matches)||[];
+  for(var j=0;j<matches.length;j++){if(matches[j].date===today)return 30000;}
+  return 300000;
+}
+function pollLoop(){
+  fetchLiveScores().then(function(){
+    clearTimeout(_pollTimer);
+    _pollTimer=setTimeout(pollLoop,_nextPollDelay());
+  });
+}
+
 /* ── Init ── */
 document.getElementById("upd").textContent="__UPDATE_TIME__";
 document.getElementById("infTime").textContent="__UPDATE_TIME__";
+buildFinal();
 buildLB();
 buildFB();
 buildML();
@@ -1347,27 +1694,155 @@ h2hChange();
 var sel=document.getElementById("sq-sel");
 for(var i=0;i<teams.length;i++){var opt=document.createElement("option");opt.value=teams[i].country;opt.textContent=fl(teams[i].country)+" "+teams[i].country+" "+(teams[i].final_prob*100).toFixed(1)+"%";sel.appendChild(opt);}
 if(teams.length>0){sel.value=teams[0].country;sqChange();}
+// Fixtures: 首屏渲染 + 自适应实时比分轮询 + 赛程定时刷新
+buildFixtures();
+pollLoop();
+setInterval(refreshFixtures,300000);
+// 实时冠军调整：每 10 分钟拉一次 grok 实时层
+refreshRealtime();
+setInterval(refreshRealtime,600000);
 </script>
 </body>
 </html>
 '''
 
 
+def _load_fixtures():
+    """加载赛程缓存；不存在则自动拉取 openfootball"""
+    cached = load_fixtures(FIXTURES_CACHE)
+    if cached is None:
+        print("📥 首次启动，拉取 openfootball 2026 赛程...")
+        cached = fetch_and_save(FIXTURES_CACHE)
+    if cached is None:
+        return {"name": "World Cup 2026", "matches": []}
+    return cached
+
+
+def _load_final_pred():
+    """加载数据驱动+市场校准的最终预测（若存在）"""
+    if not os.path.exists(FINAL_PRED):
+        return {"teams": [], "as_of": "", "market_weight": 0}
+    with open(FINAL_PRED, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def _load_realtime():
+    """加载 grok 实时调整的冠军概率（若存在）"""
+    if not os.path.exists(REALTIME_CACHE):
+        return None
+    try:
+        with open(REALTIME_CACHE, encoding="utf-8") as f:
+            return json.load(f).get("champion")
+    except Exception:
+        return None
+
+
+def _start_realtime_daemon():
+    """后台定期用 grok 刷新实时冠军调整（带 TTL，过期才真调）。grok 慢，独立线程不阻塞 HTTP。"""
+    if not _RT_AVAILABLE:
+        return
+
+    def loop():
+        while True:
+            try:
+                adjust_champion_probs()  # 内部 TTL 6h：fresh 则跳过，不重复烧 grok
+            except Exception as e:
+                print(f"⚠️ realtime daemon: {e}")
+            time.sleep(3600)  # 每小时检查一次，配合 6h TTL
+
+    threading.Thread(target=loop, name="realtime-pred", daemon=True).start()
+
+
 def run_server(port=7862):
     """启动 HTTP 服务器 — 纯 HTML/CSS/JS，无 Gradio 依赖"""
     results, ucl_data = _load_analysis()
+    fixtures = _load_fixtures()
+    final_pred = _load_final_pred()
+    realtime = _load_realtime()
     update_time = datetime.now().strftime("%Y-%m-%d %H:%M")
 
     data_json = json.dumps(results, ensure_ascii=False)
     ucl_json = json.dumps(ucl_data, ensure_ascii=False)
+    fixtures_json = json.dumps(fixtures, ensure_ascii=False)
+    final_json = json.dumps(final_pred, ensure_ascii=False)
+    realtime_json = json.dumps(realtime, ensure_ascii=False)
 
     html = HTML_BODY
     html = html.replace("__DATA__", data_json)
     html = html.replace("__UCL__", ucl_json)
+    html = html.replace("__FIXTURES__", fixtures_json)
+    html = html.replace("__FINAL__", final_json)
+    html = html.replace("__REALTIME__", realtime_json)
     html = html.replace("__UPDATE_TIME__", update_time)
 
+    live_provider = LiveScoresProvider()
+    _start_realtime_daemon()
+
+    # daemon 刷新赛程时，原子替换内存中的最新赛程 JSON（供 /api/fixtures 用）
+    state = {"fixtures_json": fixtures_json}
+
+    def _on_fixtures_update(payload):
+        state["fixtures_json"] = json.dumps(payload, ensure_ascii=False)
+
+    start_refresh_daemon(FIXTURES_CACHE, on_update=_on_fixtures_update)
+
     class Handler(http.server.BaseHTTPRequestHandler):
+        def _send_json(self, body: bytes, status: int = 200):
+            self.send_response(status)
+            self.send_header("Content-type", "application/json; charset=utf-8")
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            self.wfile.write(body)
+
         def do_GET(self):
+            # 路由: /api/live_scores → 实时比分 JSON
+            if self.path.startswith("/api/live_scores"):
+                try:
+                    scores = live_provider.get_today_scores()
+                    self._send_json(json.dumps(
+                        {"scores": scores, "fetched_at": datetime.now().isoformat(timespec="seconds")},
+                        ensure_ascii=False,
+                    ).encode("utf-8"))
+                except Exception as e:
+                    self._send_json(json.dumps({"error": str(e), "scores": []}).encode("utf-8"), 500)
+                return
+
+            # 路由: /api/fixtures → 最新赛程（含 daemon 回填的 score.ft）
+            if self.path.startswith("/api/fixtures"):
+                self._send_json(state["fixtures_json"].encode("utf-8"))
+                return
+
+            # 路由: /api/realtime → grok 实时调整的冠军概率（前端定期刷新体现动态）
+            if self.path.startswith("/api/realtime"):
+                rt = _load_realtime()
+                self._send_json(json.dumps(rt, ensure_ascii=False).encode("utf-8"))
+                return
+
+            # 路由: /api/match_pred?home=X&away=Y → grok 单场实时预测（带缓存）
+            if self.path.startswith("/api/match_pred"):
+                try:
+                    from urllib.parse import urlparse, parse_qs, unquote
+                    q = parse_qs(urlparse(self.path).query)
+                    home = unquote(q.get("home", [""])[0])
+                    away = unquote(q.get("away", [""])[0])
+                    if not _RT_AVAILABLE or not home or not away:
+                        self._send_json(b'{"error":"unavailable"}', 503)
+                        return
+                    # 仅返回缓存；未命中则后台异步生成，前端稍后再取（不阻塞）
+                    from scripts.realtime_predictor import _load_cache, _fresh, MATCH_TTL
+                    key = f"{home}|{away}"
+                    cached = _load_cache().get("matches", {}).get(key)
+                    if _fresh(cached, MATCH_TTL):
+                        self._send_json(json.dumps(cached, ensure_ascii=False).encode("utf-8"))
+                    else:
+                        threading.Thread(target=lambda: predict_match(home, away),
+                                         daemon=True).start()
+                        self._send_json(b'{"status":"analyzing"}', 202)
+                except Exception as e:
+                    self._send_json(json.dumps({"error": str(e)}).encode("utf-8"), 500)
+                return
+
+            # 默认: 返回 HTML
             self.send_response(200)
             self.send_header("Content-type", "text/html; charset=utf-8")
             self.end_headers()
@@ -1379,7 +1854,7 @@ def run_server(port=7862):
     socketserver.TCPServer.allow_reuse_address = True
     with socketserver.TCPServer(("", port), Handler) as httpd:
         print(f"Mobile UI: http://localhost:{port}")
-        print(f"Champion | Factor | Mystic | H2H | Squad | Info")
+        print(f"Champion | Factor | Mystic | H2H | Squad | Poly | Fixtures | Info")
         httpd.serve_forever()
 
 if __name__ == "__main__":

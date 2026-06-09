@@ -1,0 +1,422 @@
+{
+  "champion": {
+    "updated": "2026-06-09 08:46",
+    "updated_ts": 1780965994.756673,
+    "summary": "巴西内马尔伤情与荷兰西蒙斯缺阵构成主要利空，西班牙亚马尔存疑微降，而阿根廷梅西恢复、法国状态火热带来小幅利好，整体调整克制以市场共识为主。",
+    "teams": [
+      {
+        "country": "Spain",
+        "champion": 0.1909234756419827,
+        "base": 0.19450363718531216,
+        "delta": -0.003580161543329463,
+        "factors": [
+          "拉明·亚马尔腿筋伤病，首战或缺席/谨慎使用",
+          "近期热身赛1-1伊拉克，整体阵容深度仍强"
+        ]
+      },
+      {
+        "country": "France",
+        "champion": 0.15030145954794386,
+        "base": 0.14308663009265987,
+        "delta": 0.007214829455283983,
+        "factors": [
+          "迈克尔·奥利塞热身赛帽子戏法，近期状态火热",
+          "阵容深度出色，埃基蒂克等伤病影响有限"
+        ]
+      },
+      {
+        "country": "Argentina",
+        "champion": 0.12694380029387148,
+        "base": 0.12152511248427314,
+        "delta": 0.005418687809598338,
+        "factors": [
+          "梅西腿筋疲劳恢复良好，已参与合练并可能热身赛出场",
+          "热身赛2-0洪都拉斯，卫冕冠军士气高"
+        ]
+      },
+      {
+        "country": "England",
+        "champion": 0.09952393943039524,
+        "base": 0.09921803409611163,
+        "delta": 0.0003059053342836099,
+        "factors": [
+          "里斯·詹姆斯腿筋伤病反复但已恢复入选大名单",
+          "热身赛取胜新西兰，整体备战平稳"
+        ]
+      },
+      {
+        "country": "Portugal",
+        "champion": 0.072104078566919,
+        "base": 0.07049992183202738,
+        "delta": 0.0016041567348916153,
+        "factors": [
+          "C罗等核心伤病已恢复，整体阵容健康",
+          "备战平稳，无重大负面因素"
+        ]
+      },
+      {
+        "country": "Brazil",
+        "champion": 0.06601077615281317,
+        "base": 0.07924166430961584,
+        "delta": -0.013230888156802664,
+        "factors": [
+          "内马尔小腿2级拉伤，缺席2-3周，首战摩洛哥存疑",
+          "罗德里戈、米利唐长期缺阵，热身赛2-1埃及"
+        ]
+      },
+      {
+        "country": "Colombia",
+        "champion": 0.05382417132460151,
+        "base": 0.0521853000923361,
+        "delta": 0.0016388712322654084,
+        "factors": [
+          "热身赛2-0约旦，近期状态积极",
+          "核心球员伤病情况稳定"
+        ]
+      },
+      {
+        "country": "Ecuador",
+        "champion": 0.03452871367993304,
+        "base": 0.03423312557710065,
+        "delta": 0.0002955881028323948,
+        "factors": [
+          "无重大核心伤病或状态异常报道",
+          "备战按部就班"
+        ]
+      },
+      {
+        "country": "Germany",
+        "champion": 0.028435411265827208,
+        "base": 0.026146560480147737,
+        "delta": 0.0022888507856794714,
+        "factors": [
+          "热身赛2-1击败美国，近期状态积极",
+          "部分球员如格纳布里缺阵但整体深度尚可"
+        ]
+      },
+      {
+        "country": "Netherlands",
+        "champion": 0.02234210885172138,
+        "base": 0.025014441366574332,
+        "delta": -0.0026723325148529514,
+        "factors": [
+          "哈维·西蒙斯 ACL 伤病缺席世界杯，创造力受损",
+          "热身赛2-1乌兹别克斯坦（10人）"
+        ]
+      },
+      {
+        "country": "Japan",
+        "champion": 0.019295457644668463,
+        "base": 0.019407756232686982,
+        "delta": -0.00011229858801851955,
+        "factors": [
+          "无显著实时利好/利空因素",
+          "备战正常"
+        ]
+      },
+      {
+        "country": "Morocco",
+        "champion": 0.01624880643761555,
+        "base": 0.01638877192982456,
+        "delta": -0.00013996549220901197,
+        "factors": [
+          "无显著实时利好/利空因素",
+          "备战正常"
+        ]
+      },
+      {
+        "country": "Mexico",
+        "champion": 0.01624880643761555,
+        "base": 0.01601139889196676,
+        "delta": 0.00023740754564878855,
+        "factors": [
+          "无显著实时利好/利空因素",
+          "备战正常"
+        ]
+      },
+      {
+        "country": "Uruguay",
+        "champion": 0.015233256035264575,
+        "base": 0.01450190674053555,
+        "delta": 0.0007313492947290251,
+        "factors": [
+          "无显著实时利好/利空因素",
+          "备战正常"
+        ]
+      },
+      {
+        "country": "Switzerland",
+        "champion": 0.013208056325023086,
+        "base": 0.013208056325023086,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "Belgium",
+        "champion": 0.01299241458910434,
+        "base": 0.01299241458910434,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "Croatia",
+        "champion": 0.012615041551246537,
+        "base": 0.012615041551246537,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "Turkey",
+        "champion": 0.010135161588180978,
+        "base": 0.010135161588180978,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "Norway",
+        "champion": 0.009110863342566944,
+        "base": 0.009110863342566944,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "Senegal",
+        "champion": 0.004258924284395199,
+        "base": 0.004258924284395199,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "Canada",
+        "champion": 0.0041511034164358265,
+        "base": 0.0041511034164358265,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "Paraguay",
+        "champion": 0.0041511034164358265,
+        "base": 0.0041511034164358265,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "Iran",
+        "champion": 0.0035041782086795937,
+        "base": 0.0035041782086795937,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "Austria",
+        "champion": 0.0030728947368421056,
+        "base": 0.0030728947368421056,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "Australia",
+        "champion": 0.002911163434903047,
+        "base": 0.002911163434903047,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "South Korea",
+        "champion": 0.002803342566943675,
+        "base": 0.002803342566943675,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "Algeria",
+        "champion": 0.0013477608494921515,
+        "base": 0.0013477608494921515,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "Panama",
+        "champion": 0.0008086565096952908,
+        "base": 0.0008086565096952908,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "Scotland",
+        "champion": 0.0006469252077562326,
+        "base": 0.0006469252077562326,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "USA",
+        "champion": 0.0006469252077562326,
+        "base": 0.0006469252077562326,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "Egypt",
+        "champion": 0.0003773730378578024,
+        "base": 0.0003773730378578024,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "Czech Republic",
+        "champion": 0.0002695521698984303,
+        "base": 0.0002695521698984303,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "Ivory Coast",
+        "champion": 0.00016173130193905815,
+        "base": 0.00016173130193905815,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "New Zealand",
+        "champion": 0.00016173130193905815,
+        "base": 0.00016173130193905815,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "DR Congo",
+        "champion": 0.00016173130193905815,
+        "base": 0.00016173130193905815,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "Uzbekistan",
+        "champion": 0.00016173130193905815,
+        "base": 0.00016173130193905815,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "Sweden",
+        "champion": 0.00010782086795937212,
+        "base": 0.00010782086795937212,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "Tunisia",
+        "champion": 0.00010782086795937212,
+        "base": 0.00010782086795937212,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "Haiti",
+        "champion": 5.391043397968606e-05,
+        "base": 5.391043397968606e-05,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "Iraq",
+        "champion": 5.391043397968606e-05,
+        "base": 5.391043397968606e-05,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "Jordan",
+        "champion": 5.391043397968606e-05,
+        "base": 5.391043397968606e-05,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "South Africa",
+        "champion": 0.0,
+        "base": 0.0,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "Bosnia & Herzegovina",
+        "champion": 0.0,
+        "base": 0.0,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "Qatar",
+        "champion": 0.0,
+        "base": 0.0,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "Curaçao",
+        "champion": 0.0,
+        "base": 0.0,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "Cape Verde",
+        "champion": 0.0,
+        "base": 0.0,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "Saudi Arabia",
+        "champion": 0.0,
+        "base": 0.0,
+        "delta": 0.0,
+        "factors": []
+      },
+      {
+        "country": "Ghana",
+        "champion": 0.0,
+        "base": 0.0,
+        "delta": 0.0,
+        "factors": []
+      }
+    ]
+  },
+  "matches": {
+    "Spain|Morocco": {
+      "home": "Spain",
+      "away": "Morocco",
+      "home_win": 0.73,
+      "draw": 0.17,
+      "away_win": 0.1,
+      "likely_scores": [
+        {
+          "score": "2-0",
+          "prob": 0.22
+        },
+        {
+          "score": "2-1",
+          "prob": 0.2
+        },
+        {
+          "score": "3-1",
+          "prob": 0.15
+        },
+        {
+          "score": "1-0",
+          "prob": 0.12
+        }
+      ],
+      "key_factors": [
+        "西班牙为世界杯最大热门，Elo评分/排名远超摩洛哥（约1979/世界第1-2 vs 1736/第8左右），近期欧冠/国家联赛状态出色；",
+        "摩洛哥防守顽强（2022世界杯经验），但进攻端依赖反击，Hakimi伤病恢复中可能影响发挥；",
+        "西班牙攻击线深度强（Rodri、Pedri等中场控制力突出），Yamal虽有伤但整体阵容占优，主场/中立场优势明显。"
+      ],
+      "summary": "西班牙实力明显占优，预计主场取胜，2-1或3-0左右。",
+      "updated": "2026-06-08 19:46",
+      "updated_ts": 1780919206.3531258
+    }
+  }
+}

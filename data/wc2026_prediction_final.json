@@ -1,0 +1,295 @@
+{
+  "as_of": "2026-06-08",
+  "method": "log-linear pool: market(A=0.70) + v2 model; tail filled by model",
+  "market_weight": 0.7,
+  "teams": [
+    {
+      "country": "Spain",
+      "champion": 0.19450363718531216,
+      "market": 0.162,
+      "model": 0.25815
+    },
+    {
+      "country": "France",
+      "champion": 0.14308663009265987,
+      "market": 0.155,
+      "model": 0.10285
+    },
+    {
+      "country": "Argentina",
+      "champion": 0.12152511248427314,
+      "market": 0.089,
+      "model": 0.21775
+    },
+    {
+      "country": "England",
+      "champion": 0.09921803409611163,
+      "market": 0.111,
+      "model": 0.06615
+    },
+    {
+      "country": "Brazil",
+      "champion": 0.07924166430961584,
+      "market": 0.089,
+      "model": 0.05235
+    },
+    {
+      "country": "Portugal",
+      "champion": 0.07049992183202738,
+      "market": 0.093,
+      "model": 0.032
+    },
+    {
+      "country": "Colombia",
+      "champion": 0.0521853000923361,
+      "market": null,
+      "model": 0.0484
+    },
+    {
+      "country": "Ecuador",
+      "champion": 0.03423312557710065,
+      "market": null,
+      "model": 0.03175
+    },
+    {
+      "country": "Germany",
+      "champion": 0.026146560480147737,
+      "market": null,
+      "model": 0.02425
+    },
+    {
+      "country": "Netherlands",
+      "champion": 0.025014441366574332,
+      "market": null,
+      "model": 0.0232
+    },
+    {
+      "country": "Japan",
+      "champion": 0.019407756232686982,
+      "market": null,
+      "model": 0.018
+    },
+    {
+      "country": "Morocco",
+      "champion": 0.01638877192982456,
+      "market": null,
+      "model": 0.0152
+    },
+    {
+      "country": "Mexico",
+      "champion": 0.01601139889196676,
+      "market": null,
+      "model": 0.01485
+    },
+    {
+      "country": "Uruguay",
+      "champion": 0.01450190674053555,
+      "market": null,
+      "model": 0.01345
+    },
+    {
+      "country": "Switzerland",
+      "champion": 0.013208056325023086,
+      "market": null,
+      "model": 0.01225
+    },
+    {
+      "country": "Belgium",
+      "champion": 0.01299241458910434,
+      "market": null,
+      "model": 0.01205
+    },
+    {
+      "country": "Croatia",
+      "champion": 0.012615041551246537,
+      "market": null,
+      "model": 0.0117
+    },
+    {
+      "country": "Turkey",
+      "champion": 0.010135161588180978,
+      "market": null,
+      "model": 0.0094
+    },
+    {
+      "country": "Norway",
+      "champion": 0.009110863342566944,
+      "market": null,
+      "model": 0.00845
+    },
+    {
+      "country": "Senegal",
+      "champion": 0.004258924284395199,
+      "market": null,
+      "model": 0.00395
+    },
+    {
+      "country": "Canada",
+      "champion": 0.0041511034164358265,
+      "market": null,
+      "model": 0.00385
+    },
+    {
+      "country": "Paraguay",
+      "champion": 0.0041511034164358265,
+      "market": null,
+      "model": 0.00385
+    },
+    {
+      "country": "Iran",
+      "champion": 0.0035041782086795937,
+      "market": null,
+      "model": 0.00325
+    },
+    {
+      "country": "Austria",
+      "champion": 0.0030728947368421056,
+      "market": null,
+      "model": 0.00285
+    },
+    {
+      "country": "Australia",
+      "champion": 0.002911163434903047,
+      "market": null,
+      "model": 0.0027
+    },
+    {
+      "country": "South Korea",
+      "champion": 0.002803342566943675,
+      "market": null,
+      "model": 0.0026
+    },
+    {
+      "country": "Algeria",
+      "champion": 0.0013477608494921515,
+      "market": null,
+      "model": 0.00125
+    },
+    {
+      "country": "Panama",
+      "champion": 0.0008086565096952908,
+      "market": null,
+      "model": 0.00075
+    },
+    {
+      "country": "Scotland",
+      "champion": 0.0006469252077562326,
+      "market": null,
+      "model": 0.0006
+    },
+    {
+      "country": "USA",
+      "champion": 0.0006469252077562326,
+      "market": null,
+      "model": 0.0006
+    },
+    {
+      "country": "Egypt",
+      "champion": 0.0003773730378578024,
+      "market": null,
+      "model": 0.00035
+    },
+    {
+      "country": "Czech Republic",
+      "champion": 0.0002695521698984303,
+      "market": null,
+      "model": 0.00025
+    },
+    {
+      "country": "Ivory Coast",
+      "champion": 0.00016173130193905815,
+      "market": null,
+      "model": 0.00015
+    },
+    {
+      "country": "New Zealand",
+      "champion": 0.00016173130193905815,
+      "market": null,
+      "model": 0.00015
+    },
+    {
+      "country": "DR Congo",
+      "champion": 0.00016173130193905815,
+      "market": null,
+      "model": 0.00015
+    },
+    {
+      "country": "Uzbekistan",
+      "champion": 0.00016173130193905815,
+      "market": null,
+      "model": 0.00015
+    },
+    {
+      "country": "Sweden",
+      "champion": 0.00010782086795937212,
+      "market": null,
+      "model": 0.0001
+    },
+    {
+      "country": "Tunisia",
+      "champion": 0.00010782086795937212,
+      "market": null,
+      "model": 0.0001
+    },
+    {
+      "country": "Haiti",
+      "champion": 5.391043397968606e-05,
+      "market": null,
+      "model": 5e-05
+    },
+    {
+      "country": "Iraq",
+      "champion": 5.391043397968606e-05,
+      "market": null,
+      "model": 5e-05
+    },
+    {
+      "country": "Jordan",
+      "champion": 5.391043397968606e-05,
+      "market": null,
+      "model": 5e-05
+    },
+    {
+      "country": "South Africa",
+      "champion": 0.0,
+      "market": null,
+      "model": 0.0
+    },
+    {
+      "country": "Bosnia & Herzegovina",
+      "champion": 0.0,
+      "market": null,
+      "model": 0.0
+    },
+    {
+      "country": "Qatar",
+      "champion": 0.0,
+      "market": null,
+      "model": 0.0
+    },
+    {
+      "country": "Curaçao",
+      "champion": 0.0,
+      "market": null,
+      "model": 0.0
+    },
+    {
+      "country": "Cape Verde",
+      "champion": 0.0,
+      "market": null,
+      "model": 0.0
+    },
+    {
+      "country": "Saudi Arabia",
+      "champion": 0.0,
+      "market": null,
+      "model": 0.0
+    },
+    {
+      "country": "Ghana",
+      "champion": 0.0,
+      "market": null,
+      "model": 0.0
+    }
+  ]
+}

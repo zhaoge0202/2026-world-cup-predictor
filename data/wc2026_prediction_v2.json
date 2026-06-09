@@ -1,0 +1,393 @@
+{
+  "n_sim": 20000,
+  "lambda": [
+    0.27782401409631224,
+    0.7435264360436089
+  ],
+  "teams": [
+    {
+      "country": "Spain",
+      "elo": 2208.5,
+      "champion": 0.25815,
+      "final": 0.3701,
+      "semi": 0.508,
+      "quarter": 0.6613
+    },
+    {
+      "country": "Argentina",
+      "elo": 2187.5,
+      "champion": 0.21775,
+      "final": 0.32655,
+      "semi": 0.4623,
+      "quarter": 0.6234
+    },
+    {
+      "country": "France",
+      "elo": 2120.6,
+      "champion": 0.10285,
+      "final": 0.18945,
+      "semi": 0.3191,
+      "quarter": 0.48855
+    },
+    {
+      "country": "England",
+      "elo": 2082.6,
+      "champion": 0.06615,
+      "final": 0.13715,
+      "semi": 0.2557,
+      "quarter": 0.4312
+    },
+    {
+      "country": "Brazil",
+      "elo": 2067.8,
+      "champion": 0.05235,
+      "final": 0.1168,
+      "semi": 0.2249,
+      "quarter": 0.39745
+    },
+    {
+      "country": "Colombia",
+      "elo": 2063.1,
+      "champion": 0.0484,
+      "final": 0.10785,
+      "semi": 0.21335,
+      "quarter": 0.3859
+    },
+    {
+      "country": "Portugal",
+      "elo": 2027.3,
+      "champion": 0.032,
+      "final": 0.0732,
+      "semi": 0.16145,
+      "quarter": 0.3195
+    },
+    {
+      "country": "Ecuador",
+      "elo": 2026.5,
+      "champion": 0.03175,
+      "final": 0.0776,
+      "semi": 0.1711,
+      "quarter": 0.3311
+    },
+    {
+      "country": "Germany",
+      "elo": 2007.2,
+      "champion": 0.02425,
+      "final": 0.06345,
+      "semi": 0.1454,
+      "quarter": 0.30015
+    },
+    {
+      "country": "Netherlands",
+      "elo": 2007.1,
+      "champion": 0.0232,
+      "final": 0.062,
+      "semi": 0.14335,
+      "quarter": 0.3002
+    },
+    {
+      "country": "Japan",
+      "elo": 1992.8,
+      "champion": 0.018,
+      "final": 0.05175,
+      "semi": 0.12795,
+      "quarter": 0.275
+    },
+    {
+      "country": "Morocco",
+      "elo": 1984.1,
+      "champion": 0.0152,
+      "final": 0.0443,
+      "semi": 0.11255,
+      "quarter": 0.25125
+    },
+    {
+      "country": "Mexico",
+      "elo": 1976.0,
+      "champion": 0.01485,
+      "final": 0.0443,
+      "semi": 0.11635,
+      "quarter": 0.2705
+    },
+    {
+      "country": "Uruguay",
+      "elo": 1974.2,
+      "champion": 0.01345,
+      "final": 0.04045,
+      "semi": 0.10585,
+      "quarter": 0.2516
+    },
+    {
+      "country": "Switzerland",
+      "elo": 1960.6,
+      "champion": 0.01225,
+      "final": 0.0383,
+      "semi": 0.10245,
+      "quarter": 0.24005
+    },
+    {
+      "country": "Belgium",
+      "elo": 1971.5,
+      "champion": 0.01205,
+      "final": 0.03915,
+      "semi": 0.10315,
+      "quarter": 0.2431
+    },
+    {
+      "country": "Croatia",
+      "elo": 1964.2,
+      "champion": 0.0117,
+      "final": 0.0352,
+      "semi": 0.09615,
+      "quarter": 0.2237
+    },
+    {
+      "country": "Turkey",
+      "elo": 1962.9,
+      "champion": 0.0094,
+      "final": 0.02965,
+      "semi": 0.08135,
+      "quarter": 0.19495
+    },
+    {
+      "country": "Norway",
+      "elo": 1956.7,
+      "champion": 0.00845,
+      "final": 0.0283,
+      "semi": 0.07775,
+      "quarter": 0.18985
+    },
+    {
+      "country": "Senegal",
+      "elo": 1919.4,
+      "champion": 0.00395,
+      "final": 0.0155,
+      "semi": 0.0513,
+      "quarter": 0.13935
+    },
+    {
+      "country": "Canada",
+      "elo": 1894.5,
+      "champion": 0.00385,
+      "final": 0.0156,
+      "semi": 0.05685,
+      "quarter": 0.1709
+    },
+    {
+      "country": "Paraguay",
+      "elo": 1917.7,
+      "champion": 0.00385,
+      "final": 0.01405,
+      "semi": 0.04675,
+      "quarter": 0.13185
+    },
+    {
+      "country": "Iran",
+      "elo": 1898.2,
+      "champion": 0.00325,
+      "final": 0.0146,
+      "semi": 0.04845,
+      "quarter": 0.1382
+    },
+    {
+      "country": "Austria",
+      "elo": 1894.5,
+      "champion": 0.00285,
+      "final": 0.0106,
+      "semi": 0.0352,
+      "quarter": 0.10725
+    },
+    {
+      "country": "Australia",
+      "elo": 1901.7,
+      "champion": 0.0027,
+      "final": 0.01055,
+      "semi": 0.0372,
+      "quarter": 0.10955
+    },
+    {
+      "country": "South Korea",
+      "elo": 1880.6,
+      "champion": 0.0026,
+      "final": 0.01025,
+      "semi": 0.03735,
+      "quarter": 0.12055
+    },
+    {
+      "country": "Algeria",
+      "elo": 1872.4,
+      "champion": 0.00125,
+      "final": 0.0072,
+      "semi": 0.02605,
+      "quarter": 0.09055
+    },
+    {
+      "country": "Panama",
+      "elo": 1847.7,
+      "champion": 0.00075,
+      "final": 0.00475,
+      "semi": 0.0203,
+      "quarter": 0.08435
+    },
+    {
+      "country": "Scotland",
+      "elo": 1833.7,
+      "champion": 0.0006,
+      "final": 0.0035,
+      "semi": 0.0156,
+      "quarter": 0.06505
+    },
+    {
+      "country": "USA",
+      "elo": 1825.3,
+      "champion": 0.0006,
+      "final": 0.00455,
+      "semi": 0.01855,
+      "quarter": 0.071
+    },
+    {
+      "country": "Egypt",
+      "elo": 1809.9,
+      "champion": 0.00035,
+      "final": 0.00225,
+      "semi": 0.01235,
+      "quarter": 0.0547
+    },
+    {
+      "country": "Czech Republic",
+      "elo": 1796.3,
+      "champion": 0.00025,
+      "final": 0.00195,
+      "semi": 0.0105,
+      "quarter": 0.0497
+    },
+    {
+      "country": "Ivory Coast",
+      "elo": 1814.4,
+      "champion": 0.00015,
+      "final": 0.003,
+      "semi": 0.0154,
+      "quarter": 0.06415
+    },
+    {
+      "country": "New Zealand",
+      "elo": 1731.8,
+      "champion": 0.00015,
+      "final": 0.00035,
+      "semi": 0.00275,
+      "quarter": 0.0203
+    },
+    {
+      "country": "DR Congo",
+      "elo": 1771.9,
+      "champion": 0.00015,
+      "final": 0.0007,
+      "semi": 0.0048,
+      "quarter": 0.0241
+    },
+    {
+      "country": "Uzbekistan",
+      "elo": 1825.8,
+      "champion": 0.00015,
+      "final": 0.0021,
+      "semi": 0.0111,
+      "quarter": 0.0506
+    },
+    {
+      "country": "Sweden",
+      "elo": 1765.2,
+      "champion": 0.0001,
+      "final": 0.00085,
+      "semi": 0.00555,
+      "quarter": 0.0296
+    },
+    {
+      "country": "Tunisia",
+      "elo": 1737.9,
+      "champion": 0.0001,
+      "final": 0.0006,
+      "semi": 0.00305,
+      "quarter": 0.0176
+    },
+    {
+      "country": "Haiti",
+      "elo": 1697.4,
+      "champion": 5e-05,
+      "final": 0.0002,
+      "semi": 0.0014,
+      "quarter": 0.00855
+    },
+    {
+      "country": "Iraq",
+      "elo": 1750.3,
+      "champion": 5e-05,
+      "final": 0.00025,
+      "semi": 0.0027,
+      "quarter": 0.01425
+    },
+    {
+      "country": "Jordan",
+      "elo": 1775.1,
+      "champion": 5e-05,
+      "final": 0.00055,
+      "semi": 0.0046,
+      "quarter": 0.0235
+    },
+    {
+      "country": "South Africa",
+      "elo": 1662.1,
+      "champion": 0.0,
+      "final": 0.0002,
+      "semi": 0.0007,
+      "quarter": 0.00695
+    },
+    {
+      "country": "Bosnia & Herzegovina",
+      "elo": 1649.1,
+      "champion": 0.0,
+      "final": 0.0001,
+      "semi": 0.001,
+      "quarter": 0.00785
+    },
+    {
+      "country": "Qatar",
+      "elo": 1566.1,
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.00025,
+      "quarter": 0.00205
+    },
+    {
+      "country": "Curaçao",
+      "elo": 1601.0,
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.0003,
+      "quarter": 0.00155
+    },
+    {
+      "country": "Cape Verde",
+      "elo": 1653.0,
+      "champion": 0.0,
+      "final": 0.0001,
+      "semi": 0.00075,
+      "quarter": 0.006
+    },
+    {
+      "country": "Saudi Arabia",
+      "elo": 1685.5,
+      "champion": 0.0,
+      "final": 5e-05,
+      "semi": 0.0009,
+      "quarter": 0.0088
+    },
+    {
+      "country": "Ghana",
+      "elo": 1624.4,
+      "champion": 0.0,
+      "final": 5e-05,
+      "semi": 0.0001,
+      "quarter": 0.0024
+    }
+  ]
+}
