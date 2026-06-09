@@ -21,11 +21,29 @@ class MobileScheduleIntegrationTest(unittest.TestCase):
         self.assertIn("function populateScheduleH2H", mobile_ui.HTML_BODY)
         self.assertIn("function applyScheduleMatch", mobile_ui.HTML_BODY)
 
+    def test_h2h_uses_selected_schedule_prediction_values(self):
+        body = mobile_ui.HTML_BODY
+        self.assertIn("function selectedSchedulePrediction", body)
+        self.assertIn("function scheduleH2HCalc", body)
+        self.assertIn("team1_win", body)
+        self.assertIn("lambda_team1", body)
+        self.assertIn("top_scores", body)
+        self.assertIn("Schedule model / 赛程模型", body)
+
     def test_most_likely_uses_base_probability(self):
         body = mobile_ui.HTML_BODY
         self.assertIn("baseProb", body)
         self.assertIn("boostedProb", body)
         self.assertNotIn("raw[i].prob = raw[i].boosted / sumBoosted", body)
+
+    def test_h2h_uses_schedule_match_prediction_when_selected(self):
+        body = mobile_ui.HTML_BODY
+        self.assertIn("var _selectedScheduleMatch=null;", body)
+        self.assertIn("scheduleMatchPrediction()", body)
+        self.assertIn("buildScheduleScorePred", body)
+        self.assertIn("team1_win", body)
+        self.assertIn("lambda_team1", body)
+        self.assertIn("top_scores", body)
 
 
 if __name__ == "__main__":

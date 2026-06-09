@@ -1100,6 +1100,25 @@ function h2hCalc(ta,tb){
   return{winA:rawA/rawTotal*winTotal,winB:rawB/rawTotal*winTotal,draw:drawP,eloDiff:eDiff};
 }
 
+function selectedSchedulePrediction(){
+  var sel=document.getElementById("h2h-match");
+  if(!sel||sel.value==="manual")return null;
+  var rows=scheduleH2HMatches();
+  return rows[parseInt(sel.value,10)]||_selectedScheduleMatch||null;
+}
+
+function scheduleMatchPrediction(){return selectedSchedulePrediction();}
+
+function scheduleH2HCalc(match){
+  return{
+    winA:match.team1_win||0,
+    draw:match.draw||0,
+    winB:match.team2_win||0,
+    eloDiff:null,
+    source:"schedule"
+  };
+}
+
 function getFactorDiff(ta,tb){
   var fs=[{k:"elo_score",l:"Elo锚点"},{k:"age_score",l:"年龄结构"},{k:"exp_score",l:"大赛经验"},{k:"form_score",l:"近期状态"},{k:"coach_score",l:"教练因素"},{k:"mystic_score",l:"玄学因子"}];
   var h="";
@@ -1273,11 +1292,53 @@ function buildScorePred(ta, tb, r) {
     h += '<div class="sc-note">Poisson xG baseline + separate extreme-tail boost view + mystical weighted random | Elo &#955;: ' + lambdaA.toFixed(2) + ' vs ' + lambdaB.toFixed(2) + '</div></div>';
     return h;
 }
+
+function buildScheduleScorePred(ta,tb,match){
+  var lambdaA=match.lambda_team1||0;
+  var lambdaB=match.lambda_team2||0;
+  var scores=(match.top_scores||[]).slice(0,6);
+  var totalShown=scores.reduce(function(s,x){return s+(x.prob||0);},0);
+  var featured=scores[0]||null;
+  var h='<div class="sc-pred">';
+  h+='<div class="sc-pred-r">';
+  h+='<div class="sc-team"><div class="sc-team-nm">'+ta.country+'</div><div class="sc-goals"><span class="sc-gl">'+lambdaA.toFixed(1)+'</span></div></div>';
+  h+='<div class="sc-sep">:</div>';
+  h+='<div class="sc-team"><div class="sc-team-nm">'+tb.country+'</div><div class="sc-goals"><span class="sc-gl">'+lambdaB.toFixed(1)+'</span></div></div>';
+  h+='</div>';
+  h+='<div class="sc-hd"><span>最可能 / Most Likely</span><span class="sc-hd-sub">+'+(totalShown*100).toFixed(0)+'%</span></div>';
+  h+='<div class="sc-grid">';
+  for(var i=0;i<scores.length;i++){
+    var s=scores[i];
+    var ga=s.team1_goals,gb=s.team2_goals;
+    var isFeatured=featured&&ga===featured.team1_goals&&gb===featured.team2_goals;
+    h+='<div class="sc-cell'+(i===0?' top':'')+'">';
+    h+='<div class="sc-s">'+ga+' - '+gb+(isFeatured?' &#9733;':'')+'</div>';
+    h+='<div class="sc-p">'+((s.prob||0)*100).toFixed(1)+'%</div></div>';
+  }
+  h+='</div>';
+  h+='<div class="sc-most-likely">';
+  h+='<div class="sc-ml-hd">Scoreline Probability / 比分预测 '+(featured?'&#9733; '+featured.score:'')+'</div>';
+  for(var k=0;k<scores.length;k++){
+    var row=scores[k];
+    var outcome=row.team1_goals>row.team2_goals?'A':(row.team1_goals<row.team2_goals?'B':'D');
+    var outcomeColor=outcome==='A'?'var(--bl)':(outcome==='B'?'var(--gd)':'var(--tx2)');
+    var star=featured&&row.team1_goals===featured.team1_goals&&row.team2_goals===featured.team2_goals;
+    h+='<div class="sc-ml-row'+(star?'" style="background:rgba(255,214,10,0.08)"':'')+'">';
+    h+='<span class="sc-ml-sc">'+fl(ta.country)+' '+row.team1_goals+' : '+row.team2_goals+' '+fl(tb.country)+(star?' &#9733;':'')+'</span>';
+    h+='<span class="sc-ml-od">'+outcome+'</span>';
+    h+='<span class="sc-ml-d" style="color:'+outcomeColor+'">'+((row.prob||0)*100).toFixed(1)+'%</span></div>';
+  }
+  h+='</div>';
+  h+='<div class="sc-note">Schedule model / 赛程模型：直接使用生成 artifact 的单场预测，不使用前端 H2H 临时公式或高比分 boost | Elo &#955;: '+lambdaA.toFixed(2)+' vs '+lambdaB.toFixed(2)+'</div></div>';
+  return h;
+}
+
 function h2hChange(){
   var ta=D.find(function(x){return x.country===document.getElementById("h2h-a").value;});
   var tb=D.find(function(x){return x.country===document.getElementById("h2h-b").value;});
   if(!ta||!tb){return;}
-  var r=h2hCalc(ta,tb);
+  var sched=scheduleMatchPrediction();
+  var r=sched?scheduleH2HCalc(sched):h2hCalc(ta,tb);
   var barA=(r.winA*100).toFixed(1),barB=(r.winB*100).toFixed(1),barD=(r.draw*100).toFixed(1);
   document.getElementById("h2h-bar-a").style.width=barA+"%";
   document.getElementById("h2h-bar-b").style.width=barB+"%";
@@ -1289,7 +1350,7 @@ function h2hChange(){
   // factor diff
   var h='<div class="h2h-fc">'+getFactorDiff(ta,tb)+'</div>';
   
-  h += buildScorePred(ta, tb, r);
+  h += sched?buildScheduleScorePred(ta,tb,sched):buildScorePred(ta, tb, r);
   // historical record
   var recKey=ta.country+"|"+tb.country,recKeyRev=tb.country+"|"+ta.country;
   var rec=H2H_RECORDS[recKey]||H2H_RECORDS[recKeyRev];
@@ -1455,11 +1516,16 @@ function buildPoly(){
 }
 
 var _pickerSide=null;
+var _selectedScheduleMatch=null;
 function openPicker(side){_pickerSide=side;var t=side==="a"?"Team A / 球队A":"Team B / 球队B";document.getElementById("pick-title").textContent=t;document.getElementById("pick-search").value="";filterPickList();document.getElementById("pick-overlay").classList.add("on");document.body.style.overflow="hidden"}
 function closePicker(e){if(e&&e.target!==document.getElementById("pick-overlay"))return;document.getElementById("pick-overlay").classList.remove("on");document.body.style.overflow=""}
 function filterPickList(){var q=document.getElementById("pick-search").value.toLowerCase();var list=document.getElementById("pick-list");var curVal=_pickerSide==="a"?document.getElementById("h2h-a").value:document.getElementById("h2h-b").value;var html="";for(var i=0;i<D.length;i++){var t=D[i];if(t.country.toLowerCase().indexOf(q)===-1&&fl(t.country).toLowerCase().indexOf(q)===-1)continue;var isSel=t.country===curVal;html+="<div class=\"pick-item"+(isSel?" sel":"")+"\" onclick=\"selectPick(\'"+t.country+"\')\">";html+="<span class=\"pick-item-fl\">"+fl(t.country)+"</span>";html+="<span class=\"pick-item-info\"><span class=\"pick-item-nm\">"+t.country+"</span>";html+="<span class=\"pick-item-pr\">"+(t.final_prob*100).toFixed(2)+"%</span></span>";html+="<span class=\"pick-item-chk\">&#10003;</span></div>"}list.innerHTML=html||"<div style=\"padding:24px;text-align:center;color:var(--tx2);font-size:14px\">No result</div>"}
-function selectPick(country){var matchSel=document.getElementById("h2h-match");if(matchSel)matchSel.value="manual";if(_pickerSide==="a"){document.getElementById("h2h-a").value=country;updatePickCard("a",country)}else{document.getElementById("h2h-b").value=country;updatePickCard("b",country)}closePicker();h2hChange()}
-function updatePickCard(side,country){var t=D.find(function(x){return x.country===country;});if(!t)return;document.getElementById("h2h-pick-fl-"+side).textContent=fl(t.country);document.getElementById("h2h-pick-nm-"+side).textContent=t.country;document.getElementById("h2h-pick-pr-"+side).textContent=(t.final_prob*100).toFixed(2)+"%"}
+function selectPick(country){var matchSel=document.getElementById("h2h-match");if(matchSel)matchSel.value="manual";_selectedScheduleMatch=null;if(_pickerSide==="a"){document.getElementById("h2h-a").value=country;updatePickCard("a",country)}else{document.getElementById("h2h-b").value=country;updatePickCard("b",country)}closePicker();h2hChange()}
+function updatePickCard(side,country){var t=D.find(function(x){return x.country===country;});if(!t)return;document.getElementById("h2h-pick-fl-"+side).textContent=fl(t.country);document.getElementById("h2h-pick-nm-"+side).textContent=t.country;document.getElementById("h2h-pick-pr-"+side).textContent="Champion "+(t.final_prob*100).toFixed(2)+"%"}
+function updateSchedulePickCards(match){
+  document.getElementById("h2h-pick-pr-a").textContent="Match win "+((match.team1_win||0)*100).toFixed(1)+"%";
+  document.getElementById("h2h-pick-pr-b").textContent="Match win "+((match.team2_win||0)*100).toFixed(1)+"%";
+}
 
 var H2H_TEAM_ALIAS={"Bosnia & Herzegovina":"Bosnia and Herzegovina","Korea Republic":"South Korea","IR Iran":"Iran","Côte d'Ivoire":"Ivory Coast","DR of the Congo":"DR Congo"};
 function h2hTeamName(c){return H2H_TEAM_ALIAS[c]||c;}
@@ -1495,12 +1561,14 @@ function applyScheduleMatch(){
   var rows=scheduleH2HMatches();
   var m=rows[parseInt(sel.value,10)];
   if(!m)return;
+  _selectedScheduleMatch=m;
   var teamA=h2hTeamName(m.team1);
   var teamB=h2hTeamName(m.team2);
   document.getElementById("h2h-a").value=teamA;
   document.getElementById("h2h-b").value=teamB;
   updatePickCard("a",teamA);
   updatePickCard("b",teamB);
+  updateSchedulePickCards(m);
   h2hChange();
 }
 
