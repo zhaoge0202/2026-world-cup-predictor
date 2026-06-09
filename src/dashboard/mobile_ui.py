@@ -1372,7 +1372,13 @@ function buildFinal(){
   }
 }
 function setUpdateTime(value){
-  var text=String(value||new Date().toISOString()).replace("T"," ").slice(0,16);
+  var dt=value?new Date(String(value).replace(" ","T")):new Date();
+  if(isNaN(dt.getTime()))dt=new Date();
+  var parts=new Intl.DateTimeFormat("zh-CN",{
+    timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit',
+    hour:'2-digit',minute:'2-digit',hour12:false
+  }).formatToParts(dt).reduce(function(acc,p){acc[p.type]=p.value;return acc;},{});
+  var text=parts.year+"-"+parts.month+"-"+parts.day+" "+parts.hour+":"+parts.minute;
   var upd=document.getElementById("upd");
   var inf=document.getElementById("infTime");
   if(upd)upd.textContent=text;
@@ -2217,6 +2223,7 @@ function pollLoop(){
 
 /* ── Init ── */
 setUpdateTime("__UPDATE_TIME__");
+setInterval(setUpdateTime,60000);
 buildFinal();
 buildLB();
 buildFB();

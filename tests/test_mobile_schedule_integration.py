@@ -86,6 +86,9 @@ class MobileScheduleIntegrationTest(unittest.TestCase):
 
         self.assertIn("setUpdateTime();", body)
         self.assertIn("function setUpdateTime(value)", body)
+        self.assertIn("timeZone:'Asia/Shanghai'", body)
+        self.assertIn("setInterval(setUpdateTime,60000)", body)
+        self.assertNotIn("toISOString()).replace", body)
 
     def test_refresh_analysis_state_replaces_json(self):
         state = {}

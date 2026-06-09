@@ -24,7 +24,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FINAL_PRED = os.path.join(ROOT, "data", "wc2026_prediction_final.json")
 CACHE = os.path.join(ROOT, "data", "realtime_cache.json")
 
-CHAMPION_TTL = 6 * 3600    # 冠军概率实时调整：6 小时
+CHAMPION_TTL = 10 * 60     # 冠军概率实时调整：10 分钟
 MATCH_TTL = 3 * 3600       # 单场预测：3 小时
 
 
