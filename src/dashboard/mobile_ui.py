@@ -56,7 +56,7 @@ ELO_CACHE = os.path.join(ROOT, "data", "elo_cache_2026.json")
 FIXTURES_CACHE = os.path.join(ROOT, "data", "wc2026_fixtures.json")
 FINAL_PRED = os.path.join(ROOT, "data", "wc2026_prediction_final.json")
 SCHEDULE_PRED = os.path.join(ROOT, "data", "wc2026_schedule_predictions.json")
-SCHEDULE_PRED_REFRESH_SECONDS = int(os.environ.get("WC_SCHEDULE_PRED_REFRESH_SECONDS", "900"))
+SCHEDULE_PRED_REFRESH_SECONDS = int(os.environ.get("WC_SCHEDULE_PRED_REFRESH_SECONDS", "60"))
 SCHEDULE_PRED_SIMULATIONS = int(os.environ.get("WC_SCHEDULE_PRED_SIMULATIONS", "3000"))
 ANALYSIS_REFRESH_SECONDS = int(os.environ.get("WC_ANALYSIS_REFRESH_SECONDS", "300"))
 

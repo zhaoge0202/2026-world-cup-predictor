@@ -51,6 +51,7 @@ class MobileScheduleIntegrationTest(unittest.TestCase):
         self.assertIn("function refreshSchedulePredictions", body)
         self.assertIn('fetch("/api/schedule_predictions"', body)
         self.assertIn("setInterval(refreshSchedulePredictions", body)
+        self.assertEqual(mobile_ui.SCHEDULE_PRED_REFRESH_SECONDS, 60)
         self.assertTrue(hasattr(mobile_ui, "_start_schedule_prediction_daemon"))
         self.assertIn("/api/schedule_predictions", inspect.getsource(mobile_ui.run_server))
 
