@@ -2347,7 +2347,12 @@ def _find_live_score(live_scores, schedule_match):
 def _refresh_analysis_state(state, loader=_load_analysis):
     global _cached_results
     _cached_results = None
-    results, ucl_data, h2h_conformal_map, match_fixtures, match_results, friendly_results = loader()
+    loaded = loader()
+    if len(loaded) == 2:
+        results, ucl_data = loaded
+        h2h_conformal_map, match_fixtures, match_results, friendly_results = {}, [], [], []
+    else:
+        results, ucl_data, h2h_conformal_map, match_fixtures, match_results, friendly_results = loaded
     state["analysis"] = results
     state["ucl_data"] = ucl_data
     state["h2h_conformal_map"] = h2h_conformal_map
