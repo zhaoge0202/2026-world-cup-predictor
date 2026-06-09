@@ -57,6 +57,18 @@ class ScheduleModelTest(unittest.TestCase):
         self.assertGreater(out["matches"][0]["team1_win"], 0)
         self.assertIn("champion", out["teams"][0])
 
+    def test_unnumbered_final_still_counts_champion(self):
+        fixtures = [
+            {"date": "2026-06-11", "time": "13:00 UTC-6", "team1": "Mexico", "team2": "South Africa", "round": "Matchday 1", "group": "Group A"},
+            {"date": "2026-07-19", "team1": "Mexico", "team2": "South Africa", "round": "Final"},
+        ]
+        ratings = {"Mexico": 1800, "South Africa": 1650}
+
+        out = generate_schedule_predictions(fixtures=fixtures, ratings=ratings, n_sim=20, seed=9)
+
+        champion_total = sum(row["champion"] for row in out["teams"])
+        self.assertGreater(champion_total, 0.9)
+
     def test_save_schedule_predictions_writes_json(self):
         import json
         import tempfile

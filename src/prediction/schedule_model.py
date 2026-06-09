@@ -159,7 +159,7 @@ def _play_knockout(
         num = match.get("num")
         team1 = _resolve_team_ref(match.get("team1", ""), ranked_groups, thirds, winners, losers)
         team2 = _resolve_team_ref(match.get("team2", ""), ranked_groups, thirds, winners, losers)
-        if not team1 or not team2 or num is None:
+        if not team1 or not team2:
             continue
         round_name = match.get("round", "")
         _record_reach(reached, round_name, team1, team2)
@@ -171,8 +171,9 @@ def _play_knockout(
         else:
             winner = team1 if g1 > g2 else team2
         loser = team2 if winner == team1 else team1
-        winners[int(num)] = winner
-        losers[int(num)] = loser
+        if num is not None:
+            winners[int(num)] = winner
+            losers[int(num)] = loser
         if round_name == "Final":
             reached["champion"].add(winner)
     return reached

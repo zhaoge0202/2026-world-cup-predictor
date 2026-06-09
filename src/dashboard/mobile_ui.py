@@ -49,6 +49,7 @@ WIKI_DATA = os.path.join(ROOT, "data", "wc2026_players_processed.json")
 ELO_CACHE = os.path.join(ROOT, "data", "elo_cache_2026.json")
 FIXTURES_CACHE = os.path.join(ROOT, "data", "wc2026_fixtures.json")
 FINAL_PRED = os.path.join(ROOT, "data", "wc2026_prediction_final.json")
+SCHEDULE_PRED = os.path.join(ROOT, "data", "wc2026_schedule_predictions.json")
 
 QUALIFIED_TEAMS = [
     "Argentina", "Brazil", "Uruguay", "Colombia", "Ecuador", "Paraguay",
@@ -830,6 +831,9 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:"Inter",-
 <div class="pg" id="pg-h2h">
   <div class="card">
     <div class="card-title">对战预测 / H2H Predictor</div>
+    <div class="sel-wrap" style="margin-bottom:12px">
+      <select class="sel" id="h2h-match" onchange="applyScheduleMatch()"></select>
+    </div>
     <div class="h2h-teams">
       <div class="h2h-team">
         <label>Team A / 球队A</label>
@@ -997,6 +1001,7 @@ var D=__DATA__;
 var U=__UCL__;
 var F=__FIXTURES__;
 var FN=__FINAL__;
+var SP=__SCHEDULE_PRED__;
 var RT=__REALTIME__;
 var FL={"Argentina":"AR","Brazil":"BR","France":"FR","Germany":"DE","Spain":"ES","England":"EN","Portugal":"PT","Netherlands":"NL","Belgium":"BE","Croatia":"HR","Switzerland":"CH","Austria":"AT","Czech Republic":"CZ","Turkey":"TR","Sweden":"SE","Morocco":"MA","Senegal":"SN","Egypt":"EG","Algeria":"DZ","Ghana":"GH","Ivory Coast":"CI","Tunisia":"TN","DR Congo":"CD","Cape Verde":"CV","Japan":"JP","South Korea":"KR","Iran":"IR","Iraq":"IQ","Qatar":"QA","Saudi Arabia":"SA","Australia":"AU","Uzbekistan":"UZ","Jordan":"JO","USA":"US","Mexico":"MX","Canada":"CA","Panama":"PA","Curaçao":"CW","Haiti":"HT","New Zealand":"NZ","Ecuador":"EC","Paraguay":"PY","Colombia":"CO","Uruguay":"UY","Norway":"NO","South Africa":"ZA","Bosnia and Herzegovina":"BA","Scotland":"XS"};
 function fl(c){return FL[c]||"--";}
@@ -1011,8 +1016,9 @@ function buildLB(){var s=D.slice().sort(function(a,b){return b.final_prob-a.fina
 /* ── 最精准预测（市场校准 + grok 实时动态）── */
 function buildFinal(){
   var card=document.getElementById("final-card");
-  var rt=RT,teams,summary="",updated="",isRT=false;
+  var rt=RT,teams,summary="",updated="",isRT=false,isSchedule=false;
   if(rt&&rt.teams&&rt.teams.length){teams=rt.teams;summary=rt.summary||"";updated=rt.updated||"";isRT=true;}
+  else if(SP&&SP.teams&&SP.teams.length){teams=SP.teams;summary="真实赛程路径模拟";updated=SP.as_of||"";isSchedule=true;}
   else{var f=(FN&&FN.teams)||[];if(f.length===0){if(card)card.style.display="none";return;}
     teams=f.map(function(t){return{country:t.country,champion:t.champion,base:(t.market!=null?t.market:t.model),delta:0,factors:[]};});}
   var h="";
@@ -1033,6 +1039,7 @@ function buildFinal(){
   var note=document.getElementById("fin-note");
   if(note){
     if(isRT)note.innerHTML='<b style="color:var(--gd)">🔴 实时研判</b>（grok 联网综合伤病/状态/赔率）: '+summary+'<br>更新 '+updated+' · 点击球队展开实时因子 · 数据模型+市场+grok实时 三层融合';
+    else if(isSchedule)note.innerHTML='<b style="color:var(--gd)">赛程驱动</b>：按真实小组赛程、晋级路径和淘汰赛编号模拟。更新 '+updated+' · 基线不使用高比分boost';
     else note.innerHTML="市场共识 + 数据模型融合（实时层加载中，几分钟后自动刷新）。截至 "+((FN&&FN.as_of)||"2026-06-08");
   }
 }
@@ -1164,22 +1171,28 @@ function buildScorePred(ta, tb, r) {
         }
     }
 
+    var sumBase = 0;
     var sumBoosted = 0;
     for (var i = 0; i < raw.length; i++) {
         raw[i].boosted = raw[i].total >= EXTREME_THRESH ? raw[i].pois * BOOST_FACTOR : raw[i].pois;
+        sumBase += raw[i].pois;
         sumBoosted += raw[i].boosted;
     }
-    for (var i = 0; i < raw.length; i++) raw[i].prob = raw[i].boosted / sumBoosted;
+    for (var i = 0; i < raw.length; i++) {
+        raw[i].baseProb = raw[i].pois / sumBase;
+        raw[i].boostedProb = raw[i].boosted / sumBoosted;
+        raw[i].prob = raw[i].baseProb;
+    }
 
     // Sort by prob for grid display
     var sorted = raw.slice().sort(function(a, b){ return b.prob - a.prob; });
     var top6 = sorted.slice(0, 6);
     var totalShown = top6.reduce(function(s, x){ return s + x.prob; }, 0);
 
-    var hiAll = raw.filter(function(x){ return x.total >= 3; });
-    hiAll.sort(function(a, b){ return b.prob - a.prob; });
+    var hiAll = raw.filter(function(x){ return x.total >= EXTREME_THRESH; });
+    hiAll.sort(function(a, b){ return b.boostedProb - a.boostedProb; });
     var topHi = hiAll.slice(0, 8);
-    var hiTotal = topHi.reduce(function(s, x){ return s + x.prob; }, 0);
+    var hiTotal = topHi.reduce(function(s, x){ return s + x.boostedProb; }, 0);
 
     // Featured prediction: deterministic weighted random from top 3
     // Uses matchup string hash so same matchup always picks same result (reproducible)
@@ -1232,7 +1245,7 @@ function buildScorePred(ta, tb, r) {
         h += '<div class="sc-grid sc-grid-hi">';
         for (var j = 0; j < topHi.length; j++) {
             var s3 = topHi[j];
-            var pct2 = (s3.prob * 100).toFixed(1);
+            var pct2 = (s3.boostedProb * 100).toFixed(1);
             var isExtreme = s3.total >= EXTREME_THRESH;
             h += '<div class="sc-cell sc-cell-hi' + (isExtreme ? '" style="border-color:var(--gd)"' : '') + '">';
             h += '<div class="sc-s">' + s3.ga + ' - ' + s3.gb + (isExtreme ? ' &#10023;' : '') + '</div>';
@@ -1257,7 +1270,7 @@ function buildScorePred(ta, tb, r) {
         h += '<span class="sc-ml-d" style="color:' + outcomeColor + '">' + pct3 + '%</span></div>';
     }
     h += '</div>';
-    h += '<div class="sc-note">Poisson xG + extreme-tail renormalized boost + mystical weighted random | Elo &#955;: ' + lambdaA.toFixed(2) + ' vs ' + lambdaB.toFixed(2) + '</div></div>';
+    h += '<div class="sc-note">Poisson xG baseline + separate extreme-tail boost view + mystical weighted random | Elo &#955;: ' + lambdaA.toFixed(2) + ' vs ' + lambdaB.toFixed(2) + '</div></div>';
     return h;
 }
 function h2hChange(){
@@ -1441,7 +1454,55 @@ function buildPoly(){
   document.getElementById("poly-upd").textContent=new Date().toLocaleString("zh-CN",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"});
 }
 
-var _pickerSide=null;function openPicker(side){_pickerSide=side;var t=side==="a"?"Team A / 球队A":"Team B / 球队B";document.getElementById("pick-title").textContent=t;document.getElementById("pick-search").value="";filterPickList();document.getElementById("pick-overlay").classList.add("on");document.body.style.overflow="hidden"}function closePicker(e){if(e&&e.target!==document.getElementById("pick-overlay"))return;document.getElementById("pick-overlay").classList.remove("on");document.body.style.overflow=""}function filterPickList(){var q=document.getElementById("pick-search").value.toLowerCase();var list=document.getElementById("pick-list");var curVal=_pickerSide==="a"?document.getElementById("h2h-a").value:document.getElementById("h2h-b").value;var html="";for(var i=0;i<D.length;i++){var t=D[i];if(t.country.toLowerCase().indexOf(q)===-1&&fl(t.country).toLowerCase().indexOf(q)===-1)continue;var isSel=t.country===curVal;html+="<div class=\"pick-item"+(isSel?" sel":"")+"\" onclick=\"selectPick(\'"+t.country+"\')\">";html+="<span class=\"pick-item-fl\">"+fl(t.country)+"</span>";html+="<span class=\"pick-item-info\"><span class=\"pick-item-nm\">"+t.country+"</span>";html+="<span class=\"pick-item-pr\">"+(t.final_prob*100).toFixed(2)+"%</span></span>";html+="<span class=\"pick-item-chk\">&#10003;</span></div>"}list.innerHTML=html||"<div style=\"padding:24px;text-align:center;color:var(--tx2);font-size:14px\">No result</div>"}function selectPick(country){if(_pickerSide==="a"){document.getElementById("h2h-a").value=country;updatePickCard("a",country)}else{document.getElementById("h2h-b").value=country;updatePickCard("b",country)}closePicker();h2hChange()}function updatePickCard(side,country){var t=D.find(function(x){return x.country===country;});if(!t)return;document.getElementById("h2h-pick-fl-"+side).textContent=fl(t.country);document.getElementById("h2h-pick-nm-"+side).textContent=t.country;document.getElementById("h2h-pick-pr-"+side).textContent=(t.final_prob*100).toFixed(2)+"%"}
+var _pickerSide=null;
+function openPicker(side){_pickerSide=side;var t=side==="a"?"Team A / 球队A":"Team B / 球队B";document.getElementById("pick-title").textContent=t;document.getElementById("pick-search").value="";filterPickList();document.getElementById("pick-overlay").classList.add("on");document.body.style.overflow="hidden"}
+function closePicker(e){if(e&&e.target!==document.getElementById("pick-overlay"))return;document.getElementById("pick-overlay").classList.remove("on");document.body.style.overflow=""}
+function filterPickList(){var q=document.getElementById("pick-search").value.toLowerCase();var list=document.getElementById("pick-list");var curVal=_pickerSide==="a"?document.getElementById("h2h-a").value:document.getElementById("h2h-b").value;var html="";for(var i=0;i<D.length;i++){var t=D[i];if(t.country.toLowerCase().indexOf(q)===-1&&fl(t.country).toLowerCase().indexOf(q)===-1)continue;var isSel=t.country===curVal;html+="<div class=\"pick-item"+(isSel?" sel":"")+"\" onclick=\"selectPick(\'"+t.country+"\')\">";html+="<span class=\"pick-item-fl\">"+fl(t.country)+"</span>";html+="<span class=\"pick-item-info\"><span class=\"pick-item-nm\">"+t.country+"</span>";html+="<span class=\"pick-item-pr\">"+(t.final_prob*100).toFixed(2)+"%</span></span>";html+="<span class=\"pick-item-chk\">&#10003;</span></div>"}list.innerHTML=html||"<div style=\"padding:24px;text-align:center;color:var(--tx2);font-size:14px\">No result</div>"}
+function selectPick(country){var matchSel=document.getElementById("h2h-match");if(matchSel)matchSel.value="manual";if(_pickerSide==="a"){document.getElementById("h2h-a").value=country;updatePickCard("a",country)}else{document.getElementById("h2h-b").value=country;updatePickCard("b",country)}closePicker();h2hChange()}
+function updatePickCard(side,country){var t=D.find(function(x){return x.country===country;});if(!t)return;document.getElementById("h2h-pick-fl-"+side).textContent=fl(t.country);document.getElementById("h2h-pick-nm-"+side).textContent=t.country;document.getElementById("h2h-pick-pr-"+side).textContent=(t.final_prob*100).toFixed(2)+"%"}
+
+var H2H_TEAM_ALIAS={"Bosnia & Herzegovina":"Bosnia and Herzegovina","Korea Republic":"South Korea","IR Iran":"Iran","Côte d'Ivoire":"Ivory Coast","DR of the Congo":"DR Congo"};
+function h2hTeamName(c){return H2H_TEAM_ALIAS[c]||c;}
+function scheduleH2HMatches(){
+  var rows=(SP&&SP.matches)||[];
+  return rows.filter(function(m){return m.team1&&m.team2&&m.date;}).sort(function(a,b){
+    var ak=(a.date||"")+" "+(a.time||"");
+    var bk=(b.date||"")+" "+(b.time||"");
+    return ak<bk?-1:ak>bk?1:0;
+  });
+}
+function populateScheduleH2H(){
+  var sel=document.getElementById("h2h-match");
+  if(!sel)return;
+  var rows=scheduleH2HMatches();
+  sel.innerHTML="";
+  var manual=document.createElement("option");
+  manual.value="manual";
+  manual.textContent="Manual matchup / 手动选择球队";
+  sel.appendChild(manual);
+  for(var i=0;i<rows.length;i++){
+    var m=rows[i];
+    var opt=document.createElement("option");
+    opt.value=String(i);
+    opt.textContent=(m.date||"")+" · "+(m.round||"")+" · "+m.team1+" vs "+m.team2;
+    sel.appendChild(opt);
+  }
+  if(rows.length>0)sel.value="0";
+}
+function applyScheduleMatch(){
+  var sel=document.getElementById("h2h-match");
+  if(!sel||sel.value==="manual")return;
+  var rows=scheduleH2HMatches();
+  var m=rows[parseInt(sel.value,10)];
+  if(!m)return;
+  var teamA=h2hTeamName(m.team1);
+  var teamB=h2hTeamName(m.team2);
+  document.getElementById("h2h-a").value=teamA;
+  document.getElementById("h2h-b").value=teamB;
+  updatePickCard("a",teamA);
+  updatePickCard("b",teamB);
+  h2hChange();
+}
 
 /* ── Fixtures ── */
 var FL_ALIAS={"Bosnia & Herzegovina":"Bosnia and Herzegovina","Korea Republic":"South Korea","IR Iran":"Iran","Côte d'Ivoire":"Ivory Coast","DR of the Congo":"DR Congo"};
@@ -1688,8 +1749,16 @@ for(var i=0;i<teams.length;i++){
   optB.textContent=fl(t.country)+" "+t.country+" "+(t.final_prob*100).toFixed(1)+"%";
   selB.appendChild(optB);
 }
-if(teams.length>1){selA.value=teams[0].country;selB.value=teams[1].country;}
-h2hChange();
+populateScheduleH2H();
+if(document.getElementById("h2h-match")&&document.getElementById("h2h-match").value!=="manual"){
+  applyScheduleMatch();
+}else if(teams.length>1){
+  selA.value=teams[0].country;
+  selB.value=teams[1].country;
+  updatePickCard("a",selA.value);
+  updatePickCard("b",selB.value);
+  h2hChange();
+}
 // Squad selector
 var sel=document.getElementById("sq-sel");
 for(var i=0;i<teams.length;i++){var opt=document.createElement("option");opt.value=teams[i].country;opt.textContent=fl(teams[i].country)+" "+teams[i].country+" "+(teams[i].final_prob*100).toFixed(1)+"%";sel.appendChild(opt);}
@@ -1726,6 +1795,19 @@ def _load_final_pred():
         return json.load(f)
 
 
+def _load_schedule_predictions(path=SCHEDULE_PRED):
+    """Load schedule-driven predictions generated by scripts/generate_schedule_predictions.py."""
+    if not os.path.exists(path):
+        return {"source": "fallback", "teams": [], "matches": [], "next_match": None}
+    with open(path, encoding="utf-8") as f:
+        payload = json.load(f)
+    payload.setdefault("source", "schedule")
+    payload.setdefault("teams", [])
+    payload.setdefault("matches", [])
+    payload.setdefault("next_match", None)
+    return payload
+
+
 def _load_realtime():
     """加载 grok 实时调整的冠军概率（若存在）"""
     if not os.path.exists(REALTIME_CACHE):
@@ -1758,6 +1840,7 @@ def run_server(port=7862):
     results, ucl_data = _load_analysis()
     fixtures = _load_fixtures()
     final_pred = _load_final_pred()
+    schedule_pred = _load_schedule_predictions()
     realtime = _load_realtime()
     update_time = datetime.now().strftime("%Y-%m-%d %H:%M")
 
@@ -1765,6 +1848,7 @@ def run_server(port=7862):
     ucl_json = json.dumps(ucl_data, ensure_ascii=False)
     fixtures_json = json.dumps(fixtures, ensure_ascii=False)
     final_json = json.dumps(final_pred, ensure_ascii=False)
+    schedule_json = json.dumps(schedule_pred, ensure_ascii=False)
     realtime_json = json.dumps(realtime, ensure_ascii=False)
 
     html = HTML_BODY
@@ -1772,6 +1856,7 @@ def run_server(port=7862):
     html = html.replace("__UCL__", ucl_json)
     html = html.replace("__FIXTURES__", fixtures_json)
     html = html.replace("__FINAL__", final_json)
+    html = html.replace("__SCHEDULE_PRED__", schedule_json)
     html = html.replace("__REALTIME__", realtime_json)
     html = html.replace("__UPDATE_TIME__", update_time)
 
