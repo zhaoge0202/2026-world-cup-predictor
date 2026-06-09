@@ -1,0 +1,4503 @@
+{
+  "source": "schedule",
+  "as_of": "2026-06-09T11:18:24",
+  "n_sim": 1000,
+  "seed": 42,
+  "teams": [
+    {
+      "country": "Algeria",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.027,
+      "quarter": 0.075,
+      "round_of_16": 0.155,
+      "round_of_32": 0.476,
+      "qualified": 0.39,
+      "group_winner": 0.093,
+      "elo": 1872.4,
+      "source": "schedule"
+    },
+    {
+      "country": "Argentina",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.47,
+      "quarter": 0.619,
+      "round_of_16": 0.727,
+      "round_of_32": 0.973,
+      "qualified": 0.947,
+      "group_winner": 0.796,
+      "elo": 2187.5,
+      "source": "schedule"
+    },
+    {
+      "country": "Australia",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.037,
+      "quarter": 0.115,
+      "round_of_16": 0.315,
+      "round_of_32": 0.61,
+      "qualified": 0.5,
+      "group_winner": 0.24,
+      "elo": 1901.7,
+      "source": "schedule"
+    },
+    {
+      "country": "Austria",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.029,
+      "quarter": 0.088,
+      "round_of_16": 0.16,
+      "round_of_32": 0.538,
+      "qualified": 0.466,
+      "group_winner": 0.082,
+      "elo": 1894.5,
+      "source": "schedule"
+    },
+    {
+      "country": "Belgium",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.083,
+      "quarter": 0.248,
+      "round_of_16": 0.529,
+      "round_of_32": 0.843,
+      "qualified": 0.769,
+      "group_winner": 0.47,
+      "elo": 1971.5,
+      "source": "schedule"
+    },
+    {
+      "country": "Bosnia & Herzegovina",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.0,
+      "quarter": 0.004,
+      "round_of_16": 0.052,
+      "round_of_32": 0.275,
+      "qualified": 0.189,
+      "group_winner": 0.032,
+      "elo": 1500.0,
+      "source": "schedule"
+    },
+    {
+      "country": "Brazil",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.24,
+      "quarter": 0.396,
+      "round_of_16": 0.628,
+      "round_of_32": 0.908,
+      "qualified": 0.84,
+      "group_winner": 0.573,
+      "elo": 2067.8,
+      "source": "schedule"
+    },
+    {
+      "country": "Canada",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.044,
+      "quarter": 0.163,
+      "round_of_16": 0.473,
+      "round_of_32": 0.869,
+      "qualified": 0.818,
+      "group_winner": 0.356,
+      "elo": 1894.5,
+      "source": "schedule"
+    },
+    {
+      "country": "Cape Verde",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.0,
+      "quarter": 0.003,
+      "round_of_16": 0.024,
+      "round_of_32": 0.141,
+      "qualified": 0.09,
+      "group_winner": 0.007,
+      "elo": 1653.0,
+      "source": "schedule"
+    },
+    {
+      "country": "Colombia",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.169,
+      "quarter": 0.345,
+      "round_of_16": 0.586,
+      "round_of_32": 0.877,
+      "qualified": 0.834,
+      "group_winner": 0.505,
+      "elo": 2063.1,
+      "source": "schedule"
+    },
+    {
+      "country": "Croatia",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.069,
+      "quarter": 0.15,
+      "round_of_16": 0.398,
+      "round_of_32": 0.769,
+      "qualified": 0.709,
+      "group_winner": 0.263,
+      "elo": 1964.2,
+      "source": "schedule"
+    },
+    {
+      "country": "Curaçao",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.0,
+      "quarter": 0.002,
+      "round_of_16": 0.01,
+      "round_of_32": 0.058,
+      "qualified": 0.032,
+      "group_winner": 0.005,
+      "elo": 1601.0,
+      "source": "schedule"
+    },
+    {
+      "country": "Czech Republic",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.008,
+      "quarter": 0.048,
+      "round_of_16": 0.197,
+      "round_of_32": 0.517,
+      "qualified": 0.398,
+      "group_winner": 0.125,
+      "elo": 1796.3,
+      "source": "schedule"
+    },
+    {
+      "country": "DR Congo",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.002,
+      "quarter": 0.008,
+      "round_of_16": 0.053,
+      "round_of_32": 0.216,
+      "qualified": 0.17,
+      "group_winner": 0.041,
+      "elo": 1771.9,
+      "source": "schedule"
+    },
+    {
+      "country": "Ecuador",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.214,
+      "quarter": 0.356,
+      "round_of_16": 0.615,
+      "round_of_32": 0.917,
+      "qualified": 0.836,
+      "group_winner": 0.479,
+      "elo": 2026.5,
+      "source": "schedule"
+    },
+    {
+      "country": "Egypt",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.007,
+      "quarter": 0.039,
+      "round_of_16": 0.176,
+      "round_of_32": 0.466,
+      "qualified": 0.375,
+      "group_winner": 0.143,
+      "elo": 1809.9,
+      "source": "schedule"
+    },
+    {
+      "country": "England",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.252,
+      "quarter": 0.451,
+      "round_of_16": 0.677,
+      "round_of_32": 0.942,
+      "qualified": 0.905,
+      "group_winner": 0.642,
+      "elo": 2082.6,
+      "source": "schedule"
+    },
+    {
+      "country": "France",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.363,
+      "quarter": 0.518,
+      "round_of_16": 0.735,
+      "round_of_32": 0.929,
+      "qualified": 0.869,
+      "group_winner": 0.62,
+      "elo": 2120.6,
+      "source": "schedule"
+    },
+    {
+      "country": "Germany",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.156,
+      "quarter": 0.291,
+      "round_of_16": 0.575,
+      "round_of_32": 0.896,
+      "qualified": 0.815,
+      "group_winner": 0.436,
+      "elo": 2007.2,
+      "source": "schedule"
+    },
+    {
+      "country": "Ghana",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.0,
+      "quarter": 0.0,
+      "round_of_16": 0.009,
+      "round_of_32": 0.059,
+      "qualified": 0.047,
+      "group_winner": 0.003,
+      "elo": 1624.4,
+      "source": "schedule"
+    },
+    {
+      "country": "Haiti",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.0,
+      "quarter": 0.007,
+      "round_of_16": 0.029,
+      "round_of_32": 0.156,
+      "qualified": 0.117,
+      "group_winner": 0.026,
+      "elo": 1697.4,
+      "source": "schedule"
+    },
+    {
+      "country": "Iran",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.034,
+      "quarter": 0.13,
+      "round_of_16": 0.371,
+      "round_of_32": 0.709,
+      "qualified": 0.629,
+      "group_winner": 0.319,
+      "elo": 1898.2,
+      "source": "schedule"
+    },
+    {
+      "country": "Iraq",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.002,
+      "quarter": 0.025,
+      "round_of_16": 0.069,
+      "round_of_32": 0.194,
+      "qualified": 0.122,
+      "group_winner": 0.028,
+      "elo": 1750.3,
+      "source": "schedule"
+    },
+    {
+      "country": "Ivory Coast",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.02,
+      "quarter": 0.094,
+      "round_of_16": 0.237,
+      "round_of_32": 0.499,
+      "qualified": 0.317,
+      "group_winner": 0.08,
+      "elo": 1814.4,
+      "source": "schedule"
+    },
+    {
+      "country": "Japan",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.147,
+      "quarter": 0.291,
+      "round_of_16": 0.481,
+      "round_of_32": 0.873,
+      "qualified": 0.799,
+      "group_winner": 0.43,
+      "elo": 1992.8,
+      "source": "schedule"
+    },
+    {
+      "country": "Jordan",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.002,
+      "quarter": 0.025,
+      "round_of_16": 0.057,
+      "round_of_32": 0.251,
+      "qualified": 0.197,
+      "group_winner": 0.029,
+      "elo": 1775.1,
+      "source": "schedule"
+    },
+    {
+      "country": "Mexico",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.121,
+      "quarter": 0.256,
+      "round_of_16": 0.534,
+      "round_of_32": 0.879,
+      "qualified": 0.832,
+      "group_winner": 0.58,
+      "elo": 1976.0,
+      "source": "schedule"
+    },
+    {
+      "country": "Morocco",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.103,
+      "quarter": 0.24,
+      "round_of_16": 0.44,
+      "round_of_32": 0.802,
+      "qualified": 0.705,
+      "group_winner": 0.311,
+      "elo": 1984.1,
+      "source": "schedule"
+    },
+    {
+      "country": "Netherlands",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.167,
+      "quarter": 0.315,
+      "round_of_16": 0.48,
+      "round_of_32": 0.866,
+      "qualified": 0.801,
+      "group_winner": 0.454,
+      "elo": 2007.1,
+      "source": "schedule"
+    },
+    {
+      "country": "New Zealand",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.0,
+      "quarter": 0.01,
+      "round_of_16": 0.067,
+      "round_of_32": 0.281,
+      "qualified": 0.227,
+      "group_winner": 0.068,
+      "elo": 1731.8,
+      "source": "schedule"
+    },
+    {
+      "country": "Norway",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.088,
+      "quarter": 0.204,
+      "round_of_16": 0.393,
+      "round_of_32": 0.696,
+      "qualified": 0.585,
+      "group_winner": 0.218,
+      "elo": 1956.7,
+      "source": "schedule"
+    },
+    {
+      "country": "Panama",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.004,
+      "quarter": 0.038,
+      "round_of_16": 0.163,
+      "round_of_32": 0.436,
+      "qualified": 0.339,
+      "group_winner": 0.092,
+      "elo": 1847.7,
+      "source": "schedule"
+    },
+    {
+      "country": "Paraguay",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.04,
+      "quarter": 0.142,
+      "round_of_16": 0.369,
+      "round_of_32": 0.651,
+      "qualified": 0.55,
+      "group_winner": 0.273,
+      "elo": 1917.7,
+      "source": "schedule"
+    },
+    {
+      "country": "Portugal",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.127,
+      "quarter": 0.252,
+      "round_of_16": 0.473,
+      "round_of_32": 0.79,
+      "qualified": 0.743,
+      "group_winner": 0.378,
+      "elo": 2027.3,
+      "source": "schedule"
+    },
+    {
+      "country": "Qatar",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.0,
+      "quarter": 0.0,
+      "round_of_16": 0.023,
+      "round_of_32": 0.152,
+      "qualified": 0.098,
+      "group_winner": 0.023,
+      "elo": 1566.1,
+      "source": "schedule"
+    },
+    {
+      "country": "Saudi Arabia",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.0,
+      "quarter": 0.004,
+      "round_of_16": 0.033,
+      "round_of_32": 0.181,
+      "qualified": 0.12,
+      "group_winner": 0.01,
+      "elo": 1685.5,
+      "source": "schedule"
+    },
+    {
+      "country": "Scotland",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.017,
+      "quarter": 0.066,
+      "round_of_16": 0.176,
+      "round_of_32": 0.467,
+      "qualified": 0.338,
+      "group_winner": 0.09,
+      "elo": 1833.7,
+      "source": "schedule"
+    },
+    {
+      "country": "Senegal",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.063,
+      "quarter": 0.159,
+      "round_of_16": 0.311,
+      "round_of_32": 0.554,
+      "qualified": 0.424,
+      "group_winner": 0.134,
+      "elo": 1919.4,
+      "source": "schedule"
+    },
+    {
+      "country": "South Africa",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.0,
+      "quarter": 0.007,
+      "round_of_16": 0.037,
+      "round_of_32": 0.177,
+      "qualified": 0.134,
+      "group_winner": 0.036,
+      "elo": 1662.1,
+      "source": "schedule"
+    },
+    {
+      "country": "South Korea",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.022,
+      "quarter": 0.11,
+      "round_of_16": 0.36,
+      "round_of_32": 0.731,
+      "qualified": 0.636,
+      "group_winner": 0.259,
+      "elo": 1880.6,
+      "source": "schedule"
+    },
+    {
+      "country": "Spain",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.529,
+      "quarter": 0.631,
+      "round_of_16": 0.797,
+      "round_of_32": 0.998,
+      "qualified": 0.991,
+      "group_winner": 0.811,
+      "elo": 2208.5,
+      "source": "schedule"
+    },
+    {
+      "country": "Sweden",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.004,
+      "quarter": 0.027,
+      "round_of_16": 0.106,
+      "round_of_32": 0.344,
+      "qualified": 0.23,
+      "group_winner": 0.056,
+      "elo": 1765.2,
+      "source": "schedule"
+    },
+    {
+      "country": "Switzerland",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.093,
+      "quarter": 0.266,
+      "round_of_16": 0.566,
+      "round_of_32": 0.931,
+      "qualified": 0.895,
+      "group_winner": 0.589,
+      "elo": 1960.6,
+      "source": "schedule"
+    },
+    {
+      "country": "Tunisia",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.0,
+      "quarter": 0.011,
+      "round_of_16": 0.079,
+      "round_of_32": 0.274,
+      "qualified": 0.17,
+      "group_winner": 0.06,
+      "elo": 1737.9,
+      "source": "schedule"
+    },
+    {
+      "country": "Turkey",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.072,
+      "quarter": 0.215,
+      "round_of_16": 0.48,
+      "round_of_32": 0.755,
+      "qualified": 0.665,
+      "group_winner": 0.378,
+      "elo": 1962.9,
+      "source": "schedule"
+    },
+    {
+      "country": "USA",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.005,
+      "quarter": 0.024,
+      "round_of_16": 0.135,
+      "round_of_32": 0.378,
+      "qualified": 0.285,
+      "group_winner": 0.109,
+      "elo": 1500.0,
+      "source": "schedule"
+    },
+    {
+      "country": "Uruguay",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.084,
+      "quarter": 0.168,
+      "round_of_16": 0.298,
+      "round_of_32": 0.844,
+      "qualified": 0.799,
+      "group_winner": 0.172,
+      "elo": 1974.2,
+      "source": "schedule"
+    },
+    {
+      "country": "Uzbekistan",
+      "champion": 0.0,
+      "final": 0.0,
+      "semi": 0.008,
+      "quarter": 0.025,
+      "round_of_16": 0.104,
+      "round_of_32": 0.345,
+      "qualified": 0.253,
+      "group_winner": 0.076,
+      "elo": 1825.8,
+      "source": "schedule"
+    }
+  ],
+  "matches": [
+    {
+      "num": null,
+      "round": "Matchday 1",
+      "date": "2026-06-11",
+      "time": "13:00 UTC-6",
+      "group": "Group A",
+      "ground": "Mexico City",
+      "team1": "Mexico",
+      "team2": "South Africa",
+      "team1_win": 0.737190544640312,
+      "draw": 0.16472316841463694,
+      "team2_win": 0.09808628694505106,
+      "lambda_team1": 2.366249908284481,
+      "lambda_team2": 0.7366382440731508,
+      "top_scores": [
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.1257594155367634
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.10629428032640757
+        },
+        {
+          "score": "3-0",
+          "team1_goals": 3,
+          "team2_goals": 0,
+          "prob": 0.09919273515992544
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.09263919503666712
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.07830043201466413
+        },
+        {
+          "score": "3-1",
+          "team1_goals": 3,
+          "team2_goals": 1,
+          "prob": 0.07306916225302057
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 1",
+      "date": "2026-06-11",
+      "time": "20:00 UTC-6",
+      "group": "Group A",
+      "ground": "Guadalajara (Zapopan)",
+      "team1": "South Korea",
+      "team2": "Czech Republic",
+      "team1_win": 0.4688767492254256,
+      "draw": 0.25318621802239877,
+      "team2_win": 0.2779370327521757,
+      "lambda_team1": 1.5442250681284757,
+      "lambda_team2": 1.128766922291612,
+      "top_scores": [
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.12035095270515205
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.10662161543573291
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.09292447907022018
+        },
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.08232388568010639
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.07793614751443675
+        },
+        {
+          "score": "0-0",
+          "team1_goals": 0,
+          "team2_goals": 0,
+          "prob": 0.06904538569947774
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 2",
+      "date": "2026-06-12",
+      "time": "15:00 UTC-4",
+      "group": "Group B",
+      "ground": "Toronto",
+      "team1": "Canada",
+      "team2": "Bosnia & Herzegovina",
+      "team1_win": 0.6621778005493902,
+      "draw": 0.19777127487081053,
+      "team2_win": 0.1400509245797992,
+      "lambda_team1": 2.0833506407570286,
+      "lambda_team2": 0.8366667345270086,
+      "top_scores": [
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.11704491672164935
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.1123621865967974
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.09792758826648804
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.0940097037442569
+        },
+        {
+          "score": "3-0",
+          "team1_goals": 3,
+          "team2_goals": 0,
+          "prob": 0.08128186741646706
+        },
+        {
+          "score": "3-1",
+          "team1_goals": 3,
+          "team2_goals": 1,
+          "prob": 0.06800583458759277
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 2",
+      "date": "2026-06-12",
+      "time": "18:00 UTC-7",
+      "group": "Group D",
+      "ground": "Los Angeles (Inglewood)",
+      "team1": "USA",
+      "team2": "Paraguay",
+      "team1_win": 0.2697697958680196,
+      "draw": 0.25153114986878194,
+      "team2_win": 0.4786990542631985,
+      "lambda_team1": 1.1118990478172506,
+      "lambda_team2": 1.5676514706067286,
+      "top_scores": [
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.11956422335378539
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.1075315457716236
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.09371751528625652
+        },
+        {
+          "score": "0-2",
+          "team1_goals": 0,
+          "team2_goals": 2,
+          "prob": 0.08428599293275026
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.07626964640776335
+        },
+        {
+          "score": "0-0",
+          "team1_goals": 0,
+          "team2_goals": 0,
+          "prob": 0.06859403878210611
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 3",
+      "date": "2026-06-13",
+      "time": "12:00 UTC-7",
+      "group": "Group B",
+      "ground": "San Francisco Bay Area (Santa Clara)",
+      "team1": "Qatar",
+      "team2": "Switzerland",
+      "team1_win": 0.060940139477693674,
+      "draw": 0.12451363825453386,
+      "team2_win": 0.8145462222677724,
+      "lambda_team1": 0.6341441823453671,
+      "lambda_team2": 2.7486969462216475,
+      "top_scores": [
+        {
+          "score": "0-2",
+          "team1_goals": 0,
+          "team2_goals": 2,
+          "prob": 0.12827299822621688
+        },
+        {
+          "score": "0-3",
+          "team1_goals": 0,
+          "team2_goals": 3,
+          "prob": 0.11752786616903237
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.09333367827438425
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.08134357557715302
+        },
+        {
+          "score": "0-4",
+          "team1_goals": 0,
+          "team2_goals": 4,
+          "prob": 0.08076212170869145
+        },
+        {
+          "score": "1-3",
+          "team1_goals": 1,
+          "team2_goals": 3,
+          "prob": 0.07452961259455676
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 3",
+      "date": "2026-06-13",
+      "time": "18:00 UTC-4",
+      "group": "Group C",
+      "ground": "New York/New Jersey (East Rutherford)",
+      "team1": "Brazil",
+      "team2": "Morocco",
+      "team1_win": 0.46815018999005026,
+      "draw": 0.2533031376556878,
+      "team2_win": 0.27854667235426195,
+      "lambda_team1": 1.542503769937899,
+      "lambda_team2": 1.1300265266431795,
+      "top_scores": [
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.12040652993746029
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.10655194997513559
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.09286376317683648
+        },
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.08217839226544052
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.07805914791528051
+        },
+        {
+          "score": "0-0",
+          "team1_goals": 0,
+          "team2_goals": 0,
+          "prob": 0.06907727037803307
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 3",
+      "date": "2026-06-13",
+      "time": "21:00 UTC-4",
+      "group": "Group C",
+      "ground": "Boston (Foxborough)",
+      "team1": "Haiti",
+      "team2": "Scotland",
+      "team1_win": 0.22764023571052583,
+      "draw": 0.2401850899279746,
+      "team2_win": 0.5321746743614997,
+      "lambda_team1": 1.0247691636314786,
+      "lambda_team2": 1.7009393328152163,
+      "top_scores": [
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.11417092377376986
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.11141135762631839
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.0970989074553265
+        },
+        {
+          "score": "0-2",
+          "team1_goals": 0,
+          "team2_goals": 2,
+          "prob": 0.09475198015447371
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.06712227859697155
+        },
+        {
+          "score": "0-0",
+          "team1_goals": 0,
+          "team2_goals": 0,
+          "prob": 0.0654999008353355
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 3",
+      "date": "2026-06-13",
+      "time": "21:00 UTC-7",
+      "group": "Group D",
+      "ground": "Vancouver",
+      "team1": "Australia",
+      "team2": "Turkey",
+      "team1_win": 0.3018570459971719,
+      "draw": 0.2571103088148134,
+      "team2_win": 0.4410326451880147,
+      "lambda_team1": 1.178290276289615,
+      "lambda_team2": 1.4793215326920854,
+      "top_scores": [
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.12221625196613646
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.10372338160252847
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.09039856658921354
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.08261642196455155
+        },
+        {
+          "score": "0-2",
+          "team1_goals": 0,
+          "team2_goals": 2,
+          "prob": 0.07672011592412924
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.07200311064813006
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 4",
+      "date": "2026-06-14",
+      "time": "12:00 UTC-5",
+      "group": "Group E",
+      "ground": "Houston",
+      "team1": "Germany",
+      "team2": "Curaçao",
+      "team1_win": 0.82461595796869,
+      "draw": 0.11882507007693795,
+      "team2_win": 0.056558971954371956,
+      "lambda_team1": 2.8091307950751636,
+      "lambda_team2": 0.6205016087299328,
+      "top_scores": [
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.1278546722712718
+        },
+        {
+          "score": "3-0",
+          "team1_goals": 3,
+          "team2_goals": 0,
+          "prob": 0.11972016572382407
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.0910279240079676
+        },
+        {
+          "score": "4-0",
+          "team1_goals": 4,
+          "team2_goals": 0,
+          "prob": 0.08407740108157408
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.07933402982796249
+        },
+        {
+          "score": "3-1",
+          "team1_goals": 3,
+          "team2_goals": 1,
+          "prob": 0.074286555429047
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 4",
+      "date": "2026-06-14",
+      "time": "15:00 UTC-5",
+      "group": "Group F",
+      "ground": "Dallas (Arlington)",
+      "team1": "Netherlands",
+      "team2": "Japan",
+      "team1_win": 0.38567797186641745,
+      "draw": 0.2613018541169369,
+      "team2_win": 0.35302017401664565,
+      "lambda_team1": 1.3558181653607708,
+      "lambda_team2": 1.2856223806480118,
+      "top_scores": [
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.12420868454938527
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.09661366075999585
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.09161160967063345
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.08420219540381113
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.0798427323637693
+        },
+        {
+          "score": "0-0",
+          "team1_goals": 0,
+          "team2_goals": 0,
+          "prob": 0.07125856787313943
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 4",
+      "date": "2026-06-14",
+      "time": "19:00 UTC-4",
+      "group": "Group E",
+      "ground": "Philadelphia",
+      "team1": "Ivory Coast",
+      "team2": "Ecuador",
+      "team1_win": 0.1640895215442836,
+      "draw": 0.2124544233802869,
+      "team2_win": 0.6234560550754294,
+      "lambda_team1": 0.8900916192151769,
+      "lambda_team2": 1.9583042237987325,
+      "top_scores": [
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.11345941416089332
+        },
+        {
+          "score": "0-2",
+          "team1_goals": 0,
+          "team2_goals": 2,
+          "prob": 0.11109402499050354
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.1009892736656749
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.09888386058892862
+        },
+        {
+          "score": "0-3",
+          "team1_goals": 0,
+          "team2_goals": 3,
+          "prob": 0.07251863279256834
+        },
+        {
+          "score": "1-3",
+          "team1_goals": 1,
+          "team2_goals": 3,
+          "prob": 0.06454822728560798
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 4",
+      "date": "2026-06-14",
+      "time": "20:00 UTC-6",
+      "group": "Group F",
+      "ground": "Monterrey (Guadalupe)",
+      "team1": "Sweden",
+      "team2": "Tunisia",
+      "team1_win": 0.40082425698416263,
+      "draw": 0.26065785185937046,
+      "team2_win": 0.33851789115646697,
+      "lambda_team1": 1.3889800396357093,
+      "lambda_team2": 1.25492816868275,
+      "top_scores": [
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.12390256091497981
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.09873279125213644
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.08920398953139455
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.08604909198532727
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.07774440693206926
+        },
+        {
+          "score": "0-0",
+          "team1_goals": 0,
+          "team2_goals": 0,
+          "prob": 0.07108294463182588
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 5",
+      "date": "2026-06-15",
+      "time": "12:00 UTC-4",
+      "group": "Group H",
+      "ground": "Atlanta",
+      "team1": "Spain",
+      "team2": "Cape Verde",
+      "team1_win": 0.9246785649633901,
+      "draw": 0.056314005643071166,
+      "team2_win": 0.019007429393538788,
+      "lambda_team1": 3.7076429532854487,
+      "lambda_team2": 0.47012892002784396,
+      "top_scores": [
+        {
+          "score": "3-0",
+          "team1_goals": 3,
+          "team2_goals": 0,
+          "prob": 0.13045282329003252
+        },
+        {
+          "score": "4-0",
+          "team1_goals": 4,
+          "team2_goals": 0,
+          "prob": 0.12091812275187022
+        },
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.10555451935394793
+        },
+        {
+          "score": "5-0",
+          "team1_goals": 5,
+          "team2_goals": 0,
+          "prob": 0.08966424514909531
+        },
+        {
+          "score": "3-1",
+          "team1_goals": 3,
+          "team2_goals": 1,
+          "prob": 0.06132964492792617
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.05693888040670855
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 5",
+      "date": "2026-06-15",
+      "time": "12:00 UTC-7",
+      "group": "Group G",
+      "ground": "Seattle",
+      "team1": "Belgium",
+      "team2": "Egypt",
+      "team1_win": 0.5629441291845392,
+      "draw": 0.23196476188740822,
+      "team2_win": 0.20509110892805257,
+      "lambda_team1": 1.7828419536421438,
+      "lambda_team2": 0.9776919226721357,
+      "top_scores": [
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.11277931679450431
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.1102634270744688
+        },
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.10053384874217014
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.098291131870362
+        },
+        {
+          "score": "0-0",
+          "team1_goals": 0,
+          "team2_goals": 0,
+          "prob": 0.06325816854607273
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.06184700043052786
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 5",
+      "date": "2026-06-15",
+      "time": "18:00 UTC-4",
+      "group": "Group H",
+      "ground": "Miami (Miami Gardens)",
+      "team1": "Saudi Arabia",
+      "team2": "Uruguay",
+      "team1_win": 0.11236838324383445,
+      "draw": 0.17718794571546914,
+      "team2_win": 0.7104436710406964,
+      "lambda_team1": 0.7719649040096369,
+      "lambda_team2": 2.2579655738535678,
+      "top_scores": [
+        {
+          "score": "0-2",
+          "team1_goals": 0,
+          "team2_goals": 2,
+          "prob": 0.12317807369567484
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.10910536026061052
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.0950891498365736
+        },
+        {
+          "score": "0-3",
+          "team1_goals": 0,
+          "team2_goals": 3,
+          "prob": 0.09271061661947716
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.08422550896051904
+        },
+        {
+          "score": "1-3",
+          "team1_goals": 1,
+          "team2_goals": 3,
+          "prob": 0.07156934225932893
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 5",
+      "date": "2026-06-15",
+      "time": "18:00 UTC-7",
+      "group": "Group G",
+      "ground": "Los Angeles (Inglewood)",
+      "team1": "Iran",
+      "team2": "New Zealand",
+      "team1_win": 0.5687591112426107,
+      "draw": 0.23027907439036255,
+      "team2_win": 0.20096181436702681,
+      "lambda_team1": 1.7988202106677171,
+      "lambda_team2": 0.9690074456245471,
+      "top_scores": [
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.11296315982651804
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.1094621429531717
+        },
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.1016002074784141
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.09845135752358206
+        },
+        {
+          "score": "0-0",
+          "team1_goals": 0,
+          "team2_goals": 0,
+          "prob": 0.06279847155185478
+        },
+        {
+          "score": "3-0",
+          "team1_goals": 3,
+          "team2_goals": 0,
+          "prob": 0.06092016887340154
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 6",
+      "date": "2026-06-16",
+      "time": "15:00 UTC-4",
+      "group": "Group I",
+      "ground": "New York/New Jersey (East Rutherford)",
+      "team1": "France",
+      "team2": "Senegal",
+      "team1_win": 0.6105455548282068,
+      "draw": 0.21697589982786136,
+      "team2_win": 0.17247854534393184,
+      "lambda_team1": 1.919026087832237,
+      "lambda_team2": 0.9083097872035364,
+      "top_scores": [
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.11354995731371857
+        },
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.10895266517863143
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.10313853756459436
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.09896277212366085
+        },
+        {
+          "score": "3-0",
+          "team1_goals": 3,
+          "team2_goals": 0,
+          "prob": 0.06969433560554823
+        },
+        {
+          "score": "3-1",
+          "team1_goals": 3,
+          "team2_goals": 1,
+          "prob": 0.06330404714316736
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 6",
+      "date": "2026-06-16",
+      "time": "18:00 UTC-4",
+      "group": "Group I",
+      "ground": "Boston (Foxborough)",
+      "team1": "Iraq",
+      "team2": "Norway",
+      "team1_win": 0.16844451787679046,
+      "draw": 0.21483819459861492,
+      "team2_win": 0.6167172875245946,
+      "lambda_team1": 0.8995725014428,
+      "lambda_team2": 1.937665029423722,
+      "top_scores": [
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.11352324425543817
+        },
+        {
+          "score": "0-2",
+          "team1_goals": 0,
+          "team2_goals": 2,
+          "prob": 0.109985010210245
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.1021223888067665
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.098939490756042
+        },
+        {
+          "score": "0-3",
+          "team1_goals": 0,
+          "team2_goals": 3,
+          "prob": 0.0710380360150676
+        },
+        {
+          "score": "1-3",
+          "team1_goals": 1,
+          "team2_goals": 3,
+          "prob": 0.06390386375565807
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 6",
+      "date": "2026-06-16",
+      "time": "20:00 UTC-5",
+      "group": "Group J",
+      "ground": "Kansas City",
+      "team1": "Argentina",
+      "team2": "Algeria",
+      "team1_win": 0.7384365850182155,
+      "draw": 0.16412434730185943,
+      "team2_win": 0.09743906767992505,
+      "lambda_team1": 2.3715339073664023,
+      "lambda_team2": 0.7349969452524591,
+      "top_scores": [
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.12586248196210825
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.10614436637077561
+        },
+        {
+          "score": "3-0",
+          "team1_goals": 3,
+          "team2_goals": 0,
+          "prob": 0.09949571454614395
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.0925085397640423
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.07801578503827793
+        },
+        {
+          "score": "3-1",
+          "team1_goals": 3,
+          "team2_goals": 1,
+          "prob": 0.07312904625712648
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 6",
+      "date": "2026-06-16",
+      "time": "21:00 UTC-7",
+      "group": "Group J",
+      "ground": "San Francisco Bay Area (Santa Clara)",
+      "team1": "Austria",
+      "team2": "Jordan",
+      "team1_win": 0.5115676932535084,
+      "draw": 0.2450124526628111,
+      "team2_win": 0.2434198540836806,
+      "lambda_team1": 1.6483365951389397,
+      "lambda_team2": 1.0574722314710299,
+      "top_scores": [
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.11646558937100833
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.11013583705077082
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.09598724651732889
+        },
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.09077046532352233
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.07065643613960493
+        },
+        {
+          "score": "0-0",
+          "team1_goals": 0,
+          "team2_goals": 0,
+          "prob": 0.066816351329922
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 7",
+      "date": "2026-06-17",
+      "time": "12:00 UTC-5",
+      "group": "Group K",
+      "ground": "Houston",
+      "team1": "Portugal",
+      "team2": "DR Congo",
+      "team1_win": 0.6735560522553428,
+      "draw": 0.1931436165355046,
+      "team2_win": 0.13330033120915266,
+      "lambda_team1": 2.122438457533401,
+      "lambda_team2": 0.8212582896291131,
+      "top_scores": [
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.11863563916629327
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.11179182957716104
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.09743050211076663
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.09180996675304857
+        },
+        {
+          "score": "3-0",
+          "team1_goals": 3,
+          "team2_goals": 0,
+          "prob": 0.08393228100019888
+        },
+        {
+          "score": "3-1",
+          "team1_goals": 3,
+          "team2_goals": 1,
+          "prob": 0.06893008153889343
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 7",
+      "date": "2026-06-17",
+      "time": "15:00 UTC-5",
+      "group": "Group L",
+      "ground": "Dallas (Arlington)",
+      "team1": "England",
+      "team2": "Croatia",
+      "team1_win": 0.5103483520779142,
+      "draw": 0.24528054748528183,
+      "team2_win": 0.24437110043680396,
+      "lambda_team1": 1.645275486454412,
+      "lambda_team2": 1.0594397058897844,
+      "top_scores": [
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.11659302706312165
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.11005159275694643
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.09591382465923494
+        },
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.09053259390413393
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.07086535235164841
+        },
+        {
+          "score": "0-0",
+          "team1_goals": 0,
+          "team2_goals": 0,
+          "prob": 0.06688946238061864
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 7",
+      "date": "2026-06-17",
+      "time": "19:00 UTC-4",
+      "group": "Group L",
+      "ground": "Toronto",
+      "team1": "Ghana",
+      "team2": "Panama",
+      "team1_win": 0.15573669972332882,
+      "draw": 0.20765357530759146,
+      "team2_win": 0.6366097249690797,
+      "lambda_team1": 0.8717525931125785,
+      "lambda_team2": 1.999500995177233,
+      "top_scores": [
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.11322846926531921
+        },
+        {
+          "score": "0-2",
+          "team1_goals": 0,
+          "team2_goals": 2,
+          "prob": 0.11320021848920025
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.0987072116962099
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.09868258400887076
+        },
+        {
+          "score": "0-3",
+          "team1_goals": 0,
+          "team2_goals": 3,
+          "prob": 0.0754479831744787
+        },
+        {
+          "score": "1-3",
+          "team1_goals": 1,
+          "team2_goals": 3,
+          "prob": 0.065771974977466
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 7",
+      "date": "2026-06-17",
+      "time": "20:00 UTC-6",
+      "group": "Group K",
+      "ground": "Mexico City",
+      "team1": "Uzbekistan",
+      "team2": "Colombia",
+      "team1_win": 0.1456773049288986,
+      "draw": 0.2014517592439096,
+      "team2_win": 0.6528709358271919,
+      "lambda_team1": 0.8493592442315362,
+      "lambda_team2": 2.0522178210398936,
+      "top_scores": [
+        {
+          "score": "0-2",
+          "team1_goals": 0,
+          "team2_goals": 2,
+          "prob": 0.11568647185487821
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.1127428781378167
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.09825937430247225
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.09575920576762419
+        },
+        {
+          "score": "0-3",
+          "team1_goals": 0,
+          "team2_goals": 3,
+          "prob": 0.07913794639793705
+        },
+        {
+          "score": "1-3",
+          "team1_goals": 1,
+          "team2_goals": 3,
+          "prob": 0.06721654634258764
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 8",
+      "date": "2026-06-18",
+      "time": "12:00 UTC-4",
+      "group": "Group A",
+      "ground": "Atlanta",
+      "team1": "Czech Republic",
+      "team2": "South Africa",
+      "team1_win": 0.5296148865466722,
+      "draw": 0.24081486615526113,
+      "team2_win": 0.22957024729806663,
+      "lambda_team1": 1.6943126347929633,
+      "lambda_team2": 1.028777181780226,
+      "top_scores": [
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.11447028512738935
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.11126829711493662
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.0969742251998444
+        },
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.09426164082686728
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.06756148940681013
+        },
+        {
+          "score": "0-0",
+          "team1_goals": 0,
+          "team2_goals": 0,
+          "prob": 0.06567164455368242
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 8",
+      "date": "2026-06-18",
+      "time": "12:00 UTC-7",
+      "group": "Group B",
+      "ground": "Los Angeles (Inglewood)",
+      "team1": "Switzerland",
+      "team2": "Bosnia & Herzegovina",
+      "team1_win": 0.7346906843807994,
+      "draw": 0.16591969853581004,
+      "team2_win": 0.09938961708339052,
+      "lambda_team1": 2.355717203619422,
+      "lambda_team2": 0.7399318452990913,
+      "top_scores": [
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.12554772860136143
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.1065898134194246
+        },
+        {
+          "score": "3-0",
+          "team1_goals": 3,
+          "team2_goals": 0,
+          "prob": 0.09858498138052307
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.09289676249711486
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.07886919733352069
+        },
+        {
+          "score": "3-1",
+          "team1_goals": 3,
+          "team2_goals": 1,
+          "prob": 0.072946167191667
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 8",
+      "date": "2026-06-18",
+      "time": "15:00 UTC-7",
+      "group": "Group B",
+      "ground": "Vancouver",
+      "team1": "Canada",
+      "team2": "Qatar",
+      "team1_win": 0.7520693386419701,
+      "draw": 0.15746786731317522,
+      "team2_win": 0.09046279404485467,
+      "lambda_team1": 2.4308943091128783,
+      "lambda_team2": 0.7170489358350769,
+      "top_scores": [
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.12687869474781252
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.10438849132368501
+        },
+        {
+          "score": "3-0",
+          "team1_goals": 3,
+          "team2_goals": 0,
+          "prob": 0.10280956567004247
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.09097823304906251
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.07485165661707749
+        },
+        {
+          "score": "3-1",
+          "team1_goals": 3,
+          "team2_goals": 1,
+          "prob": 0.0737194896573704
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 8",
+      "date": "2026-06-18",
+      "time": "19:00 UTC-6",
+      "group": "Group A",
+      "ground": "Guadalajara (Zapopan)",
+      "team1": "Mexico",
+      "team2": "South Korea",
+      "team1_win": 0.48234278901595184,
+      "draw": 0.25088225540189435,
+      "team2_win": 0.26677495558215375,
+      "lambda_team1": 1.5764178177621029,
+      "lambda_team2": 1.1057158564417982,
+      "top_scores": [
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.1192557742292437
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.10785390616809067
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.09399846368299719
+        },
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.08501140969931005
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.07564985176235847
+        },
+        {
+          "score": "0-0",
+          "team1_goals": 0,
+          "team2_goals": 0,
+          "prob": 0.06841708140624868
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 9",
+      "date": "2026-06-19",
+      "time": "12:00 UTC-7",
+      "group": "Group D",
+      "ground": "Seattle",
+      "team1": "USA",
+      "team2": "Australia",
+      "team1_win": 0.28601459426805326,
+      "draw": 0.25466221927648486,
+      "team2_win": 0.459323186455462,
+      "lambda_team1": 1.1454647671389533,
+      "lambda_team2": 1.521714353406635,
+      "top_scores": [
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.12105256339514443
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.10567986625856636
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.09210371161752896
+        },
+        {
+          "score": "0-2",
+          "team1_goals": 0,
+          "team2_goals": 2,
+          "prob": 0.08040728467587699
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.07955012261279273
+        },
+        {
+          "score": "0-0",
+          "team1_goals": 0,
+          "team2_goals": 0,
+          "prob": 0.06944790000960607
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 9",
+      "date": "2026-06-19",
+      "time": "18:00 UTC-4",
+      "group": "Group C",
+      "ground": "Boston (Foxborough)",
+      "team1": "Scotland",
+      "team2": "Morocco",
+      "team1_win": 0.21491187297561382,
+      "draw": 0.23574486253316387,
+      "team2_win": 0.5493432644912223,
+      "lambda_team1": 0.9982595904162205,
+      "lambda_team2": 1.746109122528107,
+      "top_scores": [
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.11225565206663018
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.11206028125393999
+        },
+        {
+          "score": "0-2",
+          "team1_goals": 0,
+          "team2_goals": 2,
+          "prob": 0.09800530906444206
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.09783473968528504
+        },
+        {
+          "score": "0-0",
+          "team1_goals": 0,
+          "team2_goals": 0,
+          "prob": 0.06428902444773936
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.06417713521345868
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 9",
+      "date": "2026-06-19",
+      "time": "20:00 UTC-7",
+      "group": "Group D",
+      "ground": "San Francisco Bay Area (Santa Clara)",
+      "team1": "Turkey",
+      "team2": "Paraguay",
+      "team1_win": 0.4219405623612228,
+      "draw": 0.2591181042991254,
+      "team2_win": 0.3189413333396518,
+      "lambda_team1": 1.4359727604056045,
+      "lambda_team2": 1.2138601967523304,
+      "top_scores": [
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.12317064869934519
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.10147020969044615
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.08843484820687385
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.08577505931557812
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.07475597393214967
+        },
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.07285422855406273
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 9",
+      "date": "2026-06-19",
+      "time": "20:30 UTC-4",
+      "group": "Group C",
+      "ground": "Philadelphia",
+      "team1": "Brazil",
+      "team2": "Haiti",
+      "team1_win": 0.7928383658273185,
+      "draw": 0.1364193973758119,
+      "team2_win": 0.07074223679686974,
+      "lambda_team1": 2.6282796163362496,
+      "lambda_team2": 0.6631981493303694,
+      "top_scores": [
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.12849430014621496
+        },
+        {
+          "score": "3-0",
+          "team1_goals": 3,
+          "team2_goals": 0,
+          "prob": 0.11257298329656291
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.09777825718964599
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.08521718205647077
+        },
+        {
+          "score": "3-1",
+          "team1_goals": 3,
+          "team2_goals": 1,
+          "prob": 0.07465819418687912
+        },
+        {
+          "score": "4-0",
+          "team1_goals": 4,
+          "team2_goals": 0,
+          "prob": 0.07396831933712936
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 10",
+      "date": "2026-06-20",
+      "time": "12:00 UTC-5",
+      "group": "Group F",
+      "ground": "Houston",
+      "team1": "Netherlands",
+      "team2": "Sweden",
+      "team1_win": 0.6581659126313189,
+      "draw": 0.19936942214753545,
+      "team2_win": 0.14246466522114576,
+      "lambda_team1": 2.069840655497289,
+      "lambda_team2": 0.8421277129944833,
+      "top_scores": [
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.11646541512054848
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.11253563390131315
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.09807875367842062
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.09476937600769729
+        },
+        {
+          "score": "3-0",
+          "team1_goals": 3,
+          "team2_goals": 0,
+          "prob": 0.08035495039196
+        },
+        {
+          "score": "3-1",
+          "team1_goals": 3,
+          "team2_goals": 1,
+          "prob": 0.06766913060136644
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 10",
+      "date": "2026-06-20",
+      "time": "16:00 UTC-4",
+      "group": "Group E",
+      "ground": "Toronto",
+      "team1": "Germany",
+      "team2": "Ivory Coast",
+      "team1_win": 0.6005310107529248,
+      "draw": 0.22035125484006238,
+      "team2_win": 0.17911773440701284,
+      "lambda_team1": 1.8892950239156838,
+      "lambda_team2": 0.922603487233196,
+      "top_scores": [
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.11352980900318074
+        },
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.1072456516079037
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.10474299769125325
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.09894521216404838
+        },
+        {
+          "score": "3-0",
+          "team1_goals": 3,
+          "team2_goals": 0,
+          "prob": 0.0675395586398025
+        },
+        {
+          "score": "3-1",
+          "team1_goals": 3,
+          "team2_goals": 1,
+          "prob": 0.06231223232727272
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 10",
+      "date": "2026-06-20",
+      "time": "19:00 UTC-5",
+      "group": "Group E",
+      "ground": "Kansas City",
+      "team1": "Ecuador",
+      "team2": "Curaçao",
+      "team1_win": 0.8405370777736498,
+      "draw": 0.10961458221681303,
+      "team2_win": 0.04984834000953704,
+      "lambda_team1": 2.911738310619873,
+      "lambda_team2": 0.5986355886171159,
+      "top_scores": [
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.12671779786187373
+        },
+        {
+          "score": "3-0",
+          "team1_goals": 3,
+          "team2_goals": 0,
+          "prob": 0.12298968889060091
+        },
+        {
+          "score": "4-0",
+          "team1_goals": 4,
+          "team2_goals": 0,
+          "prob": 0.08952844723849553
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.087039276434768
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.07585778351130748
+        },
+        {
+          "score": "3-1",
+          "team1_goals": 3,
+          "team2_goals": 1,
+          "prob": 0.07362600480286083
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 10",
+      "date": "2026-06-20",
+      "time": "22:00 UTC-6",
+      "group": "Group F",
+      "ground": "Monterrey (Guadalupe)",
+      "team1": "Tunisia",
+      "team2": "Japan",
+      "team1_win": 0.13363273679514684,
+      "draw": 0.19337706260399254,
+      "team2_win": 0.6729902006008607,
+      "lambda_team1": 0.8220219285016487,
+      "lambda_team2": 2.120466762552355,
+      "top_scores": [
+        {
+          "score": "0-2",
+          "team1_goals": 0,
+          "team2_goals": 2,
+          "prob": 0.11855844669989128
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.11182297104924703
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.09745764299640455
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.09192093431268608
+        },
+        {
+          "score": "0-3",
+          "team1_goals": 0,
+          "team2_goals": 3,
+          "prob": 0.08379974854898481
+        },
+        {
+          "score": "1-3",
+          "team1_goals": 1,
+          "team2_goals": 3,
+          "prob": 0.06888523091018973
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 11",
+      "date": "2026-06-21",
+      "time": "12:00 UTC-4",
+      "group": "Group H",
+      "ground": "Atlanta",
+      "team1": "Spain",
+      "team2": "Saudi Arabia",
+      "team1_win": 0.9074069312247923,
+      "draw": 0.06792599045101484,
+      "team2_win": 0.024667078324192748,
+      "lambda_team1": 3.4902900066499885,
+      "lambda_team2": 0.4994055434235816,
+      "top_scores": [
+        {
+          "score": "3-0",
+          "team1_goals": 3,
+          "team2_goals": 0,
+          "prob": 0.13126951153211316
+        },
+        {
+          "score": "4-0",
+          "team1_goals": 4,
+          "team2_goals": 0,
+          "prob": 0.11454216606958999
+        },
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.11282974590822624
+        },
+        {
+          "score": "5-0",
+          "team1_goals": 5,
+          "team2_goals": 0,
+          "prob": 0.07995707551454666
+        },
+        {
+          "score": "3-1",
+          "team1_goals": 3,
+          "team2_goals": 1,
+          "prob": 0.06555672174164308
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.06465350769893258
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 11",
+      "date": "2026-06-21",
+      "time": "12:00 UTC-7",
+      "group": "Group G",
+      "ground": "Los Angeles (Inglewood)",
+      "team1": "Belgium",
+      "team2": "Iran",
+      "team1_win": 0.4555824781084535,
+      "draw": 0.2552036387796777,
+      "team2_win": 0.2892138831118688,
+      "lambda_team1": 1.5129709487045753,
+      "lambda_team2": 1.152084366834256,
+      "top_scores": [
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.12130992476943793
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.10529604277400122
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.09176919598284858
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.08017994322581343
+        },
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.07965492686530909
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.06987963393435456
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 11",
+      "date": "2026-06-21",
+      "time": "18:00 UTC-4",
+      "group": "Group H",
+      "ground": "Miami (Miami Gardens)",
+      "team1": "Uruguay",
+      "team2": "Cape Verde",
+      "team1_win": 0.7447300088974498,
+      "draw": 0.1610753092845986,
+      "team2_win": 0.09419468181795175,
+      "lambda_team1": 2.398577233613483,
+      "lambda_team2": 0.7267100483777124,
+      "top_scores": [
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.1263574902201712
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.1053603681794413
+        },
+        {
+          "score": "3-0",
+          "team1_goals": 3,
+          "team2_goals": 0,
+          "prob": 0.10102606644621366
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.09182525783078693
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.07656643825677538
+        },
+        {
+          "score": "3-1",
+          "team1_goals": 3,
+          "team2_goals": 1,
+          "prob": 0.07341665763453792
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 11",
+      "date": "2026-06-21",
+      "time": "18:00 UTC-7",
+      "group": "Group G",
+      "ground": "Vancouver",
+      "team1": "New Zealand",
+      "team2": "Egypt",
+      "team1_win": 0.28426718421180663,
+      "draw": 0.25435623707749244,
+      "team2_win": 0.4613765787107009,
+      "lambda_team1": 1.1418508259727211,
+      "lambda_team2": 1.5265305570822227,
+      "top_scores": [
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.12090711610560716
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.10588696295123198
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.09228420365194874
+        },
+        {
+          "score": "0-2",
+          "team1_goals": 0,
+          "team2_goals": 2,
+          "prob": 0.08081984227084442
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.07920386234305482
+        },
+        {
+          "score": "0-0",
+          "team1_goals": 0,
+          "team2_goals": 0,
+          "prob": 0.06936445684626322
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 12",
+      "date": "2026-06-22",
+      "time": "12:00 UTC-5",
+      "group": "Group J",
+      "ground": "Dallas (Arlington)",
+      "team1": "Argentina",
+      "team2": "Austria",
+      "team1_win": 0.7150834335340479,
+      "draw": 0.1750792071038461,
+      "team2_win": 0.10983735936210602,
+      "lambda_team1": 2.2760856070549003,
+      "lambda_team2": 0.7658192521731854,
+      "top_scores": [
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.12367341664845287
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.10867202557330684
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.09471148345142094
+        },
+        {
+          "score": "3-0",
+          "team1_goals": 3,
+          "team2_goals": 0,
+          "prob": 0.09383042786961582
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.08322312935669511
+        },
+        {
+          "score": "3-1",
+          "team1_goals": 3,
+          "team2_goals": 1,
+          "prob": 0.07185714810219919
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 12",
+      "date": "2026-06-22",
+      "time": "17:00 UTC-4",
+      "group": "Group I",
+      "ground": "Philadelphia",
+      "team1": "France",
+      "team2": "Iraq",
+      "team1_win": 0.7927456440209532,
+      "draw": 0.13646920812075686,
+      "team2_win": 0.0707851478582901,
+      "lambda_team1": 2.627791112895543,
+      "lambda_team2": 0.6633214371275723,
+      "top_scores": [
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.12849343918950096
+        },
+        {
+          "score": "3-0",
+          "team1_goals": 3,
+          "team2_goals": 0,
+          "prob": 0.1125513058558515
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.09779577878845554
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.0852324527446441
+        },
+        {
+          "score": "3-1",
+          "team1_goals": 3,
+          "team2_goals": 1,
+          "prob": 0.07465769395088837
+        },
+        {
+          "score": "4-0",
+          "team1_goals": 4,
+          "team2_goals": 0,
+          "prob": 0.07394033031819866
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 12",
+      "date": "2026-06-22",
+      "time": "20:00 UTC-4",
+      "group": "Group I",
+      "ground": "New York/New Jersey (East Rutherford)",
+      "team1": "Norway",
+      "team2": "Senegal",
+      "team1_win": 0.41258652278043967,
+      "draw": 0.2598903925374721,
+      "team2_win": 0.3275230846820883,
+      "lambda_team1": 1.4150400778420444,
+      "lambda_team2": 1.2318168260895763,
+      "top_scores": [
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.12353775250923656
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.1002890607537886
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.08740543546355067
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.08730335941977936
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.07608794109908368
+        },
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.07095652016787328
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 12",
+      "date": "2026-06-22",
+      "time": "20:00 UTC-7",
+      "group": "Group J",
+      "ground": "San Francisco Bay Area (Santa Clara)",
+      "team1": "Jordan",
+      "team2": "Algeria",
+      "team1_win": 0.2648867314380688,
+      "draw": 0.250461351657504,
+      "team2_win": 0.4846519169044272,
+      "lambda_team1": 1.1018176316649722,
+      "lambda_team2": 1.5819951754111579,
+      "top_scores": [
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.11905569948966976
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.10805390662496753
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.0941727710989291
+        },
+        {
+          "score": "0-2",
+          "team1_goals": 0,
+          "team2_goals": 2,
+          "prob": 0.08547037948251318
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.07525667672072854
+        },
+        {
+          "score": "0-0",
+          "team1_goals": 0,
+          "team2_goals": 0,
+          "prob": 0.06830229845478795
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 13",
+      "date": "2026-06-23",
+      "time": "12:00 UTC-5",
+      "group": "Group K",
+      "ground": "Houston",
+      "team1": "Portugal",
+      "team2": "Uzbekistan",
+      "team1_win": 0.6109022147482762,
+      "draw": 0.21685355320428115,
+      "team2_win": 0.1722442320474427,
+      "lambda_team1": 1.920096521236144,
+      "lambda_team2": 0.9078034141506377,
+      "top_scores": [
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.11354923216808735
+        },
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.10901274283748989
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.1030803806363731
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.0989621401337988
+        },
+        {
+          "score": "3-0",
+          "team1_goals": 3,
+          "team2_goals": 0,
+          "prob": 0.0697716627642249
+        },
+        {
+          "score": "3-1",
+          "team1_goals": 3,
+          "team2_goals": 1,
+          "prob": 0.06333895366833028
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 13",
+      "date": "2026-06-23",
+      "time": "16:00 UTC-4",
+      "group": "Group L",
+      "ground": "Boston (Foxborough)",
+      "team1": "England",
+      "team2": "Ghana",
+      "team1_win": 0.8655060616212807,
+      "draw": 0.09462757399268361,
+      "team2_win": 0.03986636438603562,
+      "lambda_team1": 3.0942128572985284,
+      "lambda_team2": 0.5633323426232417,
+      "top_scores": [
+        {
+          "score": "3-0",
+          "team1_goals": 3,
+          "team2_goals": 0,
+          "prob": 0.1274123756432627
+        },
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.12353291274974171
+        },
+        {
+          "score": "4-0",
+          "team1_goals": 4,
+          "team2_goals": 0,
+          "prob": 0.09856025272358332
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.07984771471578389
+        },
+        {
+          "score": "3-1",
+          "team1_goals": 3,
+          "team2_goals": 1,
+          "prob": 0.07177551205031163
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.06959008513038452
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 13",
+      "date": "2026-06-23",
+      "time": "19:00 UTC-4",
+      "group": "Group L",
+      "ground": "Toronto",
+      "team1": "Panama",
+      "team2": "Croatia",
+      "team1_win": 0.2461837955687087,
+      "draw": 0.2457844090003293,
+      "team2_win": 0.5080317954309621,
+      "lambda_team1": 1.0631879977961423,
+      "lambda_team2": 1.6394750327224383,
+      "top_scores": [
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.11683253541330386
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.10988887727803863
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.0957720124098859
+        },
+        {
+          "score": "0-2",
+          "team1_goals": 0,
+          "team2_goals": 2,
+          "prob": 0.0900800353356222
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.07126216202225234
+        },
+        {
+          "score": "0-0",
+          "team1_goals": 0,
+          "team2_goals": 0,
+          "prob": 0.06702686840894558
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 13",
+      "date": "2026-06-23",
+      "time": "20:00 UTC-6",
+      "group": "Group K",
+      "ground": "Guadalajara (Zapopan)",
+      "team1": "Colombia",
+      "team2": "DR Congo",
+      "team1_win": 0.7131448692129237,
+      "draw": 0.17596301430440778,
+      "team2_win": 0.11089211648266847,
+      "lambda_team1": 2.2684828488758986,
+      "lambda_team2": 0.768385874436158,
+      "top_scores": [
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.12346873424363776
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.10885577936356912
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.09487163132732321
+        },
+        {
+          "score": "3-0",
+          "team1_goals": 3,
+          "team2_goals": 0,
+          "prob": 0.09336223533470288
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.08364324321370553
+        },
+        {
+          "score": "3-1",
+          "team1_goals": 3,
+          "team2_goals": 1,
+          "prob": 0.07173822283697004
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 14",
+      "date": "2026-06-24",
+      "time": "12:00 UTC-7",
+      "group": "Group B",
+      "ground": "Vancouver",
+      "team1": "Switzerland",
+      "team2": "Canada",
+      "team1_win": 0.4469143502197227,
+      "draw": 0.2563780522766152,
+      "team2_win": 0.29670759750366216,
+      "lambda_team1": 1.4928570358148285,
+      "lambda_team2": 1.167606901169565,
+      "top_scores": [
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.12186817704845299
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.1043743206094281
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.09096588277435512
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.08163419143611106
+        },
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.0779079694400887
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.07114706227736405
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 14",
+      "date": "2026-06-24",
+      "time": "12:00 UTC-7",
+      "group": "Group B",
+      "ground": "Seattle",
+      "team1": "Bosnia & Herzegovina",
+      "team2": "Qatar",
+      "team1_win": 0.4673027295190995,
+      "draw": 0.25343854734406135,
+      "team2_win": 0.27925872313683914,
+      "lambda_team1": 1.5404980135585353,
+      "lambda_team2": 1.1314978416950106,
+      "top_scores": [
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.12047089633594973
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.10647028381024704
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.0927925882485734
+        },
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.08200863035634952
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.07820256519361757
+        },
+        {
+          "score": "0-0",
+          "team1_goals": 0,
+          "team2_goals": 0,
+          "prob": 0.06911419740444956
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 14",
+      "date": "2026-06-24",
+      "time": "18:00 UTC-4",
+      "group": "Group C",
+      "ground": "Miami (Miami Gardens)",
+      "team1": "Scotland",
+      "team2": "Brazil",
+      "team1_win": 0.1479391911111173,
+      "draw": 0.2028877672822522,
+      "team2_win": 0.6491730416066305,
+      "lambda_team1": 0.8544264681652458,
+      "lambda_team2": 2.0400470285288783,
+      "top_scores": [
+        {
+          "score": "0-2",
+          "team1_goals": 0,
+          "team2_goals": 2,
+          "prob": 0.11513326587991142
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.1128731487753363
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.09837290973410291
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.09644180585880094
+        },
+        {
+          "score": "0-3",
+          "team1_goals": 0,
+          "team2_goals": 3,
+          "prob": 0.07829242564771287
+        },
+        {
+          "score": "1-3",
+          "team1_goals": 1,
+          "team2_goals": 3,
+          "prob": 0.0668951207302654
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 14",
+      "date": "2026-06-24",
+      "time": "18:00 UTC-4",
+      "group": "Group C",
+      "ground": "Atlanta",
+      "team1": "Morocco",
+      "team2": "Haiti",
+      "team1_win": 0.7082754654914812,
+      "draw": 0.1781656380035723,
+      "team2_win": 0.11355889650494654,
+      "lambda_team1": 2.249586872489314,
+      "lambda_team2": 0.7748401267776397,
+      "top_scores": [
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.12294024894528179
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.1093002901543788
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.09525903807883672
+        },
+        {
+          "score": "3-0",
+          "team1_goals": 3,
+          "team2_goals": 0,
+          "prob": 0.09218825670929137
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.08469025068005168
+        },
+        {
+          "score": "3-1",
+          "team1_goals": 3,
+          "team2_goals": 1,
+          "prob": 0.07143116051603693
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 14",
+      "date": "2026-06-24",
+      "time": "19:00 UTC-6",
+      "group": "Group A",
+      "ground": "Mexico City",
+      "team1": "Czech Republic",
+      "team2": "Mexico",
+      "team1_win": 0.18977257411438825,
+      "draw": 0.22541202221244522,
+      "team2_win": 0.5848154036731665,
+      "lambda_team1": 0.9453450959074219,
+      "lambda_team2": 1.8438453692974295,
+      "top_scores": [
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.1133433828746565
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.10714861115411378
+        },
+        {
+          "score": "0-2",
+          "team1_goals": 0,
+          "team2_goals": 2,
+          "prob": 0.10449383582697049
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.0987827352515818
+        },
+        {
+          "score": "0-3",
+          "team1_goals": 0,
+          "team2_goals": 3,
+          "prob": 0.06422349176989511
+        },
+        {
+          "score": "0-0",
+          "team1_goals": 0,
+          "team2_goals": 0,
+          "prob": 0.06147119751036625
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 14",
+      "date": "2026-06-24",
+      "time": "19:00 UTC-6",
+      "group": "Group A",
+      "ground": "Monterrey (Guadalupe)",
+      "team1": "South Africa",
+      "team2": "South Korea",
+      "team1_win": 0.15928327777960916,
+      "draw": 0.20972947993408114,
+      "team2_win": 0.6309872422863096,
+      "lambda_team1": 0.8795654488550668,
+      "lambda_team2": 1.9817401646982544,
+      "top_scores": [
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.11334458844387667
+        },
+        {
+          "score": "0-2",
+          "team1_goals": 0,
+          "team2_goals": 2,
+          "prob": 0.11230976168521202
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.09969398380993122
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.09878378594745911
+        },
+        {
+          "score": "0-3",
+          "team1_goals": 0,
+          "team2_goals": 3,
+          "prob": 0.07418958853975792
+        },
+        {
+          "score": "1-3",
+          "team1_goals": 1,
+          "team2_goals": 3,
+          "prob": 0.0652545987443449
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 15",
+      "date": "2026-06-25",
+      "time": "16:00 UTC-4",
+      "group": "Group E",
+      "ground": "Philadelphia",
+      "team1": "Curaçao",
+      "team2": "Ivory Coast",
+      "team1_win": 0.1631060928951223,
+      "draw": 0.21190499311826896,
+      "team2_win": 0.6249889139866087,
+      "lambda_team1": 0.8879433442612659,
+      "lambda_team2": 1.9630421115742474,
+      "top_scores": [
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.11343978764353123
+        },
+        {
+          "score": "0-2",
+          "team1_goals": 0,
+          "team2_goals": 2,
+          "prob": 0.11134354013614588
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.10072810441248493
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.09886675539037784
+        },
+        {
+          "score": "0-3",
+          "team1_goals": 0,
+          "team2_goals": 3,
+          "prob": 0.0728573527130039
+        },
+        {
+          "score": "1-3",
+          "team1_goals": 1,
+          "team2_goals": 3,
+          "prob": 0.0646932014220073
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 15",
+      "date": "2026-06-25",
+      "time": "16:00 UTC-4",
+      "group": "Group E",
+      "ground": "New York/New Jersey (East Rutherford)",
+      "team1": "Ecuador",
+      "team2": "Germany",
+      "team1_win": 0.39148305042435816,
+      "draw": 0.2611016455205916,
+      "team2_win": 0.3474153040550502,
+      "lambda_team1": 1.3684779880417677,
+      "lambda_team2": 1.273729057177742,
+      "top_scores": [
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.12411351627562173
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.09744106533192039
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.09069456532013549
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.084923307520826
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.07904349603438099
+        },
+        {
+          "score": "0-0",
+          "team1_goals": 0,
+          "team2_goals": 0,
+          "prob": 0.07120396979958317
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 15",
+      "date": "2026-06-25",
+      "time": "18:00 UTC-5",
+      "group": "Group F",
+      "ground": "Dallas (Arlington)",
+      "team1": "Japan",
+      "team2": "Sweden",
+      "team1_win": 0.6416266777958747,
+      "draw": 0.205771435194411,
+      "team2_win": 0.1526018870097143,
+      "lambda_team1": 2.015546866220729,
+      "lambda_team2": 0.8648125264114026,
+      "top_scores": [
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.11398179484323788
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.11310259935256238
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.09857288396328674
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.09781254468978615
+        },
+        {
+          "score": "3-0",
+          "team1_goals": 3,
+          "team2_goals": 0,
+          "prob": 0.07657854980083405
+        },
+        {
+          "score": "3-1",
+          "team1_goals": 3,
+          "team2_goals": 1,
+          "prob": 0.06622608912218071
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 15",
+      "date": "2026-06-25",
+      "time": "18:00 UTC-5",
+      "group": "Group F",
+      "ground": "Kansas City",
+      "team1": "Tunisia",
+      "team2": "Netherlands",
+      "team1_win": 0.1243381743386252,
+      "draw": 0.18662255327466515,
+      "team2_win": 0.6890392723867097,
+      "lambda_team1": 0.8004595511040238,
+      "lambda_team2": 2.177586831305625,
+      "top_scores": [
+        {
+          "score": "0-2",
+          "team1_goals": 0,
+          "team2_goals": 2,
+          "prob": 0.1206645486604395
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.11082409842466961
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.09658709045490504
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.08871020807651918
+        },
+        {
+          "score": "0-3",
+          "team1_goals": 0,
+          "team2_goals": 3,
+          "prob": 0.08758584405613662
+        },
+        {
+          "score": "1-3",
+          "team1_goals": 1,
+          "team2_goals": 3,
+          "prob": 0.07010892541624215
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 15",
+      "date": "2026-06-25",
+      "time": "19:00 UTC-7",
+      "group": "Group D",
+      "ground": "Los Angeles (Inglewood)",
+      "team1": "Turkey",
+      "team2": "USA",
+      "team1_win": 0.5337590447224417,
+      "draw": 0.23979106405608322,
+      "team2_win": 0.2264498912214751,
+      "lambda_team1": 1.705054556371342,
+      "lambda_team2": 1.0222958385487066,
+      "top_scores": [
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.11398362531241199
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.11149769079978636
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.09717414984532598
+        },
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.09505482286152941
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.06685042709424464
+        },
+        {
+          "score": "0-0",
+          "team1_goals": 0,
+          "team2_goals": 0,
+          "prob": 0.06539244763937245
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 15",
+      "date": "2026-06-25",
+      "time": "19:00 UTC-7",
+      "group": "Group D",
+      "ground": "San Francisco Bay Area (Santa Clara)",
+      "team1": "Paraguay",
+      "team2": "Australia",
+      "team1_win": 0.3876487430831093,
+      "draw": 0.261240454474912,
+      "team2_win": 0.3511108024419787,
+      "lambda_team1": 1.360109310027193,
+      "lambda_team2": 1.2815662422324603,
+      "top_scores": [
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.1241794985001952
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.09689666784908227
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.09130111645049502
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.08444884601231167
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.07957212662760331
+        },
+        {
+          "score": "0-0",
+          "team1_goals": 0,
+          "team2_goals": 0,
+          "prob": 0.07124182382601657
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 16",
+      "date": "2026-06-26",
+      "time": "15:00 UTC-4",
+      "group": "Group I",
+      "ground": "Boston (Foxborough)",
+      "team1": "Norway",
+      "team2": "France",
+      "team1_win": 0.20310649563426994,
+      "draw": 0.2311618489078829,
+      "team2_win": 0.5657316554578471,
+      "lambda_team1": 0.9735209412784814,
+      "lambda_team2": 1.7904804134853414,
+      "top_scores": [
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.11287046972461391
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.10988176592885046
+        },
+        {
+          "score": "0-2",
+          "team1_goals": 0,
+          "team2_goals": 2,
+          "prob": 0.1010461826514057
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.09837057484739382
+        },
+        {
+          "score": "0-0",
+          "team1_goals": 0,
+          "team2_goals": 0,
+          "prob": 0.06303920940687686
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.06136999047923406
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 16",
+      "date": "2026-06-26",
+      "time": "15:00 UTC-4",
+      "group": "Group I",
+      "ground": "Toronto",
+      "team1": "Senegal",
+      "team2": "Iraq",
+      "team1_win": 0.5720256969591057,
+      "draw": 0.22931406942383653,
+      "team2_win": 0.19866023361705784,
+      "lambda_team1": 1.8078708283730043,
+      "lambda_team2": 0.9641563711969469,
+      "top_scores": [
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.11305576082093816
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.10900343209602568
+        },
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.10219510598384486
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.09853206253947125
+        },
+        {
+          "score": "0-0",
+          "team1_goals": 0,
+          "team2_goals": 0,
+          "prob": 0.06253530896490145
+        },
+        {
+          "score": "3-0",
+          "team1_goals": 3,
+          "team2_goals": 0,
+          "prob": 0.06158518363689353
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 16",
+      "date": "2026-06-26",
+      "time": "18:00 UTC-6",
+      "group": "Group H",
+      "ground": "Guadalajara (Zapopan)",
+      "team1": "Uruguay",
+      "team2": "Spain",
+      "team1_win": 0.14779717388704636,
+      "draw": 0.20279832644813336,
+      "team2_win": 0.6494044996648203,
+      "lambda_team1": 0.8541088828688017,
+      "lambda_team2": 2.0408055839698886,
+      "top_scores": [
+        {
+          "score": "0-2",
+          "team1_goals": 0,
+          "team2_goals": 2,
+          "prob": 0.11516810935720351
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.11286534127682274
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.09836610522519308
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.09639929055255313
+        },
+        {
+          "score": "0-3",
+          "team1_goals": 0,
+          "team2_goals": 3,
+          "prob": 0.0783452402238119
+        },
+        {
+          "score": "1-3",
+          "team1_goals": 1,
+          "team2_goals": 3,
+          "prob": 0.0669153656056479
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 16",
+      "date": "2026-06-26",
+      "time": "19:00 UTC-5",
+      "group": "Group H",
+      "ground": "Houston",
+      "team1": "Cape Verde",
+      "team2": "Saudi Arabia",
+      "team1_win": 0.3327825848172806,
+      "draw": 0.2602881790393252,
+      "team2_win": 0.4069292361433942,
+      "lambda_team1": 1.2428566638135403,
+      "lambda_team2": 1.402470798304734,
+      "top_scores": [
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.12372683856947005
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.09955036825391489
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.08822061658540588
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.08676163903012281
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.076887362904324
+        },
+        {
+          "score": "0-0",
+          "team1_goals": 0,
+          "team2_goals": 0,
+          "prob": 0.07098213265776976
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 16",
+      "date": "2026-06-26",
+      "time": "20:00 UTC-7",
+      "group": "Group G",
+      "ground": "Seattle",
+      "team1": "Egypt",
+      "team2": "Iran",
+      "team1_win": 0.2738891248478729,
+      "draw": 0.25238667938673726,
+      "team2_win": 0.4737241957653898,
+      "lambda_team1": 1.1204053655365955,
+      "lambda_team2": 1.5557495805476849,
+      "top_scores": [
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.11997089553901544
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.10707811585814549
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.09332233520637669
+        },
+        {
+          "score": "0-2",
+          "team1_goals": 0,
+          "team2_goals": 2,
+          "prob": 0.08329336691607311
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.07711452860991995
+        },
+        {
+          "score": "0-0",
+          "team1_goals": 0,
+          "team2_goals": 0,
+          "prob": 0.0688273467638987
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 16",
+      "date": "2026-06-26",
+      "time": "20:00 UTC-7",
+      "group": "Group G",
+      "ground": "Vancouver",
+      "team1": "New Zealand",
+      "team2": "Belgium",
+      "team1_win": 0.14399543335976134,
+      "draw": 0.20036793436886594,
+      "team2_win": 0.6556366322713728,
+      "lambda_team1": 0.845578557313089,
+      "lambda_team2": 2.0613935422105727,
+      "top_scores": [
+        {
+          "score": "0-2",
+          "team1_goals": 0,
+          "team2_goals": 2,
+          "prob": 0.11609530214620688
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.11263768879542523
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.09816769809961677
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.09524401439071634
+        },
+        {
+          "score": "0-3",
+          "team1_goals": 0,
+          "team2_goals": 3,
+          "prob": 0.07977270204172539
+        },
+        {
+          "score": "1-3",
+          "team1_goals": 1,
+          "team2_goals": 3,
+          "prob": 0.06745408630540906
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 17",
+      "date": "2026-06-27",
+      "time": "17:00 UTC-4",
+      "group": "Group L",
+      "ground": "New York/New Jersey (East Rutherford)",
+      "team1": "Panama",
+      "team2": "England",
+      "team1_win": 0.14737164171051734,
+      "draw": 0.20252975434543252,
+      "team2_win": 0.6500986039440503,
+      "lambda_team1": 0.8531568350715075,
+      "lambda_team2": 2.0430829430450945,
+      "top_scores": [
+        {
+          "score": "0-2",
+          "team1_goals": 0,
+          "team2_goals": 2,
+          "prob": 0.11527242639834213
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.11284165118283
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.09834545847702286
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.09627162598738627
+        },
+        {
+          "score": "0-3",
+          "team1_goals": 0,
+          "team2_goals": 3,
+          "prob": 0.07850370939262463
+        },
+        {
+          "score": "1-3",
+          "team1_goals": 1,
+          "team2_goals": 3,
+          "prob": 0.06697597624678502
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 17",
+      "date": "2026-06-27",
+      "time": "17:00 UTC-4",
+      "group": "Group L",
+      "ground": "Philadelphia",
+      "team1": "Croatia",
+      "team2": "Ghana",
+      "team1_win": 0.7634869878235301,
+      "draw": 0.15174546143154552,
+      "team2_win": 0.08476755074492448,
+      "lambda_team1": 2.4829558402111944,
+      "lambda_team2": 0.7020141676497447,
+      "top_scores": [
+        {
+          "score": "2-0",
+          "team1_goals": 2,
+          "team2_goals": 0,
+          "prob": 0.12756111438889775
+        },
+        {
+          "score": "3-0",
+          "team1_goals": 3,
+          "team2_goals": 0,
+          "prob": 0.10557620465192065
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.102749402404231
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.08954970954219593
+        },
+        {
+          "score": "3-1",
+          "team1_goals": 3,
+          "team2_goals": 1,
+          "prob": 0.07411599143233719
+        },
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.0721315362053149
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 17",
+      "date": "2026-06-27",
+      "time": "19:30 UTC-4",
+      "group": "Group K",
+      "ground": "Miami (Miami Gardens)",
+      "team1": "Colombia",
+      "team2": "Portugal",
+      "team1_win": 0.410816423685883,
+      "draw": 0.2600205193268684,
+      "team2_win": 0.3291630569872487,
+      "lambda_team1": 1.4111001242341485,
+      "lambda_team2": 1.2352562001388503,
+      "top_scores": [
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.12359960770498393
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.10005989663609102
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.08759095515781744
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.08720571089389742
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.07633859087615551
+        },
+        {
+          "score": "0-0",
+          "team1_goals": 0,
+          "team2_goals": 0,
+          "prob": 0.0709091402641587
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 17",
+      "date": "2026-06-27",
+      "time": "19:30 UTC-4",
+      "group": "Group K",
+      "ground": "Atlanta",
+      "team1": "DR Congo",
+      "team2": "Uzbekistan",
+      "team1_win": 0.3096013448188054,
+      "draw": 0.25809956228452463,
+      "team2_win": 0.43229909289667007,
+      "lambda_team1": 1.1943878883635788,
+      "lambda_team2": 1.45938366795154,
+      "top_scores": [
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.12268648924238537
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.10271913374010946
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.08952332933932476
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.0840673305701673
+        },
+        {
+          "score": "0-2",
+          "team1_goals": 0,
+          "team2_goals": 2,
+          "prob": 0.07495331308322287
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.0732676284084768
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 17",
+      "date": "2026-06-27",
+      "time": "21:00 UTC-5",
+      "group": "Group J",
+      "ground": "Kansas City",
+      "team1": "Algeria",
+      "team2": "Austria",
+      "team1_win": 0.344291212940401,
+      "draw": 0.2609635797646689,
+      "team2_win": 0.3947452072949302,
+      "lambda_team1": 1.2671169205636628,
+      "lambda_team2": 1.375619052345658,
+      "top_scores": [
+        {
+          "score": "1-1",
+          "team1_goals": 1,
+          "team2_goals": 1,
+          "prob": 0.12404788732713057
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.09789774354204762
+        },
+        {
+          "score": "1-0",
+          "team1_goals": 1,
+          "team2_goals": 0,
+          "prob": 0.09017604627938848
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.08532131860521415
+        },
+        {
+          "score": "2-1",
+          "team1_goals": 2,
+          "team2_goals": 1,
+          "prob": 0.07859158849619095
+        },
+        {
+          "score": "0-0",
+          "team1_goals": 0,
+          "team2_goals": 0,
+          "prob": 0.07116631844776777
+        }
+      ]
+    },
+    {
+      "num": null,
+      "round": "Matchday 17",
+      "date": "2026-06-27",
+      "time": "21:00 UTC-5",
+      "group": "Group J",
+      "ground": "Dallas (Arlington)",
+      "team1": "Jordan",
+      "team2": "Argentina",
+      "team1_win": 0.0543341612652854,
+      "draw": 0.11584095120651147,
+      "team2_win": 0.8298248875282032,
+      "lambda_team1": 0.613391587790306,
+      "lambda_team2": 2.8416923416837268,
+      "top_scores": [
+        {
+          "score": "0-2",
+          "team1_goals": 0,
+          "team2_goals": 2,
+          "prob": 0.1275501082493404
+        },
+        {
+          "score": "0-3",
+          "team1_goals": 0,
+          "team2_goals": 3,
+          "prob": 0.12081938859769363
+        },
+        {
+          "score": "0-1",
+          "team1_goals": 0,
+          "team2_goals": 1,
+          "prob": 0.08977052608993263
+        },
+        {
+          "score": "0-4",
+          "team1_goals": 0,
+          "team2_goals": 4,
+          "prob": 0.08583288282624406
+        },
+        {
+          "score": "1-2",
+          "team1_goals": 1,
+          "team2_goals": 2,
+          "prob": 0.0782381634218883
+        },
+        {
+          "score": "1-3",
+          "team1_goals": 1,
+          "team2_goals": 3,
+          "prob": 0.07410959660779329
+        }
+      ]
+    }
+  ],
+  "next_match": {
+    "num": null,
+    "round": "Matchday 1",
+    "date": "2026-06-11",
+    "time": "13:00 UTC-6",
+    "group": "Group A",
+    "ground": "Mexico City",
+    "team1": "Mexico",
+    "team2": "South Africa",
+    "team1_win": 0.737190544640312,
+    "draw": 0.16472316841463694,
+    "team2_win": 0.09808628694505106,
+    "lambda_team1": 2.366249908284481,
+    "lambda_team2": 0.7366382440731508,
+    "top_scores": [
+      {
+        "score": "2-0",
+        "team1_goals": 2,
+        "team2_goals": 0,
+        "prob": 0.1257594155367634
+      },
+      {
+        "score": "1-0",
+        "team1_goals": 1,
+        "team2_goals": 0,
+        "prob": 0.10629428032640757
+      },
+      {
+        "score": "3-0",
+        "team1_goals": 3,
+        "team2_goals": 0,
+        "prob": 0.09919273515992544
+      },
+      {
+        "score": "2-1",
+        "team1_goals": 2,
+        "team2_goals": 1,
+        "prob": 0.09263919503666712
+      },
+      {
+        "score": "1-1",
+        "team1_goals": 1,
+        "team2_goals": 1,
+        "prob": 0.07830043201466413
+      },
+      {
+        "score": "3-1",
+        "team1_goals": 3,
+        "team2_goals": 1,
+        "prob": 0.07306916225302057
+      }
+    ]
+  }
+}

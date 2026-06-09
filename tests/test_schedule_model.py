@@ -57,6 +57,20 @@ class ScheduleModelTest(unittest.TestCase):
         self.assertGreater(out["matches"][0]["team1_win"], 0)
         self.assertIn("champion", out["teams"][0])
 
+    def test_save_schedule_predictions_writes_json(self):
+        import json
+        import tempfile
+
+        from src.prediction.schedule_model import save_schedule_predictions
+
+        with tempfile.NamedTemporaryFile(suffix=".json") as tmp:
+            payload = {"source": "schedule", "teams": [], "matches": [], "next_match": None}
+            save_schedule_predictions(payload, tmp.name)
+            with open(tmp.name, encoding="utf-8") as f:
+                loaded = json.load(f)
+
+        self.assertEqual(loaded["source"], "schedule")
+
 
 if __name__ == "__main__":
     unittest.main()
