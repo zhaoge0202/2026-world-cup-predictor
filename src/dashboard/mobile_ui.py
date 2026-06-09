@@ -1048,7 +1048,15 @@ function buildFinal(){
     else note.innerHTML="市场共识 + 数据模型融合（实时层加载中，几分钟后自动刷新）。截至 "+((FN&&FN.as_of)||"2026-06-08");
   }
 }
-function refreshRealtime(){fetch("/api/realtime",{cache:"no-store"}).then(function(r){return r.json();}).then(function(d){if(d&&d.teams&&d.teams.length){RT=d;buildFinal();}}).catch(function(){});}
+function setUpdateTime(value){
+  if(!value)return;
+  var text=String(value).replace("T"," ").slice(0,16);
+  var upd=document.getElementById("upd");
+  var inf=document.getElementById("infTime");
+  if(upd)upd.textContent=text;
+  if(inf)inf.textContent=text;
+}
+function refreshRealtime(){fetch("/api/realtime",{cache:"no-store"}).then(function(r){return r.json();}).then(function(d){if(d&&d.teams&&d.teams.length){RT=d;setUpdateTime(d.updated);buildFinal();}}).catch(function(){});}
 
 /* ── Factor Breakdown ── */
 function toggleFB(el){var d=el.querySelector(".fb-expanded");if(d)d.classList.toggle("on");}
@@ -1829,6 +1837,7 @@ function refreshSchedulePredictions(){
     var sel=document.getElementById("h2h-match");
     var oldValue=sel?sel.value:"manual";
     SP=d;
+    setUpdateTime(d.as_of);
     populateScheduleH2H();
     if(sel&&oldValue!=="manual"&&Number(oldValue)<sel.options.length){sel.value=oldValue;applyScheduleMatch();}
     else if(sel&&sel.value!=="manual"){applyScheduleMatch();}
@@ -1843,6 +1852,7 @@ function refreshTeamAnalysis(){
     if(!d||!d.teams)return;
     D=d.teams;
     U=d.ucl||{};
+    setUpdateTime(d.fetched_at);
     buildFinal();
     buildLB();
     buildFB();
@@ -1869,8 +1879,7 @@ function pollLoop(){
 }
 
 /* ── Init ── */
-document.getElementById("upd").textContent="__UPDATE_TIME__";
-document.getElementById("infTime").textContent="__UPDATE_TIME__";
+setUpdateTime("__UPDATE_TIME__");
 buildFinal();
 buildLB();
 buildFB();

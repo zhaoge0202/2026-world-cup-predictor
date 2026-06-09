@@ -74,9 +74,17 @@ class MobileScheduleIntegrationTest(unittest.TestCase):
         self.assertTrue(hasattr(mobile_ui, "_refresh_analysis_state"))
         self.assertTrue(hasattr(mobile_ui, "_start_analysis_refresh_daemon"))
         self.assertIn("/api/team_analysis", source)
+        self.assertIn("function setUpdateTime", mobile_ui.HTML_BODY)
         self.assertIn("function refreshTeamAnalysis", mobile_ui.HTML_BODY)
         self.assertIn('fetch("/api/team_analysis"', mobile_ui.HTML_BODY)
+        self.assertIn("setUpdateTime(d.fetched_at", mobile_ui.HTML_BODY)
         self.assertIn("setInterval(refreshTeamAnalysis,300000)", mobile_ui.HTML_BODY)
+
+    def test_schedule_and_realtime_refresh_update_header_time(self):
+        body = mobile_ui.HTML_BODY
+
+        self.assertIn("setUpdateTime(d.as_of", body)
+        self.assertIn("setUpdateTime(d.updated", body)
 
     def test_refresh_analysis_state_replaces_json(self):
         state = {}
