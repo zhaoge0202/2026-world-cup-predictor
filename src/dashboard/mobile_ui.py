@@ -1049,14 +1049,13 @@ function buildFinal(){
   }
 }
 function setUpdateTime(value){
-  if(!value)return;
-  var text=String(value).replace("T"," ").slice(0,16);
+  var text=String(value||new Date().toISOString()).replace("T"," ").slice(0,16);
   var upd=document.getElementById("upd");
   var inf=document.getElementById("infTime");
   if(upd)upd.textContent=text;
   if(inf)inf.textContent=text;
 }
-function refreshRealtime(){fetch("/api/realtime",{cache:"no-store"}).then(function(r){return r.json();}).then(function(d){if(d&&d.teams&&d.teams.length){RT=d;setUpdateTime(d.updated);buildFinal();}}).catch(function(){});}
+function refreshRealtime(){fetch("/api/realtime",{cache:"no-store"}).then(function(r){return r.json();}).then(function(d){if(d&&d.teams&&d.teams.length){RT=d;setUpdateTime();buildFinal();}}).catch(function(){});}
 
 /* ── Factor Breakdown ── */
 function toggleFB(el){var d=el.querySelector(".fb-expanded");if(d)d.classList.toggle("on");}
@@ -1837,7 +1836,7 @@ function refreshSchedulePredictions(){
     var sel=document.getElementById("h2h-match");
     var oldValue=sel?sel.value:"manual";
     SP=d;
-    setUpdateTime(d.as_of);
+    setUpdateTime();
     populateScheduleH2H();
     if(sel&&oldValue!=="manual"&&Number(oldValue)<sel.options.length){sel.value=oldValue;applyScheduleMatch();}
     else if(sel&&sel.value!=="manual"){applyScheduleMatch();}
@@ -1852,7 +1851,7 @@ function refreshTeamAnalysis(){
     if(!d||!d.teams)return;
     D=d.teams;
     U=d.ucl||{};
-    setUpdateTime(d.fetched_at);
+    setUpdateTime();
     buildFinal();
     buildLB();
     buildFB();

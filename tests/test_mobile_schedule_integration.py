@@ -77,14 +77,14 @@ class MobileScheduleIntegrationTest(unittest.TestCase):
         self.assertIn("function setUpdateTime", mobile_ui.HTML_BODY)
         self.assertIn("function refreshTeamAnalysis", mobile_ui.HTML_BODY)
         self.assertIn('fetch("/api/team_analysis"', mobile_ui.HTML_BODY)
-        self.assertIn("setUpdateTime(d.fetched_at", mobile_ui.HTML_BODY)
+        self.assertIn("setUpdateTime();", mobile_ui.HTML_BODY)
         self.assertIn("setInterval(refreshTeamAnalysis,300000)", mobile_ui.HTML_BODY)
 
     def test_schedule_and_realtime_refresh_update_header_time(self):
         body = mobile_ui.HTML_BODY
 
-        self.assertIn("setUpdateTime(d.as_of", body)
-        self.assertIn("setUpdateTime(d.updated", body)
+        self.assertIn("setUpdateTime();", body)
+        self.assertIn("function setUpdateTime(value)", body)
 
     def test_refresh_analysis_state_replaces_json(self):
         state = {}
