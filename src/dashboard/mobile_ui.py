@@ -11,6 +11,7 @@ Champion | Factor | Mystic | H2H | Squad | Polymarket | Info
 
 import http.server
 import socketserver
+import argparse
 import os
 import sys
 import json
@@ -2592,5 +2593,12 @@ def run_server(port=7862):
         print(f"Champion | Factor | Mystic | H2H | Squad | Poly | Fixtures | Info")
         httpd.serve_forever()
 
+def main(argv=None):
+    parser = argparse.ArgumentParser(description="Run the mobile World Cup dashboard.")
+    parser.add_argument("--port", type=int, default=7862, help="HTTP port to listen on.")
+    args = parser.parse_args(argv)
+    run_server(port=args.port)
+
+
 if __name__ == "__main__":
-    run_server()
+    main()

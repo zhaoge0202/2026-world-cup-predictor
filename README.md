@@ -46,8 +46,16 @@ git clone https://github.com/mikobinbin/2026-world-cup-predictor.git
 cd 2026-world-cup-predictor
 
 pip install -r requirements.txt
-python3 -m src.dashboard.mobile_ui
-# 访问 http://localhost:8080/mobile
+python -m src.dashboard.mobile_ui --port 7862
+# 访问 http://localhost:7862
+```
+
+开发时可启用热部署，修改 `src/`、`scripts/`、`config.py` 等文件后会自动重启服务：
+
+```bash
+python -m src.dashboard.hot_reload --port 7862
+# 或
+./start.sh --dev 7862
 ```
 
 ---
