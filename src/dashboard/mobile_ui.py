@@ -18,6 +18,7 @@ import time
 import random
 import threading
 from datetime import datetime
+from typing import Dict, List
 
 # ── 项目路径 ───────────────────────────────────────────────────────────
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -30,6 +31,9 @@ from src.models.ucl_final_mentality import (
     compute_country_ucl_mentality_bonus,
     compute_final_mentality_signal,
 )
+from src.models.conformal import ConformalPredictor
+from src.models.feature_attribution import attribute_all_teams
+from src.models.match_data import load_match_data, FlashscoreParser
 from scripts.elo_scraper import load_elo_cache
 from scripts.ingest_wikipedia_squads import normalize_position
 from scripts.fixtures_fetcher import load_fixtures, fetch_and_save, start_refresh_daemon
@@ -342,6 +346,20 @@ def _load_analysis():
             tournament_history=sq.get("tournament_history", ["2022"] if sq["country"] == DEFENDING_CHAMPION else []),
         ))
 
+    # 4b. Load match data (Flashscore — WC results, WC fixtures, friendlies)
+    # Build recent_results dict: { country -> [match_dict, ...] }
+    # Each match_dict has: team_a, team_b, score_a, score_b (or None for fixtures)
+    all_match_data = load_match_data()  # returns (fixtures, results, friendly_results)
+    match_fixtures, match_results, friendly_results = all_match_data
+
+    # Build per-team match lists for form_score calculation
+    recent_results: Dict[str, List[Dict]] = {}
+    for m in match_results + friendly_results:
+        for team in [m["team_a"], m["team_b"]]:
+            if team not in recent_results:
+                recent_results[team] = []
+            recent_results[team].append(m)
+
     # 5. Score
     weights = ModelWeights()
     scored = score_all_teams(
@@ -349,6 +367,7 @@ def _load_analysis():
         weights=weights,
         host_team=HOST_COUNTRY,
         defending_champ=DEFENDING_CHAMPION,
+        recent_results=recent_results,
     )
 
     # 6. UCL 心态 override 精确调参
@@ -441,11 +460,51 @@ def _load_analysis():
 
     results.sort(key=lambda x: x["final_prob"], reverse=True)
 
+    # 9. Conformal Prediction — 冠军概率置信区间
+    conformal = ConformalPredictor()
+    cal_info = conformal.calibrate()
+    champion_intervals = conformal.predict_champion_intervals(results)
+    interval_map = {c.country: c for c in champion_intervals}
+    for r in results:
+        ci = interval_map.get(r["country"])
+        if ci:
+            r["conformal_ci_low"] = ci.conformal_interval[0]
+            r["conformal_ci_high"] = ci.conformal_interval[1]
+            r["conformal_uncertainty"] = ci.uncertainty_level
+        else:
+            r["conformal_ci_low"] = r["ci_low"]
+            r["conformal_ci_high"] = r["ci_high"]
+            r["conformal_uncertainty"] = "medium"
+
+    # 10. Feature Attribution — 因子绝对贡献归因
+    attributions = attribute_all_teams(results)
+    attr_map = {a["country"]: a for a in attributions}
+    for r in results:
+        r["attribution"] = attr_map.get(r["country"])
+
+    # 11. H2H Conformal Prediction — 所有球队两两 H2H 的预测集
+    # 为每个 team 预计算其对所有其他队的 H2H conformal 结果
+    # 格式: { teamA: { teamB: { prediction_set, set_size, confidence, explanation } } }
+    h2h_conformal_map: Dict = {}
+    elo_dict_h2h = {r["country"]: r.get("mod_elo", r.get("elo", 1700)) for r in results}
+    for r in results:
+        country_a = r["country"]
+        elo_a = r.get("mod_elo", r.get("elo", 1700))
+        h2h_conformal_map[country_a] = {}
+        for r2 in results:
+            if r2["country"] == country_a:
+                continue
+            country_b = r2["country"]
+            elo_b = r2.get("mod_elo", r2.get("elo", 1700))
+            cp = conformal.predict_h2h(country_a, country_b, elo_a, elo_b)
+            h2h_conformal_map[country_a][country_b] = cp.to_dict()
+
     # 8. UCL
     ucl_data = _load_ucl_data()
 
-    _cached_results = (results, ucl_data)
-    return results, ucl_data
+    _cached_results = (results, ucl_data, h2h_conformal_map,
+                       match_fixtures, match_results, friendly_results)
+    return results, ucl_data, h2h_conformal_map, match_fixtures, match_results, friendly_results
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -490,6 +549,51 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:"Inter",-
 .lb-pct{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
 .lb-pct.vh{color:var(--bl)}
 .lb-sh{font-size:11px;font-weight:600;margin-top:2px}
+/* Dynamic match sections */
+/* ── SofaScore-inspired Match Cards ── */
+.dyn-list{display:flex;flex-direction:column;gap:2px}
+.dyn-date-hd{font-size:11px;font-weight:800;color:var(--tx2);padding:10px 0 4px 0;text-transform:uppercase;letter-spacing:.8px;border-bottom:.5px solid var(--bd);margin-bottom:4px}
+.dyn-mo{color:var(--tx2);font-weight:400}
+
+/* Match Card Row */
+.mc-row{display:grid;grid-template-columns:60px 1fr auto 1fr;align-items:center;gap:6px;padding:10px 0;border-bottom:.5px solid var(--bd)}
+.mc-row:last-child{border-bottom:none}
+.mc-row.mc-frn{opacity:.9}
+
+/* Round Badge */
+.mc-rd{flex-shrink:0}
+.mc-badge{display:inline-block;font-size:9px;font-weight:800;padding:3px 6px;border-radius:4px;color:#fff;white-space:nowrap;text-transform:uppercase;letter-spacing:.4px}
+
+/* Team */
+.mc-team{display:flex;align-items:center;gap:5px;min-width:0}
+.mc-team.mc-tl{justify-content:flex-start}
+.mc-team.mc-tr{justify-content:flex-end}
+.mc-fl{font-size:18px;line-height:1;flex-shrink:0}
+.mc-nm{font-size:13px;font-weight:700;color:var(--tx1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90px}
+.mc-nm b{font-weight:800}
+.mc-winner .mc-nm{color:var(--gr)}
+
+/* Center: VS / Time / Score */
+.mc-ct{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-width:52px}
+.mc-vs{font-size:10px;font-weight:800;color:var(--tx2);letter-spacing:.5px}
+.mc-kick{font-size:12px;font-weight:700;color:var(--tx1)}
+.mc-score-ct{flex-direction:row;gap:4px}
+.mc-scr{font-size:16px;font-weight:800;color:var(--tx1);min-width:16px;text-align:center}
+.mc-scr-sep{font-size:14px;font-weight:700;color:var(--tx2)}
+.mc-scr.mc-sc-awin,.mc-scr.mc-sc-bwin{color:var(--gd)}
+.mc-ft{font-size:9px;font-weight:800;color:var(--tx2);margin-top:1px}
+
+/* Old dyn-* styles (keep for fallback) */
+.dyn-sect{padding:0}
+.dyn-empty{color:var(--tx2);font-size:13px;text-align:center;padding:16px 0}
+.dyn-team{color:var(--tx1)}
+.dyn-team.dyn-win{color:var(--gr);font-weight:800}
+.dyn-vs{color:var(--tx2);font-size:12px;font-weight:400}
+.dyn-score{font-size:16px;font-weight:800;color:var(--gd);white-space:nowrap}
+.dyn-meta{display:flex;gap:8px;font-size:11px;color:var(--tx2)}
+.dyn-date{font-weight:600}
+.dyn-time{opacity:0.7}
+.dyn-rnd{opacity:0.7}
 /* Factor breakdown */
 .fb-r{display:flex;flex-direction:column;padding:12px 0;border-bottom:0.5px solid var(--bd);cursor:pointer}
 .fb-r:last-child{border-bottom:none}
@@ -551,9 +655,9 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:"Inter",-
 .h2h Team select{width:100%;background:var(--s2);color:var(--tx);border:0.5px solid var(--bd);border-radius:14px;padding:16px 18px;font-size:17px;font-weight:700;appearance:none;-webkit-appearance:none;cursor:pointer;line-height:1.4}
 .h2h-vs{font-size:24px;font-weight:900;color:var(--gd);text-align:center;padding:4px 0}
 .h2h-bar{display:flex;align-items:center;gap:0;border-radius:16px;overflow:hidden;height:52px;background:var(--s2);margin-bottom:14px}
-.h2h-bar-a{flex:0 0 auto;display:flex;align-items:center;justify-content:center;padding:0 12px;height:100%;font-size:14px;font-weight:800;color:var(--tx);background:var(--bl)}
-.h2h-bar-d{flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--s);padding:0 10px;height:100%;background:var(--gd)}
-.h2h-bar-b{flex:1;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--tx);padding:0 12px;background:var(--gd)}
+.h2h-bar-a{flex:1 1;display:flex;align-items:center;justify-content:center;padding:0 12px;height:100%;font-size:14px;font-weight:800;color:var(--tx);background:var(--bl);min-width:0;overflow:hidden}
+.h2h-bar-d{flex:1 1;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--s);padding:0 10px;height:100%;background:var(--gd);min-width:0;overflow:hidden}
+.h2h-bar-b{flex:1 1;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--tx);padding:0 12px;background:var(--s2);min-width:0;overflow:hidden}
 .h2h-3m{display:flex;gap:8px;margin-bottom:16px}
 .h2h-3m .h2h-3m-it{flex:1;background:var(--s2);border-radius:12px;padding:12px 0;text-align:center}
 .h2h-3m .h2h-3m-v{font-size:18px;font-weight:800;color:var(--tx)}
@@ -580,6 +684,27 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:"Inter",-
 .h2h-mu-s{font-size:12px;font-weight:700;color:var(--gd);width:28px;text-align:center}
 .h2h-mu-r{text-align:right;flex:1}
 .h2h-mu-r .h2h-wl{margin-right:6px}
+/* Conformal Prediction */
+.cp-set-box{margin-top:4px}
+.cp-set-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.cp-set-lbl{font-size:10px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:0.8px}
+.cp-set-badge{font-size:11px;font-weight:800;padding:3px 8px;border-radius:6px;letter-spacing:0.3px}
+.cp-set-exp{font-size:12px;color:var(--tx2);margin-bottom:4px}
+.cp-set-conf{font-size:11px;color:var(--tx3)}
+/* Factor Attribution */
+.attr-sect{margin-bottom:14px}
+.attr-row{display:flex;align-items:center;gap:8px;font-size:12px;margin-bottom:5px}
+.attr-lbl{flex:0 0 80px;font-weight:700;color:var(--tx2)}
+.attr-bar{flex:1;height:18px;background:var(--s2);border-radius:4px;overflow:hidden;display:flex}
+.attr-seg{height:100%;transition:width 0.3s}
+.attr-seg-a{background:var(--bl)}
+.attr-seg-d{background:var(--rd)}
+.attr-seg-val{flex:0 0 48px;font-size:11px;font-weight:700;text-align:right;justify-content:flex-end;display:flex;gap:2px}
+.attr-delta-p{font-size:11px;color:var(--gr)}
+.attr-delta-n{font-size:11px;color:var(--rd)}
+.attr-meta{font-size:10px;color:var(--tx3);margin-top:6px;padding-top:6px;border-top:0.5px solid var(--bd)}
+.attr-meta span{margin-right:12px}
+.attr-note{font-size:11px;color:var(--tx3);font-style:italic;margin-top:4px}
 /* Squad */
 .sel{width:100%;background:var(--s2);color:var(--tx);border:0.5px solid var(--bd);border-radius:12px;padding:12px 16px;font-size:15px;font-weight:600;margin-bottom:12px;appearance:none;-webkit-appearance:none}
 .sel-wrap{position:relative}
@@ -676,6 +801,27 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:"Inter",-
 .h2h-mu-s{font-size:12px;font-weight:700;color:var(--gd);width:28px;text-align:center}
 .h2h-mu-r{text-align:right;flex:1}
 .h2h-mu-r .h2h-wl{margin-right:6px}
+/* Conformal Prediction */
+.cp-set-box{margin-top:4px}
+.cp-set-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.cp-set-lbl{font-size:10px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:0.8px}
+.cp-set-badge{font-size:11px;font-weight:800;padding:3px 8px;border-radius:6px;letter-spacing:0.3px}
+.cp-set-exp{font-size:12px;color:var(--tx2);margin-bottom:4px}
+.cp-set-conf{font-size:11px;color:var(--tx3)}
+/* Factor Attribution */
+.attr-sect{margin-bottom:14px}
+.attr-row{display:flex;align-items:center;gap:8px;font-size:12px;margin-bottom:5px}
+.attr-lbl{flex:0 0 80px;font-weight:700;color:var(--tx2)}
+.attr-bar{flex:1;height:18px;background:var(--s2);border-radius:4px;overflow:hidden;display:flex}
+.attr-seg{height:100%;transition:width 0.3s}
+.attr-seg-a{background:var(--bl)}
+.attr-seg-d{background:var(--rd)}
+.attr-seg-val{flex:0 0 48px;font-size:11px;font-weight:700;text-align:right;justify-content:flex-end;display:flex;gap:2px}
+.attr-delta-p{font-size:11px;color:var(--gr)}
+.attr-delta-n{font-size:11px;color:var(--rd)}
+.attr-meta{font-size:10px;color:var(--tx3);margin-top:6px;padding-top:6px;border-top:0.5px solid var(--bd)}
+.attr-meta span{margin-right:12px}
+.attr-note{font-size:11px;color:var(--tx3);font-style:italic;margin-top:4px}
 /* Squad */
 .sel{width:100%;background:var(--s2);color:var(--tx);border:0.5px solid var(--bd);border-radius:12px;padding:12px 16px;font-size:15px;font-weight:600;margin-bottom:12px;appearance:none;-webkit-appearance:none}
 .sel-wrap{position:relative}
@@ -811,8 +957,23 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:"Inter",-
     <div id="fin-note" style="font-size:10px;color:var(--tx2);margin-top:10px;line-height:1.6"></div>
   </div>
   <div class="card">
-    <div class="card-title">玄学引擎榜 / Mystic Engine</div>
+    <div class="card-title">冠军概率 TOP 6 / Champion Prob</div>
     <div class="lb" id="lb"></div>
+  </div>
+  <!-- Section 2: WC Fixtures (within 7 days) -->
+  <div class="card">
+    <div class="card-title">⚔️ 赛程 / Upcoming Fixtures</div>
+    <div class="dyn-sect" id="sec-fix"></div>
+  </div>
+  <!-- Section 3: WC Results (completed) -->
+  <div class="card">
+    <div class="card-title">📊 赛果 / Match Results</div>
+    <div class="dyn-sect" id="sec-wcr"></div>
+  </div>
+  <!-- Section 4: Friendly Results -->
+  <div class="card">
+    <div class="card-title">🤝 热身赛 / Friendly Results</div>
+    <div class="dyn-sect" id="sec-frn"></div>
   </div>
 </div>
 
@@ -1008,7 +1169,26 @@ var F=__FIXTURES__;
 var FN=__FINAL__;
 var SP=__SCHEDULE_PRED__;
 var RT=__REALTIME__;
-var FL={"Argentina":"AR","Brazil":"BR","France":"FR","Germany":"DE","Spain":"ES","England":"EN","Portugal":"PT","Netherlands":"NL","Belgium":"BE","Croatia":"HR","Switzerland":"CH","Austria":"AT","Czech Republic":"CZ","Turkey":"TR","Sweden":"SE","Morocco":"MA","Senegal":"SN","Egypt":"EG","Algeria":"DZ","Ghana":"GH","Ivory Coast":"CI","Tunisia":"TN","DR Congo":"CD","Cape Verde":"CV","Japan":"JP","South Korea":"KR","Iran":"IR","Iraq":"IQ","Qatar":"QA","Saudi Arabia":"SA","Australia":"AU","Uzbekistan":"UZ","Jordan":"JO","USA":"US","Mexico":"MX","Canada":"CA","Panama":"PA","Curaçao":"CW","Haiti":"HT","New Zealand":"NZ","Ecuador":"EC","Paraguay":"PY","Colombia":"CO","Uruguay":"UY","Norway":"NO","South Africa":"ZA","Bosnia and Herzegovina":"BA","Scotland":"XS"};
+var HC=__H2H_CONF__;
+var MF=__MATCH_FIXTURES__;
+var WCR=__WC_RESULTS__;
+var FRN=__FRIENDLIES__;
+var FL={
+  "Argentina":"🇦🇷","Brazil":"🇧🇷","France":"🇫🇷","Germany":"🇩🇪","Spain":"🇪🇸",
+  "England":"🏴󠁧󠁢󠁥󠁮󠁧󠁿","Portugal":"🇵🇹","Netherlands":"🇳🇱","Belgium":"🇧🇪",
+  "Croatia":"🇭🇷","Switzerland":"🇨🇭","Austria":"🇦🇹","Czech Republic":"🇨🇿","Turkey":"🇹🇷",
+  "Sweden":"🇸🇪","Morocco":"🇲🇦","Senegal":"🇸🇳","Egypt":"🇪🇬","Algeria":"🇩🇿",
+  "Ghana":"🇬🇭","Ivory Coast":"🇨🇮","Tunisia":"🇹🇳","DR Congo":"🇨🇩","Cape Verde":"🇨🇻",
+  "Japan":"🇯🇵","South Korea":"🇰🇷","Korea Republic":"🇰🇷","Iran":"🇮🇷","Iraq":"🇮🇶",
+  "Qatar":"🇶🇦","Saudi Arabia":"🇸🇦","Australia":"🇦🇺","Uzbekistan":"🇺🇿","Jordan":"🇯🇴",
+  "USA":"🇺🇸","United States":"🇺🇸","Mexico":"🇲🇽","Canada":"🇨🇦","Panama":"🇵🇦",
+  "Curaçao":"🇨🇼","Haiti":"🇭🇹","New Zealand":"🇳🇿","Ecuador":"🇪🇨","Paraguay":"🇵🇾",
+  "Colombia":"🇨🇴","Uruguay":"🇺🇾","Norway":"🇳🇴","South Africa":"🇿🇦",
+  "Bosnia and Herzegovina":"🇧🇦","Scotland":"🏴󠁧󠁢󠁳󠁣󠁴󠁿",
+  "Bolivia":"🇧🇴","Denmark":"🇩🇰","Gambia":"🇬🇲","Hungary":"🇭🇺","Israel":"🇮🇱",
+  "Italy":"🇮🇹","Jamaica":"🇯🇲","Kosovo":"🇽🇰","Mali":"🇲🇱","Nigeria":"🇳🇬",
+  "Peru":"🇵🇪","Poland":"🇵🇱","Romania":"🇷🇴","Ukraine":"🇺🇦","Venezuela":"🇻🇪"
+};
 function fl(c){return FL[c]||"--";}
 function pc(p){return p>15?"var(--bl)":p>5?"var(--gr)":"var(--tx2)";}
 function st(s){return s>0?"+"+s.toFixed(2)+"%":s<0?s.toFixed(2)+"%":"--";}
@@ -1016,7 +1196,150 @@ function sc(s){return s>0?"var(--gr)":s<0?"var(--rd)":"var(--tx2)";}
 function showTab(n){document.querySelectorAll(".pg").forEach(function(p){p.classList.remove("on");});document.querySelectorAll(".tab").forEach(function(t){t.classList.remove("on");});document.getElementById("pg-"+n).classList.add("on");document.getElementById("tb-"+n).classList.add("on");if(n==="fixtures")buildFixtures();}
 
 /* ── Leaderboard ── */
-function buildLB(){var s=D.slice().sort(function(a,b){return b.final_prob-a.final_prob;});var h="";for(var i=0;i<s.length;i++){var t=s[i],r=i+1,rc=r<=3?"t"+r:"";var pct=(t.final_prob*100).toFixed(2),pctCls=t.final_prob>0.15?" vh":"";var sh=t.shift||0;h+='<div class="lb-r"><div class="lb-rk '+rc+'">'+r+'</div><div class="lb-fl">'+fl(t.country)+'</div><div class="lb-inf"><div class="lb-nm">'+t.country+'</div><div class="lb-el">Elo '+(t.elo||0).toFixed(0)+'</div><div class="pb"><div class="pb-fi" style="width:'+pct+'%;background:'+pc(t.final_prob*100)+'"></div></div></div><div class="lb-pr"><div class="lb-pct'+pctCls+'">'+pct+'%</div><div class="lb-sh" style="color:'+sc(sh)+'">'+st(sh)+'</div></div></div>';}document.getElementById("lb").innerHTML=h;}
+function buildLB(){
+  var s = D.slice().sort(function(a,b){return b.final_prob-a.final_prob;});
+  // Top 6 only
+  var h = "";
+  for(var i=0; i<Math.min(6, s.length); i++){
+    var t=s[i], r=i+1, rc=r<=3?"t"+r:"";
+    var pct=(t.final_prob*100).toFixed(2), pctCls=t.final_prob>0.15?" vh":"";
+    var sh=t.shift||0;
+    h+='<div class="lb-r"><div class="lb-rk '+rc+'">'+r+'</div><div class="lb-fl">'+fl(t.country)+'</div><div class="lb-inf"><div class="lb-nm">'+t.country+'</div><div class="lb-el">Elo '+(t.elo||0).toFixed(0)+'</div><div class="pb"><div class="pb-fi" style="width:'+pct+'%;background:'+pc(t.final_prob*100)+'"></div></div></div><div class="lb-pr"><div class="lb-pct'+pctCls+'">'+pct+'%</div><div class="lb-sh" style="color:'+sc(sh)+'">'+st(sh)+'</div></div></div>';
+  }
+  document.getElementById("lb").innerHTML=h;
+  // Render dynamic sections
+  buildHomeFixtures();
+  buildWCResults();
+  buildFriendlies();
+}
+
+/* ── Dynamic Match Sections (SofaScore-inspired cards) ── */
+var GRP_COLORS={
+  "Group A":"#E63946","Group B":"#457B9D","Group C":"#2A9D8F","Group D":"#E9C46A",
+  "Group E":"#F4A261","Group F":"#E76F51","Group G":"#6A4C93","Group H":"#1982C4",
+  "Group I":"#8AC926","Group J":"#FF595E","Group K":"#FF924C","Group L":"#00B4D8",
+  "Round of 16":"#FF6B35","Quarter-final":"#FF9F1C","Semi-final":"#E71D36",
+  "Third place":"#FF9900","Final":"#FFD700",
+  "Group stage":"#E63946","Knockout":"#FF6B35","Play-off":"#9B59B6",
+  "Qualification":"#3498DB","Friendlies":"#95A5A6"
+};
+
+function grpColor(r){
+  if(!r)return"var(--tx2)";
+  for(var k in GRP_COLORS)if(r.indexOf(k)>-1)return GRP_COLORS[k];
+  return"var(--tx2)";
+}
+
+function grpBadge(r){
+  var c=grpColor(r);
+  return'<span class="mc-badge" style="background:'+c+'">'+r+'</span>';
+}
+
+function fmtDate(d){
+  if(!d)return"";
+  var parts=d.split(".");
+  if(parts.length===2)return parts[0]+"<span class='dyn-mo'>月</span>"+parts[1]+"<span class='dyn-mo'>日</span>";
+  return d;
+}
+
+function buildHomeFixtures(){
+  var matches=(MF||[]).filter(function(m){return m.score_a===null&&m.score_b===null;});
+  if(!matches.length){document.getElementById("sec-fix").innerHTML='<div class="dyn-empty">暂无赛程数据</div>';return;}
+  var h='<div class="dyn-list">';
+  var lastDate="";
+  matches.slice(0,20).forEach(function(m){
+    if(m.date!==lastDate){
+      h+='<div class="dyn-date-hd">'+fmtDate(m.date)+'</div>';
+      lastDate=m.date;
+    }
+    h+='<div class="mc-row">\
+      <div class="mc-rd">'+grpBadge(m.round)+'</div>\
+      <div class="mc-team mc-tl">\
+        <span class="mc-fl">'+fl(m.team_a)+'</span>\
+        <span class="mc-nm">'+m.team_a+'</span>\
+      </div>\
+      <div class="mc-ct">\
+        <span class="mc-vs">VS</span>\
+        <span class="mc-kick">'+m.time+'</span>\
+      </div>\
+      <div class="mc-team mc-tr">\
+        <span class="mc-nm">'+m.team_b+'</span>\
+        <span class="mc-fl">'+fl(m.team_b)+'</span>\
+      </div>\
+    </div>';
+  });
+  h+='</div>';
+  document.getElementById("sec-fix").innerHTML=h;
+}
+
+function buildWCResults(){
+  var matches=(WCR||[]).filter(function(m){return m.score_a!==null||m.score_b!==null;});
+  if(!matches.length){document.getElementById("sec-wcr").innerHTML='<div class="dyn-empty">暂无赛果数据</div>';return;}
+  var h='<div class="dyn-list">';
+  var lastDate="";
+  matches.slice(0,20).forEach(function(m){
+    if(m.date!==lastDate){
+      h+='<div class="dyn-date-hd">'+fmtDate(m.date)+'</div>';
+      lastDate=m.date;
+    }
+    var sa=m.score_a!=null?m.score_a:"-",sb=m.score_b!=null?m.score_b:"-";
+    var winA=m.score_a!=null&&m.score_b!=null&&m.score_a>m.score_b;
+    var winB=m.score_a!=null&&m.score_b!=null&&m.score_b>m.score_a;
+    h+='<div class="mc-row">\
+      <div class="mc-rd">'+grpBadge(m.round)+'</div>\
+      <div class="mc-team mc-tl'+(winA?' mc-winner':'')+'">\
+        <span class="mc-fl">'+fl(m.team_a)+'</span>\
+        <span class="mc-nm">'+(winA?'<b>':'<b>')+m.team_a+'</b></span>\
+      </div>\
+      <div class="mc-ct mc-score-ct">\
+        <span class="mc-scr '+(winA?'mc-sc-awin':winB?'mc-sc-bwin':'')+'">'+sa+'</span>\
+        <span class="mc-scr-sep">-</span>\
+        <span class="mc-scr '+(winB?'mc-sc-bwin':winA?'mc-sc-awin':'')+'">'+sb+'</span>\
+        <span class="mc-ft">FT</span>\
+      </div>\
+      <div class="mc-team mc-tr'+(winB?' mc-winner':'')+'">\
+        <span class="mc-nm"><b>'+m.team_b+'</b></span>\
+        <span class="mc-fl">'+fl(m.team_b)+'</span>\
+      </div>\
+    </div>';
+  });
+  h+='</div>';
+  document.getElementById("sec-wcr").innerHTML=h;
+}
+
+function buildFriendlies(){
+  var matches=(FRN||[]).filter(function(m){return m.score_a!==null||m.score_b!==null;});
+  if(!matches.length){document.getElementById("sec-frn").innerHTML='<div class="dyn-empty">暂无热身赛数据</div>';return;}
+  var h='<div class="dyn-list">';
+  var lastDate="";
+  matches.slice(0,20).forEach(function(m){
+    if(m.date!==lastDate){
+      h+='<div class="dyn-date-hd">'+fmtDate(m.date)+'</div>';
+      lastDate=m.date;
+    }
+    var sa=m.score_a!=null?m.score_a:"-",sb=m.score_b!=null?m.score_b:"-";
+    var winA=m.score_a!=null&&m.score_b!=null&&m.score_a>m.score_b;
+    var winB=m.score_a!=null&&m.score_b!=null&&m.score_b>m.score_a;
+    h+='<div class="mc-row mc-frn">\
+      <div class="mc-rd">'+grpBadge("热身赛")+'</div>\
+      <div class="mc-team mc-tl'+(winA?' mc-winner':'')+'">\
+        <span class="mc-fl">'+fl(m.team_a)+'</span>\
+        <span class="mc-nm"><b>'+m.team_a+'</b></span>\
+      </div>\
+      <div class="mc-ct mc-score-ct">\
+        <span class="mc-scr '+(winA?'mc-sc-awin':winB?'mc-sc-bwin':'')+'">'+sa+'</span>\
+        <span class="mc-scr-sep">-</span>\
+        <span class="mc-scr '+(winB?'mc-sc-bwin':winA?'mc-sc-awin':'')+'">'+sb+'</span>\
+      </div>\
+      <div class="mc-team mc-tr'+(winB?' mc-winner':'')+'">\
+        <span class="mc-nm"><b>'+m.team_b+'</b></span>\
+        <span class="mc-fl">'+fl(m.team_b)+'</span>\
+      </div>\
+    </div>';
+  });
+  h+='</div>';
+  document.getElementById("sec-frn").innerHTML=h;
+}
 
 /* ── 最精准预测（市场校准 + grok 实时动态）── */
 function buildFinal(){
@@ -1059,7 +1382,7 @@ function refreshRealtime(){fetch("/api/realtime",{cache:"no-store"}).then(functi
 
 /* ── Factor Breakdown ── */
 function toggleFB(el){var d=el.querySelector(".fb-expanded");if(d)d.classList.toggle("on");}
-function buildFB(){var s=D.slice().sort(function(a,b){return b.final_prob-a.final_prob;});var factors=[{k:"elo_score",l:"Elo锚点"},{k:"age_score",l:"年龄结构"},{k:"exp_score",l:"大赛经验"},{k:"form_score",l:"近期状态"},{k:"coach_score",l:"教练因素"},{k:"mystic_score",l:"玄学因子"}];var fc=["var(--bl)","var(--gr)","var(--gd)","var(--sl)","var(--br)","var(--rd)"];var h="";for(var i=0;i<Math.min(s.length,25);i++){var t=s[i];h+='<div class="fb-r" onclick="toggleFB(this)"><div class="fb-hd"><span class="fb-fl">'+fl(t.country)+'</span><span class="fb-nm">'+t.country+'</span><span class="fb-pct">'+(t.final_prob*100).toFixed(1)+'%</span></div><div class="fb-bars">';for(var j=0;j<factors.length;j++){var f=factors[j];var v=Math.max(0,t[f.k]||0);var max_v=0.15;var w=Math.min(100,(v/max_v*100)).toFixed(1);var val_str=(v>=0?"+":"")+(v*100).toFixed(1)+"%";h+='<div class="fb-bar"><span class="fb-lbl">'+f.l+'</span><div class="fb-track"><div class="fb-fill" style="width:'+w+'%;background:'+fc[j]+'"></div></div><span class="fb-val" style="color:'+fc[j]+'">'+val_str+'</span></div>';}h+='</div><div class="fb-expanded"><div class="fb-narrative">'+(t.narrative||"")+'</div></div></div>';}document.getElementById("fb").innerHTML=h;}
+function buildFB(){var s=D.slice().sort(function(a,b){return b.final_prob-a.final_prob;});var factors=[{k:"elo_score",l:"Elo锚点"},{k:"age_score",l:"年龄结构"},{k:"exp_score",l:"大赛经验"},{k:"form_score",l:"近期状态"},{k:"coach_score",l:"教练因素"},{k:"mystic_score",l:"玄学因子"}];var fc=["var(--bl)","var(--gr)","var(--gd)","var(--sl)","var(--br)","var(--rd)"];var uncBadge=function(lvl){var m={low:'<span class="unc-badge unc-low">低不确定</span>',medium:'<span class="unc-badge unc-med">中不确定</span>',high:'<span class="unc-badge unc-high">高不确定</span>'};return m[lvl]||m.medium;};var h="";for(var i=0;i<Math.min(s.length,25);i++){var t=s[i];var uncLvl=t.conformal_uncertainty||"medium";var ciLo=(t.conformal_ci_low||0)*100,ciHi=(t.conformal_ci_high||0)*100;h+='<div class="fb-r" onclick="toggleFB(this)"><div class="fb-hd"><span class="fb-fl">'+fl(t.country)+'</span><span class="fb-nm">'+t.country+'</span><div class="fb-pct-wrap"><span class="fb-pct">'+(t.final_prob*100).toFixed(1)+'%</span>'+uncBadge(uncLvl)+'</div></div><div class="fb-bars">';for(var j=0;j<factors.length;j++){var f=factors[j];var v=Math.max(0,t[f.k]||0);var max_v=0.15;var w=Math.min(100,(v/max_v*100)).toFixed(1);var val_str=(v>=0?"+":"")+(v*100).toFixed(1)+"%";h+='<div class="fb-bar"><span class="fb-lbl">'+f.l+'</span><div class="fb-track"><div class="fb-fill" style="width:'+w+'%;background:'+fc[j]+'"></div></div><span class="fb-val" style="color:'+fc[j]+'">'+val_str+'</span></div>';}h+='</div><div class="fb-expanded"><div class="fb-unc-range">置信区间 '+(ciLo).toFixed(2)+'% ~ '+(ciHi).toFixed(2)+'% &nbsp;|&nbsp; <span class="unc-text-'+uncLvl+'">'+(uncLvl==="low"?"模型高度确定":uncLvl==="medium"?"有一定不确定性":"不确定性较高")+'</span></div>';var attr=t.attribution;if(attr&&attr.attributions){h+='<div class="fb-attr"><div class="fb-attr-hd">📊 概率归因</div><div class="fb-elo-base">Elo基准概率: '+(attr.elo_baseline*100).toFixed(2)+'% &rarr; 最终概率: '+(attr.final_probability*100).toFixed(2)+'%</div>';for(var k=0;k<attr.attributions.length;k++){var a=attr.attributions[k];if(Math.abs(a.contribution)<0.0001)continue;var isPos=a.contribution>0;var cls=isPos?"attr-pos":"attr-neg";var sign=isPos?"+":"";var pct=a.contribution_pct.toFixed(1);h+='<div class="fb-attr-row"><span class="fb-attr-lbl">'+a.factor_label+'</span><div class="fb-attr-bar-wrap"><div class="fb-attr-bar" style="width:'+Math.min(100,Math.abs(a.contribution)*2000).toFixed(1)+'%;background:'+(isPos?"var(--gr)":"var(--rd)")+'"></div></div><span class="'+cls+'">'+sign+(a.contribution*100).toFixed(3)+'% ('+pct+'%)</span></div>';}h+='</div>';}h+='<div class="fb-narrative">'+(t.narrative||"")+'</div></div></div>';}document.getElementById("fb").innerHTML=h;}
 
 /* ── Mystic ── */
 function toggleMC(el){var d=el.nextElementSibling;if(d.classList.contains("on")){d.classList.remove("on");}else{d.classList.add("on");}}
@@ -1368,7 +1691,9 @@ function h2hChange(){
   var r=sched?scheduleH2HCalc(sched):h2hCalc(ta,tb);
   var barA=(r.winA*100).toFixed(1),barB=(r.winB*100).toFixed(1),barD=(r.draw*100).toFixed(1);
   document.getElementById("h2h-bar-a").style.width=barA+"%";
+  document.getElementById("h2h-bar-a").textContent=barA+"%";
   document.getElementById("h2h-bar-b").style.width=barB+"%";
+  document.getElementById("h2h-bar-b").textContent=barB+"%";
   document.getElementById("h2h-bar-d").style.width=barD+"%";
   document.getElementById("h2h-bar-d").textContent=barD+"%";
   document.getElementById("h2h-pa").textContent=barA+"%";
@@ -1376,7 +1701,20 @@ function h2hChange(){
   document.getElementById("h2h-pd").textContent=barD+"%";
   // factor diff
   var h='<div class="h2h-fc">'+getFactorDiff(ta,tb)+'</div>';
-  
+
+  // Conformal Prediction Set
+  var cpData=(HC&&HC[ta.country]&&HC[ta.country][tb.country])?HC[ta.country][tb.country]:null;
+  if(cpData){
+    var setLbl=cpData.prediction_set.join("/");
+    var setColor=cpData.set_size===1?"var(--gr)":cpData.set_size===2?"var(--gd)":"var(--rd)";
+    var setBg=cpData.set_size===1?"rgba(48,209,88,0.12)":cpData.set_size===2?"rgba(255,214,10,0.10)":"rgba(255,69,58,0.10)";
+    h+='<div class="cp-set-box" style="background:'+setBg+';border:1px solid '+setColor+';border-radius:12px;padding:12px 14px;margin-bottom:14px">';
+    h+='<div class="cp-set-hd"><span class="cp-set-lbl">Conformal 预测集</span><span class="cp-set-badge" style="background:'+setColor+';color:var(--bg)">'+setLbl+'</span></div>';
+    h+='<div class="cp-set-exp">'+cpData.explanation+'</div>';
+    h+='<div class="cp-set-conf">置信度: '+(cpData.confidence*100).toFixed(0)+'%</div>';
+    h+='</div>';
+  }
+
   h += sched?buildScheduleScorePred(ta,tb,sched):buildScorePred(ta, tb, r);
   // historical record
   var recKey=ta.country+"|"+tb.country,recKeyRev=tb.country+"|"+ta.country;
@@ -2009,13 +2347,21 @@ def _find_live_score(live_scores, schedule_match):
 def _refresh_analysis_state(state, loader=_load_analysis):
     global _cached_results
     _cached_results = None
-    results, ucl_data = loader()
+    results, ucl_data, h2h_conformal_map, match_fixtures, match_results, friendly_results = loader()
     state["analysis"] = results
     state["ucl_data"] = ucl_data
+    state["h2h_conformal_map"] = h2h_conformal_map
+    state["match_fixtures"] = match_fixtures
+    state["match_results"] = match_results
+    state["friendly_results"] = friendly_results
     state["data_json"] = json.dumps(results, ensure_ascii=False)
     state["ucl_json"] = json.dumps(ucl_data, ensure_ascii=False)
+    state["h2h_conf_json"] = json.dumps(h2h_conformal_map, ensure_ascii=False)
+    state["match_fixtures_json"] = json.dumps(match_fixtures, ensure_ascii=False)
+    state["wc_results_json"] = json.dumps(match_results, ensure_ascii=False)
+    state["friendlies_json"] = json.dumps(friendly_results, ensure_ascii=False)
     state["analysis_updated_at"] = datetime.now().isoformat(timespec="seconds")
-    return results, ucl_data
+    return results, ucl_data, h2h_conformal_map, match_fixtures, match_results, friendly_results
 
 
 def _start_analysis_refresh_daemon(state):
@@ -2064,7 +2410,7 @@ def _start_schedule_prediction_daemon(state):
 
 def run_server(port=7862):
     """启动 HTTP 服务器 — 纯 HTML/CSS/JS，无 Gradio 依赖"""
-    results, ucl_data = _load_analysis()
+    results, ucl_data, h2h_conformal_map, match_fixtures, match_results, friendly_results = _load_analysis()
     fixtures = _load_fixtures()
     final_pred = _load_final_pred()
     schedule_pred = _load_schedule_predictions()
@@ -2077,6 +2423,10 @@ def run_server(port=7862):
     final_json = json.dumps(final_pred, ensure_ascii=False)
     schedule_json = json.dumps(schedule_pred, ensure_ascii=False)
     realtime_json = json.dumps(realtime, ensure_ascii=False)
+    h2h_conf_json = json.dumps(h2h_conformal_map, ensure_ascii=False)
+    match_fixtures_json = json.dumps(match_fixtures, ensure_ascii=False)
+    wc_results_json = json.dumps(match_results, ensure_ascii=False)
+    friendlies_json = json.dumps(friendly_results, ensure_ascii=False)
 
     html = HTML_BODY
     html = html.replace("__DATA__", data_json)
@@ -2085,6 +2435,10 @@ def run_server(port=7862):
     html = html.replace("__FINAL__", final_json)
     html = html.replace("__SCHEDULE_PRED__", schedule_json)
     html = html.replace("__REALTIME__", realtime_json)
+    html = html.replace("__H2H_CONF__", h2h_conf_json)
+    html = html.replace("__MATCH_FIXTURES__", match_fixtures_json)
+    html = html.replace("__WC_RESULTS__", wc_results_json)
+    html = html.replace("__FRIENDLIES__", friendlies_json)
     html = html.replace("__UPDATE_TIME__", update_time)
 
     live_provider = LiveScoresProvider()
@@ -2094,8 +2448,16 @@ def run_server(port=7862):
     state = {
         "analysis": results,
         "ucl_data": ucl_data,
+        "h2h_conformal_map": h2h_conformal_map,
+        "match_fixtures": match_fixtures,
+        "match_results": match_results,
+        "friendly_results": friendly_results,
         "data_json": data_json,
         "ucl_json": ucl_json,
+        "h2h_conf_json": h2h_conf_json,
+        "match_fixtures_json": match_fixtures_json,
+        "wc_results_json": wc_results_json,
+        "friendlies_json": friendlies_json,
         "analysis_updated_at": datetime.now().isoformat(timespec="seconds"),
         "fixtures_json": fixtures_json,
         "schedule_pred": schedule_pred,
