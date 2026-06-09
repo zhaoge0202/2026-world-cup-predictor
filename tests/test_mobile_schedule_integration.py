@@ -110,6 +110,20 @@ class MobileScheduleIntegrationTest(unittest.TestCase):
         self.assertIn("setInterval(setUpdateTime,60000)", body)
         self.assertNotIn("toISOString()).replace", body)
 
+    def test_realtime_refresh_backend_uses_ten_minute_ttl(self):
+        source = inspect.getsource(mobile_ui._start_realtime_daemon)
+
+        self.assertIn("CHAMPION_TTL", source)
+        self.assertNotIn("time.sleep(3600)", source)
+        self.assertNotIn("6h", source)
+
+    def test_realtime_api_triggers_background_refresh_when_stale(self):
+        source = inspect.getsource(mobile_ui.run_server)
+
+        self.assertIn("_fresh", source)
+        self.assertIn("CHAMPION_TTL", source)
+        self.assertIn("adjust_champion_probs", source)
+
     def test_refresh_analysis_state_replaces_json(self):
         state = {}
 

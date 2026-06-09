@@ -42,11 +42,21 @@ from scripts.live_scores_provider import LiveScoresProvider
 from src.prediction.live_state_model import build_live_match_prediction
 from src.prediction.schedule_model import generate_schedule_predictions
 try:
-    from scripts.realtime_predictor import adjust_champion_probs, predict_match, CACHE as REALTIME_CACHE
+    from scripts.realtime_predictor import (
+        adjust_champion_probs,
+        predict_match,
+        CACHE as REALTIME_CACHE,
+        CHAMPION_TTL,
+        MATCH_TTL,
+        _fresh,
+        _load_cache,
+    )
     _RT_AVAILABLE = True
 except Exception as _e:
     _RT_AVAILABLE = False
     REALTIME_CACHE = os.path.join(ROOT, "data", "realtime_cache.json")
+    CHAMPION_TTL = 10 * 60
+    MATCH_TTL = 3 * 3600
 
 RANDOM_SEED = 42
 random.seed(RANDOM_SEED)
@@ -2390,10 +2400,10 @@ def _start_realtime_daemon():
     def loop():
         while True:
             try:
-                adjust_champion_probs()  # 内部 TTL 6h：fresh 则跳过，不重复烧 grok
+                adjust_champion_probs()  # 内部 CHAMPION_TTL fresh 则跳过，不重复烧 grok
             except Exception as e:
                 print(f"⚠️ realtime daemon: {e}")
-            time.sleep(3600)  # 每小时检查一次，配合 6h TTL
+            time.sleep(CHAMPION_TTL)
 
     threading.Thread(target=loop, name="realtime-pred", daemon=True).start()
 
@@ -2543,6 +2553,8 @@ def run_server(port=7862):
             # 路由: /api/realtime → grok 实时调整的冠军概率（前端定期刷新体现动态）
             if self.path.startswith("/api/realtime"):
                 rt = _load_realtime()
+                if _RT_AVAILABLE and not _fresh(rt, CHAMPION_TTL):
+                    threading.Thread(target=adjust_champion_probs, daemon=True).start()
                 self._send_json(json.dumps(rt, ensure_ascii=False).encode("utf-8"))
                 return
 
@@ -2557,7 +2569,6 @@ def run_server(port=7862):
                         self._send_json(b'{"error":"unavailable"}', 503)
                         return
                     # 仅返回缓存；未命中则后台异步生成，前端稍后再取（不阻塞）
-                    from scripts.realtime_predictor import _load_cache, _fresh, MATCH_TTL
                     key = f"{home}|{away}"
                     cached = _load_cache().get("matches", {}).get(key)
                     if _fresh(cached, MATCH_TTL):
