@@ -32,6 +32,16 @@ class MobileScheduleIntegrationTest(unittest.TestCase):
         self.assertNotIn('id="h2h-pd"', body)
         self.assertNotIn('id="h2h-pb"', body)
 
+    def test_h2h_probability_bar_widths_are_percentage_based(self):
+        body = mobile_ui.HTML_BODY
+
+        self.assertIn(".h2h-bar-a{flex:0 0 auto;", body)
+        self.assertIn(".h2h-bar-d{flex:0 0 auto;", body)
+        self.assertIn(".h2h-bar-b{flex:0 0 auto;", body)
+        self.assertIn('style.width=barA+"%"', body)
+        self.assertIn('style.width=barD+"%"', body)
+        self.assertIn('style.width=barB+"%"', body)
+
     def test_h2h_uses_selected_schedule_prediction_values(self):
         body = mobile_ui.HTML_BODY
         self.assertIn("function selectedSchedulePrediction", body)
