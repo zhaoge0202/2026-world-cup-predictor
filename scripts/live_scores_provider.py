@@ -61,6 +61,13 @@ def _normalize_thesportsdb(event: Dict[str, Any]) -> Dict[str, Any]:
         "minute": event.get("strProgress") or "",
         "venue": event.get("strVenue") or "",
         "league": event.get("strLeague") or "",
+        "red_home": None,
+        "red_away": None,
+        "yellow_home": None,
+        "yellow_away": None,
+        "xg_home": None,
+        "xg_away": None,
+        "referee": event.get("strReferee") or None,
         "source": "thesportsdb",
     }
 
@@ -80,6 +87,13 @@ def _normalize_football_data(match: Dict[str, Any]) -> Dict[str, Any]:
         "minute": str(match.get("minute") or ""),
         "venue": match.get("venue") or "",
         "league": "FIFA World Cup",
+        "red_home": None,
+        "red_away": None,
+        "yellow_home": None,
+        "yellow_away": None,
+        "xg_home": None,
+        "xg_away": None,
+        "referee": match.get("referees", [{}])[0].get("name") if match.get("referees") else None,
         "source": "football-data",
     }
 

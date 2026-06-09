@@ -5,7 +5,7 @@ Champion | Factor | Mystic | H2H | Squad | Polymarket | Info
 
 用法:
     cd ~/Desktop/world_cup_predictor
-    python3 -m src.dashboard.mobile_ui
+    python -m src.dashboard.mobile_ui
     本地访问: http://localhost:7862
 """
 
@@ -34,6 +34,7 @@ from scripts.elo_scraper import load_elo_cache
 from scripts.ingest_wikipedia_squads import normalize_position
 from scripts.fixtures_fetcher import load_fixtures, fetch_and_save, start_refresh_daemon
 from scripts.live_scores_provider import LiveScoresProvider
+from src.prediction.live_state_model import build_live_match_prediction
 from src.prediction.schedule_model import generate_schedule_predictions
 try:
     from scripts.realtime_predictor import adjust_champion_probs, predict_match, CACHE as REALTIME_CACHE
@@ -53,6 +54,7 @@ FINAL_PRED = os.path.join(ROOT, "data", "wc2026_prediction_final.json")
 SCHEDULE_PRED = os.path.join(ROOT, "data", "wc2026_schedule_predictions.json")
 SCHEDULE_PRED_REFRESH_SECONDS = int(os.environ.get("WC_SCHEDULE_PRED_REFRESH_SECONDS", "900"))
 SCHEDULE_PRED_SIMULATIONS = int(os.environ.get("WC_SCHEDULE_PRED_SIMULATIONS", "3000"))
+ANALYSIS_REFRESH_SECONDS = int(os.environ.get("WC_ANALYSIS_REFRESH_SECONDS", "300"))
 
 QUALIFIED_TEAMS = [
     "Argentina", "Brazil", "Uruguay", "Colombia", "Ecuador", "Paraguay",
@@ -1110,7 +1112,19 @@ function selectedSchedulePrediction(){
   return rows[parseInt(sel.value,10)]||_selectedScheduleMatch||null;
 }
 
-function scheduleMatchPrediction(){return selectedSchedulePrediction();}
+function scheduleMatchPrediction(){
+  var base=selectedSchedulePrediction();
+  if(!base)return null;
+  var live=_liveSchedulePredictions[scheduleMatchKey(base)];
+  if(live&&live.live_available)return live;
+  return base;
+}
+
+function scheduleMatchKey(match){
+  if(!match)return "";
+  if(match.num!==undefined&&match.num!==null&&match.num!=="")return "num:"+String(match.num);
+  return "teams:"+(match.team1||"")+"|"+(match.team2||"")+"|"+(match.date||"");
+}
 
 function scheduleH2HCalc(match){
   return{
@@ -1332,7 +1346,9 @@ function buildScheduleScorePred(ta,tb,match){
     h+='<span class="sc-ml-d" style="color:'+outcomeColor+'">'+((row.prob||0)*100).toFixed(1)+'%</span></div>';
   }
   h+='</div>';
-  h+='<div class="sc-note">Schedule model / 赛程模型：直接使用生成 artifact 的单场预测，不使用前端 H2H 临时公式或高比分 boost | Elo &#955;: '+lambdaA.toFixed(2)+' vs '+lambdaB.toFixed(2)+'</div></div>';
+  var note=match.source==="live-state"?'Live-state model / 实时模型：赛前赛程预测 + 当前比分/分钟/红牌/xG/裁判可用项，重新积分最终比分概率':'Schedule model / 赛程模型：直接使用生成 artifact 的单场预测，不使用前端 H2H 临时公式或高比分 boost';
+  if(match.expected_final_score&&match.expected_final_score.display)note+=' | Expected final / 预期终场: '+match.expected_final_score.display;
+  h+='<div class="sc-note">'+note+' | Elo &#955;: '+lambdaA.toFixed(2)+' vs '+lambdaB.toFixed(2)+'</div></div>';
   return h;
 }
 
@@ -1520,6 +1536,7 @@ function buildPoly(){
 
 var _pickerSide=null;
 var _selectedScheduleMatch=null;
+var _liveSchedulePredictions={};
 function openPicker(side){_pickerSide=side;var t=side==="a"?"Team A / 球队A":"Team B / 球队B";document.getElementById("pick-title").textContent=t;document.getElementById("pick-search").value="";filterPickList();document.getElementById("pick-overlay").classList.add("on");document.body.style.overflow="hidden"}
 function closePicker(e){if(e&&e.target!==document.getElementById("pick-overlay"))return;document.getElementById("pick-overlay").classList.remove("on");document.body.style.overflow=""}
 function filterPickList(){var q=document.getElementById("pick-search").value.toLowerCase();var list=document.getElementById("pick-list");var curVal=_pickerSide==="a"?document.getElementById("h2h-a").value:document.getElementById("h2h-b").value;var html="";for(var i=0;i<D.length;i++){var t=D[i];if(t.country.toLowerCase().indexOf(q)===-1&&fl(t.country).toLowerCase().indexOf(q)===-1)continue;var isSel=t.country===curVal;html+="<div class=\"pick-item"+(isSel?" sel":"")+"\" onclick=\"selectPick(\'"+t.country+"\')\">";html+="<span class=\"pick-item-fl\">"+fl(t.country)+"</span>";html+="<span class=\"pick-item-info\"><span class=\"pick-item-nm\">"+t.country+"</span>";html+="<span class=\"pick-item-pr\">"+(t.final_prob*100).toFixed(2)+"%</span></span>";html+="<span class=\"pick-item-chk\">&#10003;</span></div>"}list.innerHTML=html||"<div style=\"padding:24px;text-align:center;color:var(--tx2);font-size:14px\">No result</div>"}
@@ -1573,6 +1590,25 @@ function applyScheduleMatch(){
   updatePickCard("b",teamB);
   updateSchedulePickCards(m);
   h2hChange();
+  refreshLiveMatchPrediction(m);
+}
+
+function refreshLiveMatchPrediction(match){
+  if(!match)return Promise.resolve(null);
+  var key=scheduleMatchKey(match);
+  var url;
+  if(match.num!==undefined&&match.num!==null&&match.num!=="")url="/api/live_match_prediction?match_num="+encodeURIComponent(match.num);
+  else url="/api/live_match_prediction?home="+encodeURIComponent(match.team1||"")+"&away="+encodeURIComponent(match.team2||"");
+  return fetch(url,{cache:"no-store"}).then(function(r){return r.json();}).then(function(d){
+    if(!d||d.error)return null;
+    _liveSchedulePredictions[key]=d;
+    var cur=selectedSchedulePrediction();
+    if(cur&&scheduleMatchKey(cur)===key){
+      updateSchedulePickCards(d);
+      h2hChange();
+    }
+    return d;
+  }).catch(function(e){console.warn("live match prediction refresh failed",e);return null;});
 }
 
 /* ── Fixtures ── */
@@ -1774,6 +1810,8 @@ function fetchLiveScores(){
   return fetch("/api/live_scores",{cache:"no-store"}).then(function(r){return r.json();}).then(function(d){
     _liveScores=(d&&d.scores)||[];
     if(document.getElementById("pg-fixtures").classList.contains("on"))buildFixtures();
+    var sched=scheduleMatchPrediction();
+    if(sched)refreshLiveMatchPrediction(sched);
   }).catch(function(e){console.warn("live scores fetch failed",e);});
 }
 
@@ -1792,8 +1830,24 @@ function refreshSchedulePredictions(){
     populateScheduleH2H();
     if(sel&&oldValue!=="manual"&&Number(oldValue)<sel.options.length){sel.value=oldValue;applyScheduleMatch();}
     else if(sel&&sel.value!=="manual"){applyScheduleMatch();}
+    var sched=scheduleMatchPrediction();
+    if(sched)refreshLiveMatchPrediction(sched);
     buildFinal();
   }).catch(function(e){console.warn("schedule predictions refresh failed",e);});
+}
+
+function refreshTeamAnalysis(){
+  return fetch("/api/team_analysis",{cache:"no-store"}).then(function(r){return r.json();}).then(function(d){
+    if(!d||!d.teams)return;
+    D=d.teams;
+    U=d.ucl||{};
+    buildFinal();
+    buildLB();
+    buildFB();
+    buildML();
+    buildPoly();
+    h2hChange();
+  }).catch(function(e){console.warn("team analysis refresh failed",e);});
 }
 
 /* 自适应轮询节奏：有 live 比赛 2s / 当日有未开赛 30s / 空闲 300s */
@@ -1853,6 +1907,7 @@ pollLoop();
 setInterval(refreshFixtures,300000);
 refreshSchedulePredictions();
 setInterval(refreshSchedulePredictions,60000);
+setInterval(refreshTeamAnalysis,300000);
 // 实时冠军调整：每 10 分钟拉一次 grok 实时层
 refreshRealtime();
 setInterval(refreshRealtime,600000);
@@ -1903,6 +1958,62 @@ def _load_realtime():
             return json.load(f).get("champion")
     except Exception:
         return None
+
+
+def _same_match(schedule_match, live_score):
+    if not schedule_match or not live_score:
+        return False
+    teams = {schedule_match.get("team1"), schedule_match.get("team2")}
+    live_teams = {live_score.get("team_home"), live_score.get("team_away")}
+    return teams == live_teams
+
+
+def _find_schedule_match(schedule_pred, match_num=None, home=None, away=None):
+    matches = (schedule_pred or {}).get("matches") or []
+    if match_num not in (None, ""):
+        for match in matches:
+            if str(match.get("num")) == str(match_num):
+                return match
+        return None
+    if home and away:
+        wanted = {home, away}
+        for match in matches:
+            if {match.get("team1"), match.get("team2")} == wanted:
+                return match
+        return None
+    return (schedule_pred or {}).get("next_match")
+
+
+def _find_live_score(live_scores, schedule_match):
+    for score in live_scores or []:
+        if _same_match(schedule_match, score):
+            return score
+    return None
+
+
+def _refresh_analysis_state(state, loader=_load_analysis):
+    global _cached_results
+    _cached_results = None
+    results, ucl_data = loader()
+    state["analysis"] = results
+    state["ucl_data"] = ucl_data
+    state["data_json"] = json.dumps(results, ensure_ascii=False)
+    state["ucl_json"] = json.dumps(ucl_data, ensure_ascii=False)
+    state["analysis_updated_at"] = datetime.now().isoformat(timespec="seconds")
+    return results, ucl_data
+
+
+def _start_analysis_refresh_daemon(state):
+    """Refresh team/player analysis in memory; source JSON files remain untouched."""
+    def loop():
+        while True:
+            try:
+                _refresh_analysis_state(state)
+            except Exception as e:
+                print(f"⚠️ analysis refresh daemon: {e}")
+            time.sleep(ANALYSIS_REFRESH_SECONDS)
+
+    threading.Thread(target=loop, name="analysis-refresh", daemon=True).start()
 
 
 def _start_realtime_daemon():
@@ -1964,13 +2075,23 @@ def run_server(port=7862):
     live_provider = LiveScoresProvider()
     _start_realtime_daemon()
 
-    # daemon 刷新赛程和预测时，原子替换内存中的最新 JSON。
-    state = {"fixtures_json": fixtures_json, "schedule_pred": schedule_pred, "schedule_json": schedule_json}
+    # daemon 刷新赛程、预测和基础分析时，原子替换内存中的最新 JSON。
+    state = {
+        "analysis": results,
+        "ucl_data": ucl_data,
+        "data_json": data_json,
+        "ucl_json": ucl_json,
+        "analysis_updated_at": datetime.now().isoformat(timespec="seconds"),
+        "fixtures_json": fixtures_json,
+        "schedule_pred": schedule_pred,
+        "schedule_json": schedule_json,
+    }
 
     def _on_fixtures_update(payload):
         state["fixtures_json"] = json.dumps(payload, ensure_ascii=False)
 
     start_refresh_daemon(FIXTURES_CACHE, on_update=_on_fixtures_update)
+    _start_analysis_refresh_daemon(state)
     _start_schedule_prediction_daemon(state)
 
     class Handler(http.server.BaseHTTPRequestHandler):
@@ -1994,6 +2115,16 @@ def run_server(port=7862):
                     self._send_json(json.dumps({"error": str(e), "scores": []}).encode("utf-8"), 500)
                 return
 
+            # 路由: /api/team_analysis → 最新球队/球员基础分析 JSON
+            if self.path.startswith("/api/team_analysis"):
+                self._send_json(json.dumps({
+                    "teams": state.get("analysis", []),
+                    "ucl": state.get("ucl_data", {}),
+                    "fetched_at": state.get("analysis_updated_at"),
+                    "refresh_seconds": ANALYSIS_REFRESH_SECONDS,
+                }, ensure_ascii=False).encode("utf-8"))
+                return
+
             # 路由: /api/fixtures → 最新赛程（含 daemon 回填的 score.ft）
             if self.path.startswith("/api/fixtures"):
                 self._send_json(state["fixtures_json"].encode("utf-8"))
@@ -2002,6 +2133,28 @@ def run_server(port=7862):
             # 路由: /api/schedule_predictions → 最新赛程驱动预测
             if self.path.startswith("/api/schedule_predictions"):
                 self._send_json(state["schedule_json"].encode("utf-8"))
+                return
+
+            # 路由: /api/live_match_prediction?match_num=N → live-state 单场概率
+            if self.path.startswith("/api/live_match_prediction"):
+                try:
+                    from urllib.parse import urlparse, parse_qs, unquote
+                    q = parse_qs(urlparse(self.path).query)
+                    match_num = q.get("match_num", [""])[0]
+                    home = unquote(q.get("home", [""])[0])
+                    away = unquote(q.get("away", [""])[0])
+                    schedule_match = _find_schedule_match(state.get("schedule_pred"), match_num, home, away)
+                    if not schedule_match:
+                        self._send_json(b'{"error":"match not found"}', 404)
+                        return
+                    scores = live_provider.get_scores(schedule_match.get("date"))
+                    live_score = _find_live_score(scores, schedule_match)
+                    pred = build_live_match_prediction(schedule_match, live_score)
+                    pred["live_score"] = live_score
+                    pred["fetched_at"] = datetime.now().isoformat(timespec="seconds")
+                    self._send_json(json.dumps(pred, ensure_ascii=False).encode("utf-8"))
+                except Exception as e:
+                    self._send_json(json.dumps({"error": str(e)}).encode("utf-8"), 500)
                 return
 
             # 路由: /api/realtime → grok 实时调整的冠军概率（前端定期刷新体现动态）

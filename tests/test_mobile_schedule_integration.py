@@ -54,6 +54,56 @@ class MobileScheduleIntegrationTest(unittest.TestCase):
         self.assertTrue(hasattr(mobile_ui, "_start_schedule_prediction_daemon"))
         self.assertIn("/api/schedule_predictions", inspect.getsource(mobile_ui.run_server))
 
+    def test_live_match_prediction_api_is_wired(self):
+        source = inspect.getsource(mobile_ui.run_server)
+
+        self.assertIn("/api/live_match_prediction", source)
+        self.assertIn("build_live_match_prediction", source)
+        self.assertIn("function refreshLiveMatchPrediction", mobile_ui.HTML_BODY)
+        self.assertIn('"/api/live_match_prediction?match_num="', mobile_ui.HTML_BODY)
+        self.assertIn('"/api/live_match_prediction?home="', mobile_ui.HTML_BODY)
+        self.assertIn("fetch(url", mobile_ui.HTML_BODY)
+        self.assertIn("_liveSchedulePredictions", mobile_ui.HTML_BODY)
+        self.assertIn("function scheduleMatchKey", mobile_ui.HTML_BODY)
+
+    def test_team_analysis_refresh_api_is_wired(self):
+        source = inspect.getsource(mobile_ui.run_server)
+
+        self.assertTrue(hasattr(mobile_ui, "_refresh_analysis_state"))
+        self.assertTrue(hasattr(mobile_ui, "_start_analysis_refresh_daemon"))
+        self.assertIn("/api/team_analysis", source)
+        self.assertIn("function refreshTeamAnalysis", mobile_ui.HTML_BODY)
+        self.assertIn('fetch("/api/team_analysis"', mobile_ui.HTML_BODY)
+        self.assertIn("setInterval(refreshTeamAnalysis,300000)", mobile_ui.HTML_BODY)
+
+    def test_refresh_analysis_state_replaces_json(self):
+        state = {}
+
+        mobile_ui._refresh_analysis_state(state, loader=lambda: ([{"country": "Mexico"}], {"Mexico": {}}))
+
+        self.assertEqual(state["analysis"][0]["country"], "Mexico")
+        self.assertIn('"country": "Mexico"', state["data_json"])
+        self.assertIn('"Mexico"', state["ucl_json"])
+
+    def test_live_match_helpers_find_schedule_and_score(self):
+        schedule = {
+            "matches": [{"num": 1, "team1": "Mexico", "team2": "South Africa"}],
+            "next_match": {"num": 2, "team1": "Canada", "team2": "Qatar"},
+        }
+        scores = [{"team_home": "South Africa", "team_away": "Mexico", "status": "LIVE"}]
+
+        match = mobile_ui._find_schedule_match(schedule, match_num="1")
+
+        self.assertEqual(match["team1"], "Mexico")
+        self.assertEqual(mobile_ui._find_live_score(scores, match), scores[0])
+
+    def test_schedule_match_lookup_does_not_fallback_when_explicit_key_misses(self):
+        schedule = {"matches": [], "next_match": {"num": 2, "team1": "Canada", "team2": "Qatar"}}
+
+        self.assertIsNone(mobile_ui._find_schedule_match(schedule, match_num="1"))
+        self.assertIsNone(mobile_ui._find_schedule_match(schedule, home="Mexico", away="South Africa"))
+        self.assertEqual(mobile_ui._find_schedule_match(schedule)["team1"], "Canada")
+
 
 if __name__ == "__main__":
     unittest.main()
