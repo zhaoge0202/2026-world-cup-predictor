@@ -57,9 +57,22 @@ def next_scheduled_match(fixtures: Iterable[dict], today: Optional[str] = None) 
     return selected[0] if selected else None
 
 
+def fixture_match_id(match: dict) -> str:
+    num = match.get("num")
+    if num not in (None, ""):
+        return f"num:{num}"
+    return "fixture:{date}|{time}|{team1}|{team2}".format(
+        date=match.get("date", ""),
+        time=match.get("time", ""),
+        team1=match.get("team1", ""),
+        team2=match.get("team2", ""),
+    )
+
+
 def predict_fixture(match: dict, ratings: Dict[str, float], model: Optional[dict]) -> dict:
     pred = predict_match(match["team1"], match["team2"], ratings=ratings, model=model)
     return {
+        "match_id": fixture_match_id(match),
         "num": match.get("num"),
         "round": match.get("round"),
         "date": match.get("date"),

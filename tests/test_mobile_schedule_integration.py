@@ -58,8 +58,10 @@ class MobileScheduleIntegrationTest(unittest.TestCase):
         source = inspect.getsource(mobile_ui.run_server)
 
         self.assertIn("/api/live_match_prediction", source)
+        self.assertIn("match_id", source)
         self.assertIn("build_live_match_prediction", source)
         self.assertIn("function refreshLiveMatchPrediction", mobile_ui.HTML_BODY)
+        self.assertIn('"/api/live_match_prediction?match_id="', mobile_ui.HTML_BODY)
         self.assertIn('"/api/live_match_prediction?match_num="', mobile_ui.HTML_BODY)
         self.assertIn('"/api/live_match_prediction?home="', mobile_ui.HTML_BODY)
         self.assertIn("fetch(url", mobile_ui.HTML_BODY)
@@ -87,7 +89,7 @@ class MobileScheduleIntegrationTest(unittest.TestCase):
 
     def test_live_match_helpers_find_schedule_and_score(self):
         schedule = {
-            "matches": [{"num": 1, "team1": "Mexico", "team2": "South Africa"}],
+            "matches": [{"match_id": "fixture:2026-06-11|13:00 UTC-6|Mexico|South Africa", "num": 1, "team1": "Mexico", "team2": "South Africa"}],
             "next_match": {"num": 2, "team1": "Canada", "team2": "Qatar"},
         }
         scores = [{"team_home": "South Africa", "team_away": "Mexico", "status": "LIVE"}]
@@ -97,9 +99,13 @@ class MobileScheduleIntegrationTest(unittest.TestCase):
         self.assertEqual(match["team1"], "Mexico")
         self.assertEqual(mobile_ui._find_live_score(scores, match), scores[0])
 
+        by_id = mobile_ui._find_schedule_match(schedule, match_id="fixture:2026-06-11|13:00 UTC-6|Mexico|South Africa")
+        self.assertEqual(by_id["team2"], "South Africa")
+
     def test_schedule_match_lookup_does_not_fallback_when_explicit_key_misses(self):
         schedule = {"matches": [], "next_match": {"num": 2, "team1": "Canada", "team2": "Qatar"}}
 
+        self.assertIsNone(mobile_ui._find_schedule_match(schedule, match_id="missing"))
         self.assertIsNone(mobile_ui._find_schedule_match(schedule, match_num="1"))
         self.assertIsNone(mobile_ui._find_schedule_match(schedule, home="Mexico", away="South Africa"))
         self.assertEqual(mobile_ui._find_schedule_match(schedule)["team1"], "Canada")

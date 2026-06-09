@@ -2,6 +2,7 @@ import unittest
 
 from src.prediction.schedule_model import (
     completed_score,
+    fixture_match_id,
     generate_schedule_predictions,
     next_scheduled_match,
 )
@@ -53,9 +54,21 @@ class ScheduleModelTest(unittest.TestCase):
 
         self.assertEqual(out["source"], "schedule")
         self.assertEqual(out["next_match"]["team1"], "Mexico")
+        self.assertEqual(out["next_match"]["match_id"], fixture_match_id(fixtures[0]))
         self.assertEqual(len(out["matches"]), 6)
+        self.assertTrue(all(m.get("match_id") for m in out["matches"]))
         self.assertGreater(out["matches"][0]["team1_win"], 0)
         self.assertIn("champion", out["teams"][0])
+
+    def test_fixture_match_id_uses_num_when_available(self):
+        fixture = {"num": 12, "date": "2026-06-11", "team1": "Mexico", "team2": "South Africa"}
+
+        self.assertEqual(fixture_match_id(fixture), "num:12")
+
+    def test_fixture_match_id_falls_back_to_fixture_fields(self):
+        fixture = {"date": "2026-06-11", "time": "13:00 UTC-6", "team1": "Mexico", "team2": "South Africa"}
+
+        self.assertEqual(fixture_match_id(fixture), "fixture:2026-06-11|13:00 UTC-6|Mexico|South Africa")
 
     def test_unnumbered_final_still_counts_champion(self):
         fixtures = [

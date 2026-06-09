@@ -1122,6 +1122,7 @@ function scheduleMatchPrediction(){
 
 function scheduleMatchKey(match){
   if(!match)return "";
+  if(match.match_id)return String(match.match_id);
   if(match.num!==undefined&&match.num!==null&&match.num!=="")return "num:"+String(match.num);
   return "teams:"+(match.team1||"")+"|"+(match.team2||"")+"|"+(match.date||"");
 }
@@ -1597,7 +1598,8 @@ function refreshLiveMatchPrediction(match){
   if(!match)return Promise.resolve(null);
   var key=scheduleMatchKey(match);
   var url;
-  if(match.num!==undefined&&match.num!==null&&match.num!=="")url="/api/live_match_prediction?match_num="+encodeURIComponent(match.num);
+  if(match.match_id)url="/api/live_match_prediction?match_id="+encodeURIComponent(match.match_id);
+  else if(match.num!==undefined&&match.num!==null&&match.num!=="")url="/api/live_match_prediction?match_num="+encodeURIComponent(match.num);
   else url="/api/live_match_prediction?home="+encodeURIComponent(match.team1||"")+"&away="+encodeURIComponent(match.team2||"");
   return fetch(url,{cache:"no-store"}).then(function(r){return r.json();}).then(function(d){
     if(!d||d.error)return null;
@@ -1968,8 +1970,13 @@ def _same_match(schedule_match, live_score):
     return teams == live_teams
 
 
-def _find_schedule_match(schedule_pred, match_num=None, home=None, away=None):
+def _find_schedule_match(schedule_pred, match_num=None, home=None, away=None, match_id=None):
     matches = (schedule_pred or {}).get("matches") or []
+    if match_id not in (None, ""):
+        for match in matches:
+            if str(match.get("match_id")) == str(match_id):
+                return match
+        return None
     if match_num not in (None, ""):
         for match in matches:
             if str(match.get("num")) == str(match_num):
@@ -2140,10 +2147,11 @@ def run_server(port=7862):
                 try:
                     from urllib.parse import urlparse, parse_qs, unquote
                     q = parse_qs(urlparse(self.path).query)
+                    match_id = q.get("match_id", [""])[0]
                     match_num = q.get("match_num", [""])[0]
                     home = unquote(q.get("home", [""])[0])
                     away = unquote(q.get("away", [""])[0])
-                    schedule_match = _find_schedule_match(state.get("schedule_pred"), match_num, home, away)
+                    schedule_match = _find_schedule_match(state.get("schedule_pred"), match_num, home, away, match_id)
                     if not schedule_match:
                         self._send_json(b'{"error":"match not found"}', 404)
                         return
