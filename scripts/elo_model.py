@@ -30,6 +30,11 @@ class EloParams:
     k_quali: float = 40.0        # 各类预选赛
     k_friendly: float = 20.0     # 友谊赛
     k_other: float = 30.0        # 其它（Nations League/Confed 等）
+    # ── 增强项（默认关闭，回测验证后再开）──
+    mean_revert: float = 1.0     # 按年均值回归基数 φ：跨年时 elo=1500+φ^Δ年·(elo-1500)。
+                                 # <1 启用，抑制弱区互刷的虚高分 + 久疏战不确定性回归。1.0=关闭
+    k_new_boost: float = 0.0     # 新队自适应K：经验少时 K 放大，K_eff=K·(1+boost·exp(-games/k_tau))。0=关闭
+    k_tau: float = 40.0          # 自适应K 的出场数衰减尺度
 
 
 def classify_k(tournament: str, p: EloParams) -> float:
