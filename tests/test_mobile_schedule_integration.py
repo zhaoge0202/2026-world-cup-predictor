@@ -1,4 +1,5 @@
 import unittest
+import inspect
 
 import src.dashboard.mobile_ui as mobile_ui
 
@@ -44,6 +45,14 @@ class MobileScheduleIntegrationTest(unittest.TestCase):
         self.assertIn("team1_win", body)
         self.assertIn("lambda_team1", body)
         self.assertIn("top_scores", body)
+
+    def test_schedule_predictions_refresh_api_is_wired(self):
+        body = mobile_ui.HTML_BODY
+        self.assertIn("function refreshSchedulePredictions", body)
+        self.assertIn('fetch("/api/schedule_predictions"', body)
+        self.assertIn("setInterval(refreshSchedulePredictions", body)
+        self.assertTrue(hasattr(mobile_ui, "_start_schedule_prediction_daemon"))
+        self.assertIn("/api/schedule_predictions", inspect.getsource(mobile_ui.run_server))
 
 
 if __name__ == "__main__":

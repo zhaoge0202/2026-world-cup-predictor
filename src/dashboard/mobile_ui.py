@@ -34,6 +34,7 @@ from scripts.elo_scraper import load_elo_cache
 from scripts.ingest_wikipedia_squads import normalize_position
 from scripts.fixtures_fetcher import load_fixtures, fetch_and_save, start_refresh_daemon
 from scripts.live_scores_provider import LiveScoresProvider
+from src.prediction.schedule_model import generate_schedule_predictions
 try:
     from scripts.realtime_predictor import adjust_champion_probs, predict_match, CACHE as REALTIME_CACHE
     _RT_AVAILABLE = True
@@ -50,6 +51,8 @@ ELO_CACHE = os.path.join(ROOT, "data", "elo_cache_2026.json")
 FIXTURES_CACHE = os.path.join(ROOT, "data", "wc2026_fixtures.json")
 FINAL_PRED = os.path.join(ROOT, "data", "wc2026_prediction_final.json")
 SCHEDULE_PRED = os.path.join(ROOT, "data", "wc2026_schedule_predictions.json")
+SCHEDULE_PRED_REFRESH_SECONDS = int(os.environ.get("WC_SCHEDULE_PRED_REFRESH_SECONDS", "900"))
+SCHEDULE_PRED_SIMULATIONS = int(os.environ.get("WC_SCHEDULE_PRED_SIMULATIONS", "3000"))
 
 QUALIFIED_TEAMS = [
     "Argentina", "Brazil", "Uruguay", "Colombia", "Ecuador", "Paraguay",
@@ -1780,6 +1783,19 @@ function refreshFixtures(){
   }).catch(function(e){console.warn("fixtures refresh failed",e);});
 }
 
+function refreshSchedulePredictions(){
+  return fetch("/api/schedule_predictions",{cache:"no-store"}).then(function(r){return r.json();}).then(function(d){
+    if(!d||!d.matches)return;
+    var sel=document.getElementById("h2h-match");
+    var oldValue=sel?sel.value:"manual";
+    SP=d;
+    populateScheduleH2H();
+    if(sel&&oldValue!=="manual"&&Number(oldValue)<sel.options.length){sel.value=oldValue;applyScheduleMatch();}
+    else if(sel&&sel.value!=="manual"){applyScheduleMatch();}
+    buildFinal();
+  }).catch(function(e){console.warn("schedule predictions refresh failed",e);});
+}
+
 /* 自适应轮询节奏：有 live 比赛 2s / 当日有未开赛 30s / 空闲 300s */
 var _pollTimer=null;
 function _nextPollDelay(){
@@ -1835,6 +1851,8 @@ if(teams.length>0){sel.value=teams[0].country;sqChange();}
 buildFixtures();
 pollLoop();
 setInterval(refreshFixtures,300000);
+refreshSchedulePredictions();
+setInterval(refreshSchedulePredictions,60000);
 // 实时冠军调整：每 10 分钟拉一次 grok 实时层
 refreshRealtime();
 setInterval(refreshRealtime,600000);
@@ -1903,6 +1921,21 @@ def _start_realtime_daemon():
     threading.Thread(target=loop, name="realtime-pred", daemon=True).start()
 
 
+def _start_schedule_prediction_daemon(state):
+    """Periodically refresh schedule-driven predictions for API consumers."""
+    def loop():
+        while True:
+            try:
+                payload = generate_schedule_predictions(n_sim=SCHEDULE_PRED_SIMULATIONS)
+                state["schedule_pred"] = payload
+                state["schedule_json"] = json.dumps(payload, ensure_ascii=False)
+            except Exception as e:
+                print(f"⚠️ schedule prediction daemon: {e}")
+            time.sleep(SCHEDULE_PRED_REFRESH_SECONDS)
+
+    threading.Thread(target=loop, name="schedule-pred", daemon=True).start()
+
+
 def run_server(port=7862):
     """启动 HTTP 服务器 — 纯 HTML/CSS/JS，无 Gradio 依赖"""
     results, ucl_data = _load_analysis()
@@ -1931,13 +1964,14 @@ def run_server(port=7862):
     live_provider = LiveScoresProvider()
     _start_realtime_daemon()
 
-    # daemon 刷新赛程时，原子替换内存中的最新赛程 JSON（供 /api/fixtures 用）
-    state = {"fixtures_json": fixtures_json}
+    # daemon 刷新赛程和预测时，原子替换内存中的最新 JSON。
+    state = {"fixtures_json": fixtures_json, "schedule_pred": schedule_pred, "schedule_json": schedule_json}
 
     def _on_fixtures_update(payload):
         state["fixtures_json"] = json.dumps(payload, ensure_ascii=False)
 
     start_refresh_daemon(FIXTURES_CACHE, on_update=_on_fixtures_update)
+    _start_schedule_prediction_daemon(state)
 
     class Handler(http.server.BaseHTTPRequestHandler):
         def _send_json(self, body: bytes, status: int = 200):
@@ -1963,6 +1997,11 @@ def run_server(port=7862):
             # 路由: /api/fixtures → 最新赛程（含 daemon 回填的 score.ft）
             if self.path.startswith("/api/fixtures"):
                 self._send_json(state["fixtures_json"].encode("utf-8"))
+                return
+
+            # 路由: /api/schedule_predictions → 最新赛程驱动预测
+            if self.path.startswith("/api/schedule_predictions"):
+                self._send_json(state["schedule_json"].encode("utf-8"))
                 return
 
             # 路由: /api/realtime → grok 实时调整的冠军概率（前端定期刷新体现动态）
