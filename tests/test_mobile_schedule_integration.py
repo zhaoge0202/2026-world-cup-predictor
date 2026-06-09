@@ -22,6 +22,16 @@ class MobileScheduleIntegrationTest(unittest.TestCase):
         self.assertIn("function populateScheduleH2H", mobile_ui.HTML_BODY)
         self.assertIn("function applyScheduleMatch", mobile_ui.HTML_BODY)
 
+    def test_h2h_keeps_single_probability_display(self):
+        body = mobile_ui.HTML_BODY
+
+        self.assertIn('id="h2h-bar-a"', body)
+        self.assertIn('id="h2h-bar-d"', body)
+        self.assertIn('id="h2h-bar-b"', body)
+        self.assertNotIn('id="h2h-pa"', body)
+        self.assertNotIn('id="h2h-pd"', body)
+        self.assertNotIn('id="h2h-pb"', body)
+
     def test_h2h_uses_selected_schedule_prediction_values(self):
         body = mobile_ui.HTML_BODY
         self.assertIn("function selectedSchedulePrediction", body)

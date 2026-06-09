@@ -1033,11 +1033,6 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:"Inter",-
       <div class="h2h-bar-d" id="h2h-bar-d" style="width:10%">—</div>
       <div class="h2h-bar-b" id="h2h-bar-b" style="width:45%"></div>
     </div>
-    <div class="h2h-3m">
-      <div class="h2h-3m-it"><div class="h2h-3m-v" id="h2h-pa">45.0%</div><div class="h2h-3m-l">A Win</div></div>
-      <div class="h2h-3m-it"><div class="h2h-3m-v" id="h2h-pd">22.0%</div><div class="h2h-3m-l">Draw</div></div>
-      <div class="h2h-3m-it"><div class="h2h-3m-v" id="h2h-pb">33.0%</div><div class="h2h-3m-l">B Win</div></div>
-    </div>
     <div id="h2h-content"></div>
   </div>
 </div>
@@ -1703,9 +1698,6 @@ function h2hChange(){
   document.getElementById("h2h-bar-b").textContent=barB+"%";
   document.getElementById("h2h-bar-d").style.width=barD+"%";
   document.getElementById("h2h-bar-d").textContent=barD+"%";
-  document.getElementById("h2h-pa").textContent=barA+"%";
-  document.getElementById("h2h-pb").textContent=barB+"%";
-  document.getElementById("h2h-pd").textContent=barD+"%";
   // factor diff
   var h='<div class="h2h-fc">'+getFactorDiff(ta,tb)+'</div>';
 
