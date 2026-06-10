@@ -192,44 +192,28 @@ def _build_sample(country: str, elo: float):
 # ── UCL 心态数据加载 ────────────────────────────────────────────────────
 def _load_ucl_data():
     """返回 {国家: {total_bonus, description, players}}"""
-    from src.models.ucl_final_mentality import (
-        MBAPPE_REAL_MADRID_2025, DEMBELE_PSG_2025,
-        K77_PSG_2025, VITINHA_PSG_2025, DONNARUMMA_PSG_2025,
-        LAUTARO_INTER_2025,
-    )
-    UCL_PLAYERS = {
-        "France": [
-            ("Mbappe", MBAPPE_REAL_MADRID_2025),
-            ("Dembele", DEMBELE_PSG_2025),
-            ("K77", K77_PSG_2025),
-            ("Vitinha", VITINHA_PSG_2025),
-            ("Donnarumma", DONNARUMMA_PSG_2025),
-        ],
-        "Argentina": [
-            ("Lautaro", LAUTARO_INTER_2025),
-        ],
-    }
+    UCL_COUNTRIES = ["France", "England", "Georgia", "Portugal", "Italy", "Argentina"]
     UCL_DESCS = {
         "France": "PSG 5-0 Inter Milan - Mentality Explosion",
-        "Argentina": "Lautaro UCL Final Goal - Adversity Persistence",
+        "Argentina": "Inter 0-5 PSG final loss - pressure signal",
     }
     result = {}
-    for eng_name, player_list in UCL_PLAYERS.items():
+    for eng_name in UCL_COUNTRIES:
         bonus = compute_country_ucl_mentality_bonus(eng_name)
         if bonus.get("signal_count", 0) > 0:
-            from src.models.ucl_final_mentality import compute_final_mentality_signal
             players = []
-            for pname, prec in player_list:
-                sig = compute_final_mentality_signal(prec)
+            for sig in bonus.get("signals", []):
                 players.append({
-                    "name": prec.player_name,
-                    "club": "PSG" if eng_name == "France" else "Inter",
+                    "name": sig.player_name,
                     "mentality_signal": sig.mentality_score,
+                    "framework": sig.nearest_framework,
+                    "tier": sig.tier_label,
+                    "wc_adjustment": sig.wc_prob_adjustment,
                 })
             wc_adj = bonus.get("wc_total_adjustment", 0.0)
             result[eng_name] = {
                 "total_bonus": wc_adj,
-                "description": UCL_DESCS.get(eng_name, ""),
+                "description": UCL_DESCS.get(eng_name, "UCL final mentality signal"),
                 "players": players,
             }
     return result
@@ -1146,14 +1130,7 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:"Inter",-
   </div>
   <div class="info-sec">
     <div class="info-tl">欧冠调参 / UCL Tuning</div>
-    <div class="calibration">
-      <div class="cal-bd">
-        <b>姆巴佩 / Mbappe (France)</b>: 皇马1-5阿森纳半决赛淘汰 → <span style="color:var(--rd)">-0.58心态分</span> → Brazil2014框架<br><br>
-        <b>登贝莱 / Dembele (France)</b>: PSG 5-0 Inter决赛大胜进球 → <span style="color:var(--gr)">+0.71心态分</span> → France2018框架<br><br>
-        <b>劳塔罗 / Lautaro (Argentina)</b>: Inter 0-5惨败但决赛进球 → <span style="color:var(--rd)">-0.53心态分</span> → Brazil2014框架<br><br>
-        <b>调参结果</b>: France shift <span style="color:var(--gr)">+2.1%</span>, Argentina shift <span style="color:var(--rd)">-1.4%</span>, Brazil shift <span style="color:var(--rd)">-3.7%</span>
-      </div>
-    </div>
+    <div id="ucl-info"></div>
   </div>
   <div class="info-sec">
     <div class="info-tl">版本 / Version</div>
@@ -1391,6 +1368,35 @@ function setUpdateTime(value){
   if(inf)inf.textContent=text;
 }
 function refreshRealtime(){fetch("/api/realtime",{cache:"no-store"}).then(function(r){return r.json();}).then(function(d){if(d&&d.teams&&d.teams.length){RT=d;setUpdateTime();buildFinal();}}).catch(function(){});}
+
+function buildUCLInfo(){
+  var el=document.getElementById("ucl-info");
+  if(!el)return;
+  var countries=Object.keys(U||{}).sort();
+  if(countries.length===0){
+    el.innerHTML='<div class="calibration"><div class="cal-bd">当前没有启用欧冠心态信号。</div></div>';
+    return;
+  }
+  var h="";
+  for(var i=0;i<countries.length;i++){
+    var c=countries[i],row=U[c]||{};
+    var total=row.total_bonus||0;
+    var cls=total>=0?"var(--gr)":"var(--rd)";
+    h+='<div class="calibration"><div class="cal-hd"><span>'+fl(c)+'</span><span>'+c+'</span><span style="margin-left:auto;color:'+cls+'">'+st(total/100)+'</span></div>';
+    h+='<div class="cal-bd">'+(row.description||'UCL mentality signal')+'<br>';
+    var players=row.players||[];
+    for(var j=0;j<players.length;j++){
+      var p=players[j];
+      var m=p.mentality_signal||0,adj=p.wc_adjustment||0;
+      var mcls=m>=0?"var(--gr)":"var(--rd)";
+      h+='<b>'+p.name+'</b> · '+(p.club||'')+' · <span style="color:'+mcls+'">心态 '+m.toFixed(2)+'</span>';
+      h+=' · WC调整 '+st(adj/100)+'<br><span style="color:var(--tx3)">'+(p.framework||'')+' · '+(p.tier||'')+'</span>';
+      if(j<players.length-1)h+='<br><br>';
+    }
+    h+='</div></div>';
+  }
+  el.innerHTML=h;
+}
 
 /* ── Factor Breakdown ── */
 function toggleFB(el){var d=el.querySelector(".fb-expanded");if(d)d.classList.toggle("on");}
@@ -2204,6 +2210,7 @@ function refreshTeamAnalysis(){
     buildFB();
     buildML();
     buildPoly();
+    buildUCLInfo();
     h2hChange();
   }).catch(function(e){console.warn("team analysis refresh failed",e);});
 }
@@ -2232,6 +2239,7 @@ buildLB();
 buildFB();
 buildML();
 buildPoly();
+buildUCLInfo();
 // H2H: populate team selectors
 var teams=D.slice().sort(function(a,b){return b.final_prob-a.final_prob;});
 var selA=document.getElementById("h2h-a");

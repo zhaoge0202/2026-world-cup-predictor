@@ -124,6 +124,26 @@ class MobileScheduleIntegrationTest(unittest.TestCase):
         self.assertIn("CHAMPION_TTL", source)
         self.assertIn("adjust_champion_probs", source)
 
+    def test_ucl_tuning_info_is_rendered_from_model_data(self):
+        body = mobile_ui.HTML_BODY
+
+        self.assertIn('id="ucl-info"', body)
+        self.assertIn("function buildUCLInfo", body)
+        self.assertIn("buildUCLInfo();", body)
+        self.assertNotIn("劳塔罗 / Lautaro (Argentina)</b>: Inter 0-5惨败但决赛进球", body)
+        self.assertNotIn("调参结果</b>: France shift", body)
+
+    def test_ucl_data_exposes_model_signal_details(self):
+        data = mobile_ui._load_ucl_data()
+
+        expected = {"Argentina", "England", "France", "Georgia", "Italy", "Portugal"}
+        self.assertTrue(expected.issubset(data.keys()))
+        self.assertNotIn("Goal", data["Argentina"]["description"])
+        player = data["Argentina"]["players"][0]
+        self.assertIn("framework", player)
+        self.assertIn("wc_adjustment", player)
+        self.assertIn("tier", player)
+
     def test_refresh_analysis_state_replaces_json(self):
         state = {}
 
