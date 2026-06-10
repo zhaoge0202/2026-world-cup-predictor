@@ -13,3 +13,7 @@ venv/
 .mypy_cache/
 .coverage
 htmlcov/
+
+# 运行时缓存（程序启动后自动生成/刷新，勿提交）
+data/realtime_cache.json
+data/wc2026_schedule_predictions.json
