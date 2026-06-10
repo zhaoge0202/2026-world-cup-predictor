@@ -2362,6 +2362,19 @@ def _find_live_score(live_scores, schedule_match):
     return None
 
 
+def _start_background_task(name, target, *args, **kwargs):
+    """Run a best-effort background task without leaking thread tracebacks."""
+    def run():
+        try:
+            target(*args, **kwargs)
+        except Exception as e:
+            print(f"⚠️ {name}: {e}")
+
+    thread = threading.Thread(target=run, name=name, daemon=True)
+    thread.start()
+    return thread
+
+
 def _refresh_analysis_state(state, loader=_load_analysis):
     global _cached_results
     _cached_results = None
@@ -2397,7 +2410,7 @@ def _start_analysis_refresh_daemon(state):
                 print(f"⚠️ analysis refresh daemon: {e}")
             time.sleep(ANALYSIS_REFRESH_SECONDS)
 
-    threading.Thread(target=loop, name="analysis-refresh", daemon=True).start()
+    _start_background_task("analysis-refresh", loop)
 
 
 def _start_realtime_daemon():
@@ -2413,7 +2426,7 @@ def _start_realtime_daemon():
                 print(f"⚠️ realtime daemon: {e}")
             time.sleep(CHAMPION_TTL)
 
-    threading.Thread(target=loop, name="realtime-pred", daemon=True).start()
+    _start_background_task("realtime-pred", loop)
 
 
 def _start_schedule_prediction_daemon(state):
@@ -2428,7 +2441,7 @@ def _start_schedule_prediction_daemon(state):
                 print(f"⚠️ schedule prediction daemon: {e}")
             time.sleep(SCHEDULE_PRED_REFRESH_SECONDS)
 
-    threading.Thread(target=loop, name="schedule-pred", daemon=True).start()
+    _start_background_task("schedule-pred", loop)
 
 
 def run_server(port=7862):
@@ -2562,7 +2575,7 @@ def run_server(port=7862):
             if self.path.startswith("/api/realtime"):
                 rt = _load_realtime()
                 if _RT_AVAILABLE and not _fresh(rt, CHAMPION_TTL):
-                    threading.Thread(target=adjust_champion_probs, daemon=True).start()
+                    _start_background_task("realtime-refresh", adjust_champion_probs)
                 self._send_json(json.dumps(rt, ensure_ascii=False).encode("utf-8"))
                 return
 
@@ -2582,8 +2595,7 @@ def run_server(port=7862):
                     if _fresh(cached, MATCH_TTL):
                         self._send_json(json.dumps(cached, ensure_ascii=False).encode("utf-8"))
                     else:
-                        threading.Thread(target=lambda: predict_match(home, away),
-                                         daemon=True).start()
+                        _start_background_task("match-pred-refresh", predict_match, home, away)
                         self._send_json(b'{"status":"analyzing"}', 202)
                 except Exception as e:
                     self._send_json(json.dumps({"error": str(e)}).encode("utf-8"), 500)

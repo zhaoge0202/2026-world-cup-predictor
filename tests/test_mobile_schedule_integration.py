@@ -1,5 +1,7 @@
 import unittest
 import inspect
+import io
+from contextlib import redirect_stdout
 
 import src.dashboard.mobile_ui as mobile_ui
 
@@ -123,6 +125,35 @@ class MobileScheduleIntegrationTest(unittest.TestCase):
         self.assertIn("_fresh", source)
         self.assertIn("CHAMPION_TTL", source)
         self.assertIn("adjust_champion_probs", source)
+        self.assertIn("_start_background_task", source)
+
+    def test_background_task_runner_catches_thread_errors(self):
+        calls = []
+
+        class ImmediateThread:
+            def __init__(self, target, name=None, daemon=None):
+                self.target = target
+                self.name = name
+                self.daemon = daemon
+
+            def start(self):
+                self.target()
+                calls.append((self.name, self.daemon))
+
+        original_thread = mobile_ui.threading.Thread
+        out = io.StringIO()
+        try:
+            mobile_ui.threading.Thread = ImmediateThread
+            with redirect_stdout(out):
+                mobile_ui._start_background_task(
+                    "realtime-refresh",
+                    lambda: (_ for _ in ()).throw(RuntimeError("gateway unavailable")),
+                )
+        finally:
+            mobile_ui.threading.Thread = original_thread
+
+        self.assertEqual(calls, [("realtime-refresh", True)])
+        self.assertIn("⚠️ realtime-refresh: gateway unavailable", out.getvalue())
 
     def test_ucl_tuning_info_is_rendered_from_model_data(self):
         body = mobile_ui.HTML_BODY

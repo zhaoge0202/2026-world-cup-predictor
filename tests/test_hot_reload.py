@@ -41,6 +41,25 @@ class HotReloadTest(unittest.TestCase):
         self.assertTrue(hot_reload.snapshot_changed(before, after_write))
         self.assertTrue(hot_reload.snapshot_changed(before, after_delete))
 
+    def test_describe_snapshot_changes_names_changed_files(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            changed = root / "src" / "dashboard" / "mobile_ui.py"
+            added = root / "scripts" / "new_task.py"
+            changed.parent.mkdir(parents=True)
+            added.parent.mkdir(parents=True)
+            changed.write_text("v1", encoding="utf-8")
+            before = hot_reload.snapshot_files([changed])
+
+            changed.write_text("v2", encoding="utf-8")
+            added.write_text("print('new')", encoding="utf-8")
+            after = hot_reload.snapshot_files([changed, added])
+
+        details = hot_reload.describe_snapshot_changes(before, after, root=root)
+
+        self.assertIn("modified src/dashboard/mobile_ui.py", details)
+        self.assertIn("added scripts/new_task.py", details)
+
     def test_build_server_command_uses_current_python_and_port(self):
         cmd = hot_reload.build_server_command(port=9123)
 

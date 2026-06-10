@@ -73,6 +73,28 @@ def snapshot_changed(before: dict[Path, tuple[int, int] | None],
     return before != after
 
 
+def describe_snapshot_changes(
+    before: dict[Path, tuple[int, int] | None],
+    after: dict[Path, tuple[int, int] | None],
+    root: Path = ROOT,
+) -> list[str]:
+    """Return compact human-readable file changes between two snapshots."""
+    details: list[str] = []
+    for path in sorted(set(before) | set(after), key=lambda p: _relative(p, root)):
+        old = before.get(path)
+        new = after.get(path)
+        if old == new:
+            continue
+        if old is None and new is not None:
+            action = "added"
+        elif old is not None and new is None:
+            action = "removed"
+        else:
+            action = "modified"
+        details.append(f"{action} {_relative(path, root)}")
+    return details
+
+
 def build_server_command(port: int) -> list[str]:
     return [sys.executable, "-m", "src.dashboard.mobile_ui", "--port", str(port)]
 
@@ -113,7 +135,11 @@ def run(port: int = 7862, interval: float = 1.0, root: Path = ROOT) -> None:
                 snapshot = next_snapshot
                 continue
             if watched != next_watched or snapshot_changed(snapshot, next_snapshot):
-                print("Change detected; restarting server...")
+                changes = describe_snapshot_changes(snapshot, next_snapshot, root=root)
+                if changes:
+                    print(f"Change detected ({'; '.join(changes[:5])}); restarting server...")
+                else:
+                    print("Change detected; restarting server...")
                 _stop_child(child)
                 child = _start_child(port, root)
                 watched = next_watched
